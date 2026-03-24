@@ -1,0 +1,52 @@
+name: PsyManager
+options:
+  minimumXcodeGenVersion: 2.45.0
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+targets:
+  PsyManager:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: App
+      - path: Core
+      - path: Domain
+      - path: Features
+      - path: Services
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.franciscomarcondes.psymanager
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_CFBundleDisplayName: PsyManager
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_PSYGoogleMapsAPIKey: ""
+        INFOPLIST_KEY_PSYRapidAPIKey: ""
+        INFOPLIST_KEY_PSYRapidAPIHost: skyscanner44.p.rapidapi.com
+        INFOPLIST_KEY_PSYSkyscannerAPIKey: ""
+        INFOPLIST_KEY_PSYKiwiTequilaAPIKey: ""
+        INFOPLIST_KEY_CFBundleURLTypes:
+          - CFBundleURLName: com.franciscomarcondes.psymanager
+            CFBundleURLSchemes:
+              - psymanager
+        CODE_SIGN_STYLE: Automatic
+    scheme:
+      gatherCoverageData: false
+      testTargets:
+        - PsyManagerTests
+
+  PsyManagerTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: Tests
+    dependencies:
+      - target: PsyManager
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
