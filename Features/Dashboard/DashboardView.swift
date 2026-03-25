@@ -14,6 +14,8 @@ struct DashboardView: View {
     @Query(sort: \EventLead.eventDate) private var leads: [EventLead]
     @Query(sort: \Negotiation.createdAt) private var negotiations: [Negotiation]
     @Query(sort: \SocialInsightSnapshot.periodEnd, order: .reverse) private var insights: [SocialInsightSnapshot]
+    @Query(sort: \ArtistCareerSnapshot.capturedAt, order: .reverse) private var careerSnapshots: [ArtistCareerSnapshot]
+    @Query(sort: \PromoterContact.name) private var promoters: [PromoterContact]
 
     @State private var plannerMessage = ""
     @State private var bookingRadarMessage = ""
@@ -163,21 +165,21 @@ struct DashboardView: View {
             .map { $0 }
     }
 
-    private var weeklySeries: [WeeklyPoint] {
+private var weeklySeries: [DashboardWeeklyPoint] {
         let calendar = Calendar.current
         return (0 ..< 4).compactMap { offset in
             guard let start = calendar.date(byAdding: .weekOfYear, value: -(3 - offset), to: calendar.startOfDay(for: Date())),
                   let end = calendar.date(byAdding: .day, value: 7, to: start)
             else { return nil }
-
+            
             let weeklyLeads = leads.filter { $0.eventDate >= start && $0.eventDate < end }.count
             let weeklyClosed = negotiations.filter {
                 $0.createdAt >= start &&
-                    $0.createdAt < end &&
-                    $0.stage == LeadStatus.closed.rawValue
+                $0.createdAt < end &&
+                $0.stage == LeadStatus.closed.rawValue
             }.count
-
-            return WeeklyPoint(label: "S\(offset + 1)", leads: weeklyLeads, closed: weeklyClosed)
+            
+            return DashboardWeeklyPoint(label: "S\(offset + 1)", leads: weeklyLeads, closed: weeklyClosed)
         }
     }
 
@@ -217,8 +219,13 @@ struct DashboardView: View {
                         .psyAppear(delay: 0.05)
                     pipelineMetrics
                         .psyAppear(delay: 0.08)
-                    upcomingGig
+                    
+                    // 💰 Financial Alerts Widget
+                    FinancialAlertsWidget()
                         .psyAppear(delay: 0.11)
+                    
+                    upcomingGig
+                        .psyAppear(delay: 0.14)
                 }
                 .padding(20)
             }
@@ -881,7 +888,7 @@ struct DashboardView: View {
     }
 }
 
-private struct WeeklyPoint: Identifiable {
+private struct DashboardWeeklyPoint: Identifiable {
     let id = UUID()
     let label: String
     let leads: Int

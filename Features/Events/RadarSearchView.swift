@@ -1,8 +1,10 @@
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 struct RadarSearchView: View {
     @Environment(\.modelContext) private var modelContext
+    @Query(sort: \ArtistProfile.createdAt) private var profiles: [ArtistProfile]
     @Query(sort: \RadarEvent.dateISO) private var radarEvents: [RadarEvent]
     
     @State private var searchText = ""
@@ -14,8 +16,11 @@ struct RadarSearchView: View {
     @State private var maxBudget = ""
     @State private var isSearching = false
     @State private var aiSuggestions: [RadarEvent] = []
+    @State private var aiFeedback = ""
+    @State private var enrichedEvents: [EnrichedRadarEvent] = []
+    @State private var isGeocodifying = false
     
-    private let engine = CareerManagerEngine()
+    private let geocodingService = EventGeocodingIntegration()
     private let allStates = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"]
     private let transportTypes = ["Carro", "Ônibus", "Avião", "Trem"]
     
@@ -92,7 +97,7 @@ struct RadarSearchView: View {
                             .textFieldStyle(.plain)
                     }
                     .padding(10)
-                    .background(PsyTheme.secondaryBackground)
+                    .background(PsyTheme.surface)
                     .cornerRadius(8)
                     
                     Button {
@@ -106,7 +111,7 @@ struct RadarSearchView: View {
                             .foregroundStyle(selectedStates.isEmpty && selectedTransports.isEmpty ? PsyTheme.textSecondary : PsyTheme.primary)
                     }
                     .frame(width: 44, height: 44)
-                    .background(PsyTheme.secondaryBackground)
+                    .background(PsyTheme.surfaceAlt)
                     .cornerRadius(8)
                 }
                 .padding(.horizontal, 16)
@@ -128,6 +133,13 @@ struct RadarSearchView: View {
                 }
                 .disabled(isSearching)
                 .padding(.horizontal, 16)
+
+                if !aiFeedback.isEmpty {
+                    Text(aiFeedback)
+                        .font(.caption)
+                        .foregroundStyle(aiFeedback.lowercased().contains("erro") ? .red : PsyTheme.textSecondary)
+                        .padding(.horizontal, 16)
+                }
                 
                 // Filter Panel
                 if showFilters {
@@ -156,7 +168,7 @@ struct RadarSearchView: View {
                 } else {
                     List(filteredEvents) { event in
                         RadarEventRow(event: event)
-                            .listRowBackground(PsyTheme.cardBackground)
+                            .listRowBackground(PsyTheme.surfaceAlt)
                             .listRowSeparator(.hidden)
                     }
                     .listStyle(.plain)
@@ -254,6 +266,7 @@ struct RadarSearchView: View {
     
     private func generateAIEventSuggestions() async {
         isSearching = true
+        aiFeedback = ""
         defer { isSearching = false }
         
         let prompt = """
@@ -264,24 +277,89 @@ struct RadarSearchView: View {
         Responda com array JSON: [{"eventName": "string", "city": "string", "state": "string", "instagram": "@handle"}]
         """
         
-        do {
-            let response = try await engine.ask(prompt: prompt, profile: nil)
-            
-            if let data = response.data(using: .utf8),
-               let jsonArray = try? JSONSerialization.jsonObject(with: data) as? [[String: String]] {
-                
-                aiSuggestions = jsonArray.compactMap { dict in
-                    RadarEvent(
-                        eventName: dict["eventName"] ?? "Evento",
-                        city: dict["city"] ?? "",
-                        state: dict["state"] ?? "",
-                        dateISO: ISO8601DateFormatter().string(from: Date()),
-                        instagramHandle: dict["instagram"] ?? ""
-                    )
-                }
+        let profileContext = profiles.first ?? ArtistProfile(
+            stageName: "DJ Fantasma",
+            genre: "Psytrance",
+            city: "São Paulo",
+            state: "SP",
+            artistStage: "Emergente",
+            toneOfVoice: "Direto",
+            mainGoal: "Booking mais gigs",
+            contentFocus: "Shows ao vivo",
+            visualIdentity: "Borda onírica" 
+        )
+
+        let response = await WebAIService.shared.ask(
+            artistName: profileContext.stageName,
+            prompt: prompt,
+            mode: "niche-search",
+            context: WebAIContext(leads: nil, gigs: nil, contentIdeas: nil, radarEvents: radarEvents.count)
+        )
+
+        let jsonCandidates = extractJSONArrayCandidates(from: response)
+        var parsedEvents: [[String: String]] = []
+
+        for candidate in jsonCandidates {
+            if let data = candidate.data(using: .utf8),
+               let array = try? JSONSerialization.jsonObject(with: data) as? [[String: String]],
+               !array.isEmpty {
+                parsedEvents = array
+                break
             }
-        } catch {
-            print("Erro ao gerar sugestões: \(error)")
+        }
+
+        if parsedEvents.isEmpty {
+            aiSuggestions = fallbackSuggestions(for: selectedStates)
+            aiFeedback = "Mostrando sugestões rápidas enquanto a IA finaliza a resposta."
+        } else {
+            aiSuggestions = parsedEvents.compactMap { dict in
+                RadarEvent(
+                    eventName: dict["eventName"] ?? "Evento",
+                    city: dict["city"] ?? "",
+                    state: dict["state"] ?? "",
+                    dateISO: ISO8601DateFormatter().string(from: Date()),
+                    instagramHandle: dict["instagram"] ?? ""
+                )
+            }
+            aiFeedback = "Sugestões IA carregadas: \(aiSuggestions.count)."
+        }
+
+        if aiSuggestions.isEmpty {
+            aiFeedback = "Não encontramos sugestões. Ajuste filtros e tente novamente."
+            return
+        }
+
+        isGeocodifying = true
+        enrichedEvents = await geocodingService.enrichEventsWithCoordinates(aiSuggestions)
+        isGeocodifying = false
+    }
+
+    private func extractJSONArrayCandidates(from text: String) -> [String] {
+        var candidates: [String] = [text]
+
+        if let fencedStart = text.range(of: "```json")?.upperBound,
+           let fencedEnd = text[fencedStart...].range(of: "```")?.lowerBound {
+            candidates.append(String(text[fencedStart..<fencedEnd]).trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+
+        if let start = text.firstIndex(of: "["),
+           let end = text.lastIndex(of: "]"),
+           start <= end {
+            candidates.append(String(text[start...end]))
+        }
+        return candidates
+    }
+
+    private func fallbackSuggestions(for states: Set<String>) -> [RadarEvent] {
+        let selected = states.isEmpty ? ["SP", "RJ", "MG"] : Array(states)
+        return selected.prefix(5).enumerated().map { idx, state in
+            RadarEvent(
+                eventName: "Evento em destaque \(idx + 1)",
+                city: state == "SP" ? "São Paulo" : (state == "RJ" ? "Rio de Janeiro" : "Capital"),
+                state: state,
+                dateISO: ISO8601DateFormatter().string(from: Date().addingTimeInterval(Double(idx + 1) * 86400)),
+                instagramHandle: "@eventopsy\(idx + 1)"
+            )
         }
     }
 }
@@ -313,7 +391,57 @@ struct RadarEventRow: View {
             }
         }
         .padding(12)
-        .background(PsyTheme.cardBackground)
+        .background(PsyTheme.surfaceAlt)
+        .cornerRadius(10)
+    }
+}
+
+struct EnrichedRadarEventRow: View {
+    let enrichedEvent: EnrichedRadarEvent
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(enrichedEvent.event.eventName)
+                        .font(.headline)
+                        .lineLimit(2)
+                    
+                    HStack(spacing: 4) {
+                        Image(systemName: enrichedEvent.isGeocodified ? "location.fill" : "location")
+                            .font(.caption2)
+                            .foregroundStyle(enrichedEvent.isGeocodified ? PsyTheme.primary : PsyTheme.textSecondary)
+                        
+                        Text(enrichedEvent.displayLocation)
+                            .font(.caption)
+                            .foregroundStyle(PsyTheme.textSecondary)
+                            .lineLimit(1)
+                    }
+                    
+                    if let error = enrichedEvent.geocodingError {
+                        HStack(spacing: 2) {
+                            Image(systemName: "exclamationmark.circle")
+                                .font(.caption2)
+                                .foregroundStyle(.yellow)
+                            Text(error)
+                                .font(.caption2)
+                                .foregroundStyle(.yellow)
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                if !enrichedEvent.event.instagramHandle.isEmpty {
+                    Link(destination: URL(string: "https://instagram.com/\(enrichedEvent.event.instagramHandle.replacingOccurrences(of: "@", with: ""))")!) {
+                        Image(systemName: "link.circle.fill")
+                            .foregroundStyle(PsyTheme.primary)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .background(PsyTheme.surfaceAlt)
         .cornerRadius(10)
     }
 }

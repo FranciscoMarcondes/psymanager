@@ -21,6 +21,8 @@ struct QuickLogisticsCalculatorView: View {
     @State private var useRealTimeData = false
     @State private var isLoading = false
     @State private var estimateHistory: [SavedLogisticsEstimate] = []
+    @State private var webRouteMessage = ""
+    @State private var isLoadingWebRoute = false
 
     var body: some View {
         NavigationStack {
@@ -104,6 +106,18 @@ struct QuickLogisticsCalculatorView: View {
                     .frame(maxWidth: .infinity)
                     .disabled(isLoading)
 
+                    Button(action: calcWebRoute) {
+                        HStack {
+                            if isLoadingWebRoute { ProgressView().tint(.white).controlSize(.small) }
+                            Text(isLoadingWebRoute ? "Calculando rota..." : "Calcular por endereço (Web)")
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(PsyTheme.secondary)
+                    .frame(maxWidth: .infinity)
+                    .disabled(isLoadingWebRoute || originCity.isEmpty || destinationCity.isEmpty)
+
                     if isLoading {
                         HStack {
                             ProgressView()
@@ -118,6 +132,11 @@ struct QuickLogisticsCalculatorView: View {
                         Text(calculatorMessage)
                             .font(.caption)
                             .foregroundStyle(PsyTheme.primary)
+                    }
+                    if !webRouteMessage.isEmpty {
+                        Text(webRouteMessage)
+                            .font(.caption)
+                            .foregroundStyle(PsyTheme.secondary)
                     }
                 }
 
@@ -372,5 +391,30 @@ struct QuickLogisticsCalculatorView: View {
             eventDate: eventDate
         )
         estimateHistory = LogisticsEstimateHistoryStore.load()
+    }
+
+    private func calcWebRoute() {
+        let from = "\(originCity), \(originState), Brasil"
+        let to = "\(destinationCity), \(destinationState), Brasil"
+        isLoadingWebRoute = true
+        webRouteMessage = ""
+        Task {
+            let result = await WebAIService.shared.estimateRoute(fromAddress: from, toAddress: to)
+            await MainActor.run {
+                isLoadingWebRoute = false
+                if let r = result, let dist = r.oneWayDistanceKm {
+                    let hrs = r.oneWayHours ?? 0
+                    let tollFallback = Double(tollCost) ?? 0
+                    let fuelFallback = Double(fuelPrice) ?? 0
+                    let kmL = Double(vehicleKmPerLiter) ?? 10
+                    let fuelTotal = (dist * 2 / kmL) * fuelFallback
+                    let total = fuelTotal + tollFallback
+                    webRouteMessage = String(format: "Rota: %.0f km (%.1f h) • Combustível: R$ %.0f • Total estimado: R$ %.0f", dist, hrs, fuelTotal, total)
+                    tollCost = String(Int((dist * 2 * 14 / 100).rounded()))
+                } else {
+                    webRouteMessage = "Não foi possível calcular a rota via web. Tente o cálculo local."
+                }
+            }
+        }
     }
 }

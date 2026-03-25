@@ -4,6 +4,7 @@ import SwiftData
 struct ConversationListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Conversation.updatedAt, order: .reverse) private var allConversations: [Conversation]
+    @Query(sort: \ArtistProfile.createdAt) private var profiles: [ArtistProfile]
     
     @State private var showNewConversation = false
     @State private var selectedMode: String = "strategy"
@@ -35,7 +36,7 @@ struct ConversationListView: View {
                     .pickerStyle(.segmented)
                 }
                 .padding(16)
-                .background(PsyTheme.secondaryBackground)
+                .background(PsyTheme.surface)
                 
                 // Active Conversations
                 if activeConversations.isEmpty && !showArchived {
@@ -48,7 +49,7 @@ struct ConversationListView: View {
                                     NavigationLink(destination: ConversationDetailView(conversation: conversation)) {
                                         ConversationRowView(conversation: conversation)
                                     }
-                                    .listRowBackground(PsyTheme.cardBackground)
+                                    .listRowBackground(PsyTheme.surfaceAlt)
                                     .swipeActions(edge: .trailing) {
                                         Button(role: .destructive) {
                                             conversation.isArchived = true
@@ -188,6 +189,7 @@ struct ConversationRowView: View {
 
 struct ConversationDetailView: View {
     @Environment(\.modelContext) private var modelContext
+    @Query(sort: \ArtistProfile.createdAt) private var profiles: [ArtistProfile]
     @State private var conversation: Conversation
     @State private var userInput = ""
     @State private var isGenerating = false
@@ -210,7 +212,6 @@ struct ConversationDetailView: View {
                 .padding(16)
             }
             .background(PsyTheme.background)
-            .scrollColorScheme()
             
             // Input Area
             VStack(spacing: 8) {
@@ -247,7 +248,7 @@ struct ConversationDetailView: View {
                     .padding(.bottom, 8)
                 }
             }
-            .background(PsyTheme.secondaryBackground)
+            .background(PsyTheme.surface)
         }
         .navigationTitle(conversation.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -256,35 +257,43 @@ struct ConversationDetailView: View {
     private func sendMessage() async {
         let userMessage = ManagerChatMessage(
             role: "user",
-            content: userInput,
-            timestamp: Date()
+            text: userInput,
+            createdAt: Date()
         )
         
         conversation.addMessage(userMessage)
         userInput = ""
         isGenerating = true
         
-        do {
-            let prompt = """
-            Contexto: \(conversation.mode) | Modo: \(conversation.title)
-            Mensagem do usuário: \(userMessage.content)
-            
-            Responda de forma concisa e acionável em português.
-            """
-            
-            let response = try await engine.ask(prompt: prompt, profile: nil)
-            
-            let aiMessage = ManagerChatMessage(
-                role: "assistant",
-                content: response,
-                timestamp: Date()
-            )
-            
-            conversation.addMessage(aiMessage)
-            try? modelContext.save()
-        } catch {
-            print("Erro ao gerar resposta: \(error)")
-        }
+        let prompt = """
+        Contexto: \(conversation.mode) | Modo: \(conversation.title)
+        Mensagem do usuário: \(userMessage.text)
+        
+        Responda de forma concisa e acionável em português.
+        """
+
+        let profileContext = profiles.first ?? ArtistProfile(
+            stageName: "DJ Fantasma",
+            genre: "Psytrance",
+            city: "São Paulo",
+            state: "SP",
+            artistStage: "Emergente",
+            toneOfVoice: "Direto",
+            mainGoal: "Booking mais gigs",
+            contentFocus: "Shows ao vivo",
+            visualIdentity: "Borda onirica"
+        )
+
+        let response = await engine.ask(prompt: prompt, profile: profileContext)
+
+        let aiMessage = ManagerChatMessage(
+            role: "assistant",
+            text: response,
+            createdAt: Date()
+        )
+
+        conversation.addMessage(aiMessage)
+        try? modelContext.save()
         
         isGenerating = false
     }
@@ -297,7 +306,7 @@ struct MessageBubble: View {
         HStack {
             if message.role == "assistant" {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(message.content)
+                    Text(message.text)
                         .font(.subheadline)
                         .lineLimit(nil)
                         .fixedSize(horizontal: false, vertical: true)
@@ -311,7 +320,7 @@ struct MessageBubble: View {
                 Spacer()
                 
                 VStack(alignment: .trailing, spacing: 4) {
-                    Text(message.content)
+                    Text(message.text)
                         .font(.subheadline)
                         .lineLimit(nil)
                         .fixedSize(horizontal: false, vertical: true)
@@ -364,7 +373,7 @@ struct NewConversationSheet: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(10)
-                                .background(selectedMode == mode ? PsyTheme.primary.opacity(0.1) : PsyTheme.secondaryBackground)
+                                .background(selectedMode == mode ? PsyTheme.primary.opacity(0.1) : PsyTheme.surface)
                                 .cornerRadius(8)
                             }
                         }

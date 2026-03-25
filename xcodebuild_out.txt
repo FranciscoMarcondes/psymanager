@@ -1,0 +1,770 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild clean test -project PsyManager.xcodeproj -scheme PsyManager -destination "platform=iOS Simulator,name=iPhone 17,OS=26.3.1" -enableCodeCoverage NO
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+** CLEAN SUCCEEDED **
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'PsyManagerTests' in project 'PsyManager'
+        ➜ Explicit dependency on target 'PsyManager' in project 'PsyManager'
+    Target 'PsyManager' in project 'PsyManager' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 90b09a49a65310827b5c4a6dfc2a6288
+Build description path: /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/XCBuildData/90b09a49a65310827b5c4a6dfc2a6288.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/PsyManager.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache
+
+CreateBuildDirectory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/PsyManager.xcodeproj
+    builtin-create-build-directory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex
+
+CreateBuildDirectory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/PsyManager.xcodeproj
+    builtin-create-build-directory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products
+
+CreateBuildDirectory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/PsyManager.xcodeproj
+    builtin-create-build-directory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/PsyManager.xcodeproj
+    builtin-create-build-directory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/PsyManager.xcodeproj
+    builtin-create-build-directory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+
+CreateBuildDirectory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/PsyManager.xcodeproj
+    builtin-create-build-directory /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager-2db7fc9f97890a6733e2c9532c08ad48-VFS-iphonesimulator/all-product-headers.yaml
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/PsyManager.xcodeproj
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager-2db7fc9f97890a6733e2c9532c08ad48-VFS-iphonesimulator/all-product-headers.yaml
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/empty-PsyManager.plist (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/empty-PsyManager.plist
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests.DependencyStaticMetadataFileList (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/empty-PsyManagerTests.plist (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/empty-PsyManagerTests.plist
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests.hmap (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests.DependencyMetadataFileList (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-project-headers.hmap (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-project-headers.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.hmap (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-project-headers.hmap (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-project-headers.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-own-target-headers.hmap (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-generated-files.hmap (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-generated-files.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-all-target-headers.hmap (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-all-non-framework-target-headers.hmap (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests_const_extract_protocols.json (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.SwiftFileList (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.SwiftFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.SwiftConstValuesFileList (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.LinkFileList (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.LinkFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-OutputFileMap.json (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.DependencyStaticMetadataFileList (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.DependencyMetadataFileList (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-own-target-headers.hmap (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-generated-files.hmap (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-generated-files.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-all-target-headers.hmap (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-all-non-framework-target-headers.hmap (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-DebugDylibPath-normal-arm64.txt (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-DebugDylibInstallName-normal-arm64.txt (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-DebugDylibInstallName-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.SwiftFileList (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.SwiftFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager_const_extract_protocols.json (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.SwiftConstValuesFileList (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.LinkFileList (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.LinkFileList
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-OutputFileMap.json (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/Entitlements-Simulated.plist (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    write-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/Entitlements-Simulated.plist
+
+MkDir /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/PlugIns/PsyManagerTests.xctest (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /bin/mkdir -p /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/PlugIns/PsyManagerTests.xctest
+
+MkDir /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/PlugIns (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /bin/mkdir -p /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/PlugIns
+
+MkDir /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /bin/mkdir -p /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+MkDir /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /bin/mkdir -p /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app
+
+ProcessProductPackaging "" /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.app-Simulated.xcent (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+    Entitlements:
+    
+    {
+    "application-identifier" = "FAKETEAMID.com.franciscomarcondes.psymanager";
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.app-Simulated.xcent
+
+ProcessProductPackagingDER /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.app-Simulated.xcent /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.app-Simulated.xcent.der (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /usr/bin/derq query -f xml -i /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.app-Simulated.xcent -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.app-Simulated.xcent.der --raw
+
+Ld /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/__preview.dylib normal (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios17.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -F/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -install_name @rpath/PsyManager.debug.dylib -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager_dependency_info.dat -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __entitlements -Xlinker /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.app-Simulated.xcent -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __ents_der -Xlinker /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager.app-Simulated.xcent.der -Xlinker -no_adhoc_codesign -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/__preview.dylib
+
+GenerateAssetSymbols /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/Assets.xcassets (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/Assets.xcassets --compile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app --output-format human-readable-text --notices --warnings --export-dependency-info /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_dependencies --output-partial-info-plist /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_generated_info.plist --app-icon AppIcon --compress-pngs --enable-on-demand-resources YES --development-region en --target-device iphone --target-device ipad --minimum-deployment-target 17.0 --platform iphonesimulator --bundle-identifier com.franciscomarcondes.psymanager --generate-swift-asset-symbol-extensions NO --generate-swift-asset-symbols /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols.h
+/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/libXCTestSwiftSupport.dylib /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+MkDir /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/unthinned (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /bin/mkdir -p /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/unthinned
+
+MkDir /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/thinned (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /bin/mkdir -p /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/thinned
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/libXCTestBundleInject.dylib /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestBundleInject.dylib (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestBundleInject.dylib /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/XCUnit.framework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCUnit.framework (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCUnit.framework /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/XCUIAutomation.framework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCUIAutomation.framework /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/XCTestSupport.framework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTestSupport.framework (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTestSupport.framework /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/XCTestCore.framework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTestCore.framework (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTestCore.framework /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/XCTest.framework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/XCTest.framework /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/XCTAutomationSupport.framework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/PrivateFrameworks/XCTAutomationSupport.framework /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks/Testing.framework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/Testing.framework (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks/Testing.framework /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Frameworks
+
+CompileAssetCatalogVariant thinned /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/Assets.xcassets (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/Assets.xcassets --compile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_dependencies_thinned --output-partial-info-plist /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --compress-pngs --enable-on-demand-resources YES --filter-for-thinning-device-configuration iPhone18,3 --filter-for-device-os-version 26.3.1 --development-region en --target-device iphone --target-device ipad --minimum-deployment-target 17.0 --platform iphonesimulator
+/* com.apple.actool.document.notices */
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/Assets.xcassets:./AppIcon.appiconset/[][ipad][76x76][][][1x][][][][]: notice: 76x76@1x app icons only apply to iPad apps targeting releases of iOS prior to 10.0.
+/* com.apple.actool.compilation-results */
+/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_generated_info.plist_thinned
+/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/thinned/AppIcon60x60@2x.png
+/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/thinned/AppIcon76x76@2x~ipad.png
+/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/thinned/Assets.car
+
+
+SwiftDriver PsyManager normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PsyManager -Onone -enforce-exclusivity\=checked @/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -F /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager_const_extract_protocols.json -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-generated-files.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-own-target-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-all-target-headers.hmap -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-project-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources-normal/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-Swift.h -working-directory /Users/franciscomarcondes/Downloads/IOSSimuladorStarter -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ LocationResolver.swift,\ LogisticsEstimateHistoryStore.swift,\ ManagerChatMessage.swift,\ ManagerPromptLibrary.swift,\ ManagerView.swift,\ MessageTemplate.swift,\ MockCareerManagerService.swift,\ Negotiation.swift,\ NominatimGeocodingService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Location/LocationResolver.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/LogisticsEstimateHistoryStore.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/ManagerChatMessage.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/ManagerPromptLibrary.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ManagerView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/MessageTemplate.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/MockCareerManagerService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Negotiation.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/NominatimGeocodingService.swift (in target 'PsyManager' from project 'PsyManager')
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Location/LocationResolver.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/LogisticsEstimateHistoryStore.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/ManagerChatMessage.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/ManagerPromptLibrary.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ManagerView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/MessageTemplate.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/MockCareerManagerService.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Negotiation.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/NominatimGeocodingService.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ PsyManager (in target 'PsyManager' from project 'PsyManager')
+
+EmitSwiftModule normal arm64 (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ CoverDesignStudioView.swift,\ CreationStudioView.swift,\ DashboardView.swift,\ DashboardViewModel.swift,\ DataSyncService.swift,\ EventGeocodingIntegration.swift,\ EventLead.swift,\ EventPipelineView.swift,\ Expense.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Creation/CoverDesignStudioView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Creation/CreationStudioView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/DashboardView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/DashboardViewModel.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/DataSyncService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/EventGeocodingIntegration.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/EventLead.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/EventPipelineView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Expense.swift (in target 'PsyManager' from project 'PsyManager')
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Creation/CoverDesignStudioView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Creation/CreationStudioView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/DashboardView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/DashboardViewModel.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/DataSyncService.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/EventGeocodingIntegration.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/EventLead.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/EventPipelineView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Expense.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ FinancesView.swift,\ FinancialAlertCard.swift,\ FinancialAlertService.swift,\ FinancialAlertsWidget.swift,\ Gig.swift,\ InstagramConnectionGuide.swift,\ InstagramInsightsAdvisor.swift,\ InstagramInsightsBridge.swift,\ InstagramOAuthCoordinator.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Finances/FinancesView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/FinancialAlertCard.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/FinancialAlertService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/FinancialAlertsWidget.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Gig.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramConnectionGuide.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramInsightsAdvisor.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramInsightsBridge.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramOAuthCoordinator.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Finances/FinancesView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/FinancialAlertCard.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/FinancialAlertService.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/FinancialAlertsWidget.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Gig.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramConnectionGuide.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramInsightsAdvisor.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramInsightsBridge.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramOAuthCoordinator.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ NotificationPlanner.swift,\ OnboardingFlowView.swift,\ OpenAITextProvider.swift,\ PlatformInsight.swift,\ ProfileView.swift,\ PromoterContact.swift,\ PsyManagerApp.swift,\ PsyTheme.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Notifications/NotificationPlanner.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Onboarding/OnboardingFlowView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/OpenAITextProvider.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/PlatformInsight.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Profile/ProfileView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/PromoterContact.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/PsyManagerApp.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Core/DesignSystem/PsyTheme.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Notifications/NotificationPlanner.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Onboarding/OnboardingFlowView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/OpenAITextProvider.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/PlatformInsight.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Profile/ProfileView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/PromoterContact.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/PsyManagerApp.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Core/DesignSystem/PsyTheme.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ QuickLogisticsCalculatorView.swift,\ RadarEvent.swift,\ RadarSearchView.swift,\ RealTimeLogisticsResolver.swift,\ RootTabView.swift,\ SampleDataSeeder.swift,\ SocialContentAnalytics.swift,\ SocialContentGenerator.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/QuickLogisticsCalculatorView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/RadarEvent.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/RadarSearchView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/RealTimeLogisticsResolver.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/RootTabView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/SampleDataSeeder.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialContentAnalytics.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/SocialContentGenerator.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/QuickLogisticsCalculatorView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/RadarEvent.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/RadarSearchView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/RadarSearchView.swift:285:28: warning: no calls to throwing functions occur within 'try' expression
+            let response = try await engine.ask(prompt: prompt, profile: profileContext)
+                           ^
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/RadarSearchView.swift:305:11: warning: 'catch' block is unreachable because no errors are thrown in 'do' block
+        } catch {
+          ^
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/RealTimeLogisticsResolver.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/RootTabView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/SampleDataSeeder.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialContentAnalytics.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/SocialContentGenerator.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ CareerAreaPrioritizer.swift,\ CareerManagerEngine.swift,\ CareerTask.swift,\ CareerWeeklyPlanner.swift,\ ContentPerformanceAnalyzer.swift,\ ContentStatusUpdater.swift,\ Conversation.swift,\ ConversationListView.swift,\ CoverDesignGenerator.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerAreaPrioritizer.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerManagerEngine.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/CareerTask.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerWeeklyPlanner.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/ContentPerformanceAnalyzer.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/ContentStatusUpdater.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Conversation.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/CoverDesignGenerator.swift (in target 'PsyManager' from project 'PsyManager')
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/AppRootView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Enums/AppTaxonomy.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/ArtistLogisticsEstimator.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/ArtistLogisticsEstimatorExtension.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/ArtistProfile.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/BookingNegotiationCoach.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/BookingRadarService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/BrazilLogisticsReferenceService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Calendar/CalendarService.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerAreaPrioritizer.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerManagerEngine.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/CareerTask.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerWeeklyPlanner.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/ContentPerformanceAnalyzer.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/ContentStatusUpdater.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Conversation.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift -primary-file /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/CoverDesignGenerator.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Creation/CoverDesignStudioView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Creation/CreationStudioView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/DashboardView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/DashboardViewModel.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/DataSyncService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/EventGeocodingIntegration.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/EventLead.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/EventPipelineView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Expense.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Finances/FinancesView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/FinancialAlertCard.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/FinancialAlertService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Dashboard/FinancialAlertsWidget.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Gig.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramConnectionGuide.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramInsightsAdvisor.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramInsightsBridge.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/InstagramOAuthCoordinator.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Location/LocationResolver.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/LogisticsEstimateHistoryStore.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/ManagerChatMessage.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/ManagerPromptLibrary.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ManagerView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/MessageTemplate.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/MockCareerManagerService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Negotiation.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/NominatimGeocodingService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Notifications/NotificationPlanner.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Onboarding/OnboardingFlowView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/OpenAITextProvider.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/PlatformInsight.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Profile/ProfileView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/PromoterContact.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/PsyManagerApp.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Core/DesignSystem/PsyTheme.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/QuickLogisticsCalculatorView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/RadarEvent.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Events/RadarSearchView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/RealTimeLogisticsResolver.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/RootTabView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/SampleDataSeeder.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialContentAnalytics.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/SocialContentGenerator.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialContentPlanItem.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialInsightSnapshot.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/SocialMediaStrategist.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Networking/TemplateSyncService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/TextAIProvider.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/TripPlan.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Notifications/WeeklyInsightAlertPlanner.swift /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols.swift -supplementary-output-file-map /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/supplementaryOutputs-2 -target arm64-apple-ios17.0-simulator -module-can-import-version DeveloperToolsSupport 23.0.4 23.0.4 -disable-cross-import-overlay-search -swift-module-cross-import SwiftData /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/SwiftData.framework/Modules/SwiftData.swiftcrossimport/CoreData.swiftoverlay -swift-module-cross-import SwiftData /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/System/Library/Frameworks/SwiftData.framework/Modules/SwiftData.swiftcrossimport/SwiftUI.swiftoverlay -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftDataMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftDataMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -I /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -F /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -swift-version 5 -enforce-exclusivity\=checked -Onone -D DEBUG -serialize-debugging-options -const-gather-protocols-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager_const_extract_protocols.json -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/franciscomarcondes/Downloads/IOSSimuladorStarter -enable-anonymous-context-mangled-names -file-compilation-dir /Users/franciscomarcondes/Downloads/IOSSimuladorStarter -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/swift-overrides.hmap -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-generated-files.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-own-target-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-all-target-headers.hmap -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-project-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources-normal/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name PsyManager -frontend-parseable-output -disable-clang-spi -target-sdk-version 26.2 -target-sdk-name iphonesimulator26.2 -clang-target arm64-apple-ios26.2-simulator -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CareerAreaPrioritizer.o -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CareerManagerEngine.o -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CareerTask.o -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CareerWeeklyPlanner.o -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/ContentPerformanceAnalyzer.o -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/ContentStatusUpdater.o -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/Conversation.o -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/ConversationListView.o -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CoverDesignGenerator.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CareerAreaPrioritizer.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CareerManagerEngine.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CareerTask.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CareerWeeklyPlanner.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/ContentPerformanceAnalyzer.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/ContentStatusUpdater.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/Conversation.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/ConversationListView.o -index-unit-output-path /PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/CoverDesignGenerator.o -index-store-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerAreaPrioritizer.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerManagerEngine.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/CareerTask.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/CareerWeeklyPlanner.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/ContentPerformanceAnalyzer.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/ContentStatusUpdater.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/Conversation.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift:38:38: error: type 'PsyTheme' has no member 'secondaryBackground'
+                .background(PsyTheme.secondaryBackground)
+                            ~~~~~~~~ ^~~~~~~~~~~~~~~~~~~
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift:213:14: error: value of type 'some View' has no member 'scrollColorScheme'
+            .scrollColorScheme()
+             ^~~~~~~~~~~~~~~~~
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift:260:24: error: extra argument 'timestamp' in call
+            timestamp: Date()
+~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift:275:74: error: 'nil' is not compatible with expected argument type 'ArtistProfile'
+            let response = try await engine.ask(prompt: prompt, profile: nil)
+                                                                         ^
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift:280:28: error: extra argument 'timestamp' in call
+                timestamp: Date()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift:300:34: error: value of type 'ManagerChatMessage' has no member 'content'
+                    Text(message.content)
+                         ~~~~~~~ ^~~~~~~
+/Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Features/Manager/ConversationListView.swift:337:25: error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+    var body: some View {
+                        ^
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/CoverDesignGenerator.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ AppRootView.swift,\ AppTaxonomy.swift,\ ArtistLogisticsEstimator.swift,\ ArtistLogisticsEstimatorExtension.swift,\ ArtistProfile.swift,\ BookingNegotiationCoach.swift,\ BookingRadarService.swift,\ BrazilLogisticsReferenceService.swift,\ CalendarService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/AppRootView.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Enums/AppTaxonomy.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/ArtistLogisticsEstimator.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/ArtistLogisticsEstimatorExtension.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/ArtistProfile.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/BookingNegotiationCoach.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/BookingRadarService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/BrazilLogisticsReferenceService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Calendar/CalendarService.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/AppRootView.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Enums/AppTaxonomy.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/ArtistLogisticsEstimator.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/ArtistLogisticsEstimatorExtension.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/ArtistProfile.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/BookingNegotiationCoach.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/BookingRadarService.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Logistics/BrazilLogisticsReferenceService.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Calendar/CalendarService.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+LinkAssetCatalog /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/App/Assets.xcassets (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-linkAssetCatalog --thinned /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/thinned --thinned-dependencies /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_generated_info.plist_thinned --unthinned /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_output/unthinned --unthinned-dependencies /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_generated_info.plist_unthinned --output /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app --plist-output /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_generated_info.plist
+note: Emplaced /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/AppIcon60x60@2x.png (in target 'PsyManager' from project 'PsyManager')
+note: Emplaced /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Assets.car (in target 'PsyManager' from project 'PsyManager')
+note: Emplaced /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/AppIcon76x76@2x~ipad.png (in target 'PsyManager' from project 'PsyManager')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for PsyManager (in target 'PsyManager' from project 'PsyManager')
+
+SwiftDriver\ Compilation\ Requirements PsyManager normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PsyManager -Onone -enforce-exclusivity\=checked @/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.SwiftFileList -DDEBUG -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -F /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager_const_extract_protocols.json -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-generated-files.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-own-target-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-all-target-headers.hmap -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/PsyManager-project-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources-normal/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-Swift.h -working-directory /Users/franciscomarcondes/Downloads/IOSSimuladorStarter -experimental-emit-module-separately -disable-cmo
+
+ProcessInfoPlistFile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Info.plist /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/empty-PsyManager.plist (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-infoPlistUtility /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/empty-PsyManager.plist -producttype com.apple.product-type.application -genpkginfo /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/assetcatalog_generated_info.plist -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.app/Info.plist
+
+SwiftMergeGeneratedHeaders /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/PsyManager-Swift.h /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-Swift.h (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-swiftHeaderTool -arch arm64 /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager-Swift.h -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/PsyManager-Swift.h
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.swiftmodule/arm64-apple-ios-simulator.swiftmodule /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.swiftmodule (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.swiftmodule /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.swiftmodule/arm64-apple-ios-simulator.swiftdoc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.swiftdoc (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.swiftdoc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.swiftmodule/arm64-apple-ios-simulator.abi.json /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.abi.json (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.abi.json /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.swiftsourceinfo (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/Objects-normal/arm64/PsyManager.swiftsourceinfo /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManager.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ SocialContentPlanItem.swift,\ SocialInsightSnapshot.swift,\ SocialMediaStrategist.swift,\ TemplateSyncService.swift,\ TextAIProvider.swift,\ TripPlan.swift,\ WeeklyInsightAlertPlanner.swift,\ GeneratedAssetSymbols.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialContentPlanItem.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialInsightSnapshot.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/SocialMediaStrategist.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Networking/TemplateSyncService.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/TextAIProvider.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/TripPlan.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Notifications/WeeklyInsightAlertPlanner.swift /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialContentPlanItem.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/SocialInsightSnapshot.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Insights/SocialMediaStrategist.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Networking/TemplateSyncService.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/AI/TextAIProvider.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Domain/Entities/TripPlan.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Services/Notifications/WeeklyInsightAlertPlanner.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManager.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'PsyManager' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling LocationResolver.swift, LogisticsEstimateHistoryStore.swift, ManagerChatMessage.swift, ManagerPromptLibrary.swift, ManagerView.swift, MessageTemplate.swift, MockCareerManagerService.swift, Negotiation.swift, NominatimGeocodingService.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftDriver PsyManagerTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PsyManagerTests -Onone -enforce-exclusivity\=checked @/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-generated-files.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-own-target-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-project-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-Swift.h -working-directory /Users/franciscomarcondes/Downloads/IOSSimuladorStarter -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-6G9VE8K3NKKM7F1ARNEGT6GIP.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-1KYEL3TPSILSK.swiftmodule
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-7CBZLO7NERI4RSM0B1D8ZNHXB.pcm
+
+SwiftDriverJobDiscovery normal arm64 Compiling AppRootView.swift, AppTaxonomy.swift, ArtistLogisticsEstimator.swift, ArtistLogisticsEstimatorExtension.swift, ArtistProfile.swift, BookingNegotiationCoach.swift, BookingRadarService.swift, BrazilLogisticsReferenceService.swift, CalendarService.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-3LCIDWYCUEI02.swiftmodule
+
+SwiftDriverJobDiscovery normal arm64 Compiling FinancesView.swift, FinancialAlertCard.swift, FinancialAlertService.swift, FinancialAlertsWidget.swift, Gig.swift, InstagramConnectionGuide.swift, InstagramInsightsAdvisor.swift, InstagramInsightsBridge.swift, InstagramOAuthCoordinator.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftDriverJobDiscovery normal arm64 Compiling QuickLogisticsCalculatorView.swift, RadarEvent.swift, RadarSearchView.swift, RealTimeLogisticsResolver.swift, RootTabView.swift, SampleDataSeeder.swift, SocialContentAnalytics.swift, SocialContentGenerator.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ PsyManagerTests (in target 'PsyManagerTests' from project 'PsyManager')
+
+EmitSwiftModule normal arm64 (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ ArtistLogisticsEstimatorTests.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/ArtistLogisticsEstimatorTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/ArtistLogisticsEstimatorTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ BookingRadarServiceTests.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/BookingRadarServiceTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/BookingRadarServiceTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ CareerInsightAggregatorTests.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/CareerInsightAggregatorTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/CareerInsightAggregatorTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftCompile normal arm64 Compiling\ CareerAreaPrioritizerTests.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/CareerAreaPrioritizerTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/CareerAreaPrioritizerTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling SocialContentPlanItem.swift, SocialInsightSnapshot.swift, SocialMediaStrategist.swift, TemplateSyncService.swift, TextAIProvider.swift, TripPlan.swift, WeeklyInsightAlertPlanner.swift, GeneratedAssetSymbols.swift (in target 'PsyManager' from project 'PsyManager')
+
+SwiftCompile normal arm64 Compiling\ BookingNegotiationCoachTests.swift /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/BookingNegotiationCoachTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftCompile normal arm64 /Users/franciscomarcondes/Downloads/IOSSimuladorStarter/Tests/BookingNegotiationCoachTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for PsyManagerTests (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftDriver\ Compilation\ Requirements PsyManagerTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PsyManagerTests -Onone -enforce-exclusivity\=checked @/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-generated-files.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-own-target-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-project-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-Swift.h -working-directory /Users/franciscomarcondes/Downloads/IOSSimuladorStarter -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling ArtistLogisticsEstimatorTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftMergeGeneratedHeaders /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources/PsyManagerTests-Swift.h /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-Swift.h (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-swiftHeaderTool -arch arm64 /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-Swift.h -o /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources/PsyManagerTests-Swift.h
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManagerTests.swiftmodule/arm64-apple-ios-simulator.swiftmodule /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftmodule (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftmodule /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManagerTests.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManagerTests.swiftmodule/arm64-apple-ios-simulator.swiftdoc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftdoc (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftdoc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManagerTests.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManagerTests.swiftmodule/arm64-apple-ios-simulator.abi.json /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.abi.json (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.abi.json /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManagerTests.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+SwiftDriverJobDiscovery normal arm64 Compiling CareerInsightAggregatorTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+Copy /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManagerTests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftsourceinfo (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftsourceinfo /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/PsyManagerTests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling BookingRadarServiceTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftDriverJobDiscovery normal arm64 Compiling CareerAreaPrioritizerTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftDriverJobDiscovery normal arm64 Compiling BookingNegotiationCoachTests.swift (in target 'PsyManagerTests' from project 'PsyManager')
+
+SwiftDriver\ Compilation PsyManagerTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'PsyManagerTests' from project 'PsyManager')
+    cd /Users/franciscomarcondes/Downloads/IOSSimuladorStarter
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name PsyManagerTests -Onone -enforce-exclusivity\=checked @/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios17.0-simulator -g -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C57-7d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -sdk-module-cache-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests.swiftmodule -validate-clang-modules-once -clang-build-session-file /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-generated-files.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-own-target-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/PsyManagerTests-project-headers.hmap -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Products/Debug-iphonesimulator/include -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources/arm64 -Xcc -I/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Build/Intermediates.noindex/PsyManager.build/Debug-iphonesimulator/PsyManagerTests.build/Objects-normal/arm64/PsyManagerTests-Swift.h -working-directory /Users/franciscomarcondes/Downloads/IOSSimuladorStarter -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling NotificationPlanner.swift, OnboardingFlowView.swift, OpenAITextProvider.swift, PlatformInsight.swift, ProfileView.swift, PromoterContact.swift, PsyManagerApp.swift, PsyTheme.swift (in target 'PsyManager' from project 'PsyManager')
+
+
+Test session results, code coverage, and logs:
+	/Users/franciscomarcondes/Library/Developer/Xcode/DerivedData/PsyManager-ddyudevlnlclloafmawtyvyugxzr/Logs/Test/Run-PsyManager-2026.03.25_07-20-00--0300.xcresult
+

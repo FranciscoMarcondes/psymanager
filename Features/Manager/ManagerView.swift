@@ -10,6 +10,11 @@ struct ManagerView: View {
     @State private var isSending = false
     @State private var streamingAssistantText = ""
     @State private var sendTask: Task<Void, Never>?
+    @State private var learnedFacts: [String] = []
+    @State private var newFactInput = ""
+    @State private var showLearnedFacts = false
+    @AppStorage("manager.useWebAI") private var useWebAI = true
+    @State private var showQuickPrompts = false
 
     @Query(sort: \ManagerChatMessage.createdAt) private var messages: [ManagerChatMessage]
 
@@ -47,42 +52,152 @@ struct ManagerView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
 
-                // Chips horizontais
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 10) {
-                        ForEach(ManagerPromptLibrary.quickPrompts, id: \.self) { prompt in
-                            Button {
-                                send(prompt)
-                            } label: {
-                                Text(prompt)
-                                    .font(.footnote)
-                                    .fontWeight(.medium)
-                                    .foregroundStyle(.white)
-                                    .lineLimit(3)
-                                    .multilineTextAlignment(.leading)
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 12)
-                                    .frame(width: 170, alignment: .leading)
-                                    .background(PsyTheme.surfaceAlt)
-                                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                            .stroke(PsyTheme.primary.opacity(0.2), lineWidth: 1)
-                                    )
+                // Learned Facts panel
+                VStack(alignment: .leading, spacing: 12) {
+                    Button(action: { withAnimation { showLearnedFacts.toggle() } }) {
+                        HStack {
+                            Image(systemName: "lightbulb.fill")
+                                .foregroundStyle(PsyTheme.warning)
+                            Text("Fatos aprendidos (\(learnedFacts.count))")
+                                .font(.subheadline).fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                            Spacer()
+                            Image(systemName: showLearnedFacts ? "chevron.up" : "chevron.down")
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.textSecondary)
+                        }
+                        .padding(14)
+                        .background(PsyTheme.surfaceAlt)
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+
+                    if showLearnedFacts {
+                        VStack(alignment: .leading, spacing: 8) {
+                            if learnedFacts.isEmpty {
+                                Text("Nenhum fato registrado. Adicione insights sobre sua carreira.")
+                                    .font(.caption)
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                                    .padding(.horizontal, 4)
+                            } else {
+                                ForEach(Array(learnedFacts.enumerated()), id: \.offset) { idx, fact in
+                                    HStack(alignment: .top, spacing: 8) {
+                                        Text("•")
+                                            .foregroundStyle(PsyTheme.primary)
+                                        Text(fact)
+                                            .font(.caption)
+                                            .foregroundStyle(PsyTheme.textSecondary)
+                                        Spacer()
+                                        Button { removeFact(at: idx) } label: {
+                                            Image(systemName: "xmark")
+                                                .font(.caption2)
+                                                .foregroundStyle(PsyTheme.textSecondary)
+                                        }
+                                    }
+                                }
                             }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel("Prompt rápido: \(prompt)")
-                            .accessibilityHint("Envia este prompt para o manager IA")
+                            HStack {
+                                TextField("Novo fato...", text: $newFactInput)
+                                    .textFieldStyle(.roundedBorder)
+                                    .font(.caption)
+                                Button("Adicionar") { addFact() }
+                                    .disabled(newFactInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                                    .font(.caption)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(PsyTheme.primary)
+                            }
+                        }
+                        .padding(14)
+                        .background(PsyTheme.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    }
+
+                    Toggle(isOn: $useWebAI) {
+                        Label("Manager avançado (web IA)", systemImage: "globe")
+                            .font(.subheadline)
+                            .foregroundStyle(.white)
+                    }
+                    .tint(PsyTheme.primary)
+                    .padding(.horizontal, 4)
+                }
+                .padding(.horizontal, 20)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showQuickPrompts.toggle()
+                        }
+                    } label: {
+                        HStack {
+                            Text("Prompts rápidos")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                            Spacer()
+                            Image(systemName: showQuickPrompts ? "chevron.up" : "chevron.down")
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.textSecondary)
+                        }
+                        .padding(12)
+                        .background(PsyTheme.surfaceAlt)
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+
+                    if showQuickPrompts {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 10) {
+                                ForEach(ManagerPromptLibrary.quickPrompts, id: \.self) { prompt in
+                                    Button {
+                                        send(prompt)
+                                    } label: {
+                                        Text(prompt)
+                                            .font(.footnote)
+                                            .fontWeight(.medium)
+                                            .foregroundStyle(.white)
+                                            .lineLimit(3)
+                                            .multilineTextAlignment(.leading)
+                                            .padding(.horizontal, 14)
+                                            .padding(.vertical, 12)
+                                            .frame(width: 170, alignment: .leading)
+                                            .background(PsyTheme.surfaceAlt)
+                                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                                    .stroke(PsyTheme.primary.opacity(0.2), lineWidth: 1)
+                                            )
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
                         }
                     }
-                    .padding(.horizontal, 20)
                 }
+                .padding(.horizontal, 20)
                 .padding(.bottom, 4)
                 .psyAppear(delay: 0.08)
 
                 // Chat
                 VStack(alignment: .leading, spacing: 14) {
                     PsySectionHeader(eyebrow: "Conversa", title: "Manager em ação")
+                    
+                    // 🧠 Manager with Memories Integration (NEW)
+                    HStack {
+                        Image(systemName: "brain.fill")
+                            .font(.caption)
+                            .foregroundStyle(PsyTheme.primary)
+                        Text("Manager com Memórias")
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(PsyTheme.textSecondary)
+                        Spacer()
+                        Image(systemName: "sparkles")
+                            .font(.caption2)
+                            .foregroundStyle(PsyTheme.primary)
+                    }
+                    .padding(8)
+                    .background(PsyTheme.surfaceAlt.opacity(0.5))
+                    .cornerRadius(8)
 
                     if messages.isEmpty {
                         PsyCard {
@@ -130,6 +245,7 @@ struct ManagerView: View {
             .navigationTitle("Manager IA")
             .navigationBarTitleDisplayMode(.inline)
             .sensoryFeedback(.selection, trigger: messages.count)
+            .onAppear { loadLearnedFacts() }
             .safeAreaInset(edge: .bottom) {
                 inputBar
             }
@@ -191,7 +307,16 @@ struct ManagerView: View {
 
         sendTask?.cancel()
         sendTask = Task {
-            let answer = await engine.ask(prompt: cleaned, profile: profile)
+            let answer: String
+            if useWebAI {
+                answer = await WebAIService.shared.ask(
+                    artistName: profile.stageName,
+                    prompt: cleaned,
+                    mode: "conversation"
+                )
+            } else {
+                answer = await engine.ask(prompt: cleaned, profile: profile)
+            }
 
             for character in answer {
                 if Task.isCancelled { return }
@@ -205,5 +330,29 @@ struct ManagerView: View {
             streamingAssistantText = ""
             isSending = false
         }
+    }
+
+    private func addFact() {
+        let fact = newFactInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !fact.isEmpty, !learnedFacts.contains(fact) else { return }
+        learnedFacts.append(fact)
+        saveLearnedFacts()
+        newFactInput = ""
+    }
+
+    private func removeFact(at index: Int) {
+        guard learnedFacts.indices.contains(index) else { return }
+        learnedFacts.remove(at: index)
+        saveLearnedFacts()
+    }
+
+    private func saveLearnedFacts() {
+        let joined = learnedFacts.joined(separator: "|||")
+        UserDefaults.standard.set(joined, forKey: "manager.learnedFacts.store")
+    }
+
+    private func loadLearnedFacts() {
+        let joined = UserDefaults.standard.string(forKey: "manager.learnedFacts.store") ?? ""
+        learnedFacts = joined.isEmpty ? [] : joined.components(separatedBy: "|||").filter { !$0.isEmpty }
     }
 }

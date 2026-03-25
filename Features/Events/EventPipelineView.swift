@@ -166,6 +166,8 @@ struct EventPipelineView: View {
     @State private var showingRadarForm = false
     @State private var showingTripForm = false
     @State private var feedbackMessage = ""
+    @State private var bookingAdvisorResult = ""
+    @State private var isRunningAdvisor = false
 
     private let calendarService = CalendarService()
     private let notificationPlanner = NotificationPlanner()
@@ -205,15 +207,17 @@ struct EventPipelineView: View {
                 }
                 .listRowBackground(Color.clear)
 
-                Picker("Área", selection: $selectedTab) {
-                    Text("Prospecção").tag(0)
-                    Text("Gigs").tag(1)
-                    Text("CRM").tag(2)
-                    Text("Radar").tag(3)
-                    Text("Logística").tag(4)
-                    Text("Calc.").tag(5)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        tabButton(title: "Prospec", index: 0)
+                        tabButton(title: "Gigs", index: 1)
+                        tabButton(title: "CRM", index: 2)
+                        tabButton(title: "Radar", index: 3)
+                        tabButton(title: "Trips", index: 4)
+                        tabButton(title: "Calc", index: 5)
+                    }
+                    .padding(.vertical, 2)
                 }
-                .pickerStyle(.segmented)
                 .listRowBackground(Color.clear)
 
                 if !feedbackMessage.isEmpty {
@@ -228,6 +232,42 @@ struct EventPipelineView: View {
                 }
 
                 if selectedTab == 0 {
+                    Section {
+                        PsyCard {
+                            VStack(alignment: .leading, spacing: 10) {
+                                HStack {
+                                    Image(systemName: "brain.head.profile")
+                                        .foregroundStyle(PsyTheme.accent)
+                                    Text("Assessor IA de Booking")
+                                        .font(.headline)
+                                        .foregroundStyle(.white)
+                                    Spacer()
+                                }
+                                Text("Receba sugestões de fee, follow-up e estratégia de negociação baseadas no seu perfil.")
+                                    .font(.caption)
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                                Button(action: runBookingAdvisor) {
+                                    HStack {
+                                        if isRunningAdvisor { ProgressView().tint(.white).controlSize(.small) }
+                                        Text(isRunningAdvisor ? "Analisando..." : "Consultar assessor IA")
+                                            .fontWeight(.semibold)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(PsyTheme.accent)
+                                .disabled(isRunningAdvisor)
+                                if !bookingAdvisorResult.isEmpty {
+                                    Text(bookingAdvisorResult)
+                                        .font(.caption)
+                                        .foregroundStyle(PsyTheme.textSecondary)
+                                }
+                            }
+                        }
+                        .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                    }
+                    .listRowBackground(Color.clear)
+
                     Section("Pipeline") {
                         ForEach(leads, id: \.persistentModelID) { lead in
                             NavigationLink {
@@ -372,8 +412,23 @@ struct EventPipelineView: View {
                         }
                     }
                     } else if selectedTab == 3 {
-                        RadarSearchView()
-                            .listRowBackground(Color.clear)
+                        Section("Radar de eventos") {
+                            NavigationLink {
+                                RadarSearchView()
+                            } label: {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Abrir Radar completo")
+                                        .font(.headline)
+                                    Text("Busca inteligente com IA, filtros e links de contato.")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(12)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(PsyTheme.surfaceAlt.opacity(0.6))
+                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            }
+                        }
                     } else if selectedTab == 4 {
                         LogisticsCostCalculatorView(leads: leads)
                             .listRowBackground(Color.clear)
@@ -427,8 +482,23 @@ struct EventPipelineView: View {
                             }
                         }
                     } else if selectedTab == 5 {
-                        QuickLogisticsCalculatorView()
-                            .listRowBackground(Color.clear)
+                        Section("Calculadora avulsa") {
+                            NavigationLink {
+                                QuickLogisticsCalculatorView()
+                            } label: {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Abrir Calculadora completa")
+                                        .font(.headline)
+                                    Text("Estimativa por rota local e endereço (web) em tela dedicada.")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(12)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(PsyTheme.surfaceAlt.opacity(0.6))
+                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            }
+                        }
                     }
                 }
             }
@@ -485,6 +555,21 @@ struct EventPipelineView: View {
         }
     }
 
+    private func tabButton(title: String, index: Int) -> some View {
+        Button {
+            selectedTab = index
+        } label: {
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(selectedTab == index ? Color.black : PsyTheme.textSecondary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(selectedTab == index ? PsyTheme.primary : PsyTheme.surfaceAlt)
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
     private func promoterNegotiationsCount(_ promoter: PromoterContact) -> Int {
         negotiations.filter { $0.promoter?.persistentModelID == promoter.persistentModelID }.count
     }
@@ -515,6 +600,30 @@ struct EventPipelineView: View {
                 feedbackMessage = "Lembrete configurado para a gig."
             } catch {
                 feedbackMessage = "Não foi possível criar o lembrete agora."
+            }
+        }
+    }
+
+    private func runBookingAdvisor() {
+        isRunningAdvisor = true
+        bookingAdvisorResult = ""
+        Task {
+            let activeLeads = leads.filter { $0.status != "Fechado" }.count
+            let prompt = "Sou um DJ de \(leads.first?.city ?? "São Paulo"). Tenho \(leads.count) leads ativos, \(gigs.count) gigs confirmadas. Me dê: 1) sugestão de faixa de cache para esse nível, 2) estratégia de follow-up para leads frios, 3) 3 dicas de negociação com promoters."
+            let result = await WebAIService.shared.ask(
+                artistName: leads.first?.name ?? "DJ",
+                prompt: prompt,
+                mode: "booking",
+                context: WebAIContext(
+                    leads: activeLeads,
+                    gigs: gigs.count,
+                    contentIdeas: nil,
+                    radarEvents: radarEvents.count
+                )
+            )
+            await MainActor.run {
+                bookingAdvisorResult = result
+                isRunningAdvisor = false
             }
         }
     }

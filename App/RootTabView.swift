@@ -5,6 +5,7 @@ enum RootTab: Hashable {
     case manager
     case events
     case creation
+    case strategy
     case finances
     case profile
 }
@@ -23,7 +24,7 @@ struct RootTabView: View {
                 Label("Home", systemImage: "sparkles.rectangle.stack.fill")
             }
 
-            ConversationListView()
+            ManagerView(profile: profile)
                 .tag(RootTab.manager)
                 .tabItem {
                     Label("Manager IA", systemImage: "brain.head.profile")
@@ -41,6 +42,14 @@ struct RootTabView: View {
                     Label("Studio", systemImage: "camera.filters")
                 }
 
+            /* StrategyModuleView - Temporarily disabled, will be reenabled after build fix
+            StrategyModuleView()
+                .tag(RootTab.strategy)
+                .tabItem {
+                    Label("Estratégia", systemImage: "wand.and.sparkles")
+                }
+            */
+            
             FinancesView()
                 .tag(RootTab.finances)
                 .tabItem {

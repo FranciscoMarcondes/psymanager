@@ -37,6 +37,6 @@ final class Conversation {
     
     /// Get conversation summary (last few messages)
     var summary: String {
-        messages.suffix(2).map { $0.content }.joined(separator: " → ")
+        messages.suffix(2).map { $0.text }.joined(separator: " → ")
     }
 }

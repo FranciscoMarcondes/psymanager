@@ -113,7 +113,7 @@ struct WeeklyPoint: Identifiable {
     let closed: Int
 }
 
-struct BookingOpportunity: Identifiable {
+struct DashboardBookingOpportunity: Identifiable {
     let id = UUID()
     let leadName: String
     let opportunity: String

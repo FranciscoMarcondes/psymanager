@@ -3,6 +3,7 @@ import SwiftUI
 
 struct OnboardingFlowView: View {
     @Environment(\.modelContext) private var modelContext
+    @AppStorage("psy.auth.prefillArtistName") private var prefillArtistName = ""
 
     @State private var step = 0
     @State private var stageName = ""
@@ -144,6 +145,12 @@ struct OnboardingFlowView: View {
             }
         }
         .sensoryFeedback(.selection, trigger: step)
+        .onAppear {
+            if stageName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+               !prefillArtistName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                stageName = prefillArtistName
+            }
+        }
     }
 
     @ViewBuilder
@@ -264,7 +271,7 @@ struct OnboardingFlowView: View {
             visualIdentity: visualIdentity
         )
         modelContext.insert(profile)
-        try? SampleDataSeeder.seedIfNeeded(in: modelContext)
         try? modelContext.save()
+        prefillArtistName = ""
     }
 }

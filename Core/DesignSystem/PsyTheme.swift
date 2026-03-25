@@ -1,24 +1,24 @@
 import SwiftUI
 
 enum PsyTheme {
-    static let background = Color(red: 0.05, green: 0.05, blue: 0.09)
-    static let surface = Color(red: 0.10, green: 0.11, blue: 0.17)
-    static let surfaceAlt = Color(red: 0.14, green: 0.15, blue: 0.23)
-    static let primary = Color(red: 0.13, green: 0.91, blue: 0.76)
-    static let secondary = Color(red: 0.31, green: 0.54, blue: 1.0)
-    static let accent = Color(red: 0.94, green: 0.24, blue: 0.74)
+    static let background = Color(red: 0.06, green: 0.07, blue: 0.10)
+    static let surface = Color(red: 0.11, green: 0.12, blue: 0.16)
+    static let surfaceAlt = Color(red: 0.13, green: 0.14, blue: 0.19)
+    static let primary = Color(red: 0.35, green: 0.82, blue: 0.74)
+    static let secondary = Color(red: 0.49, green: 0.64, blue: 0.98)
+    static let accent = Color(red: 0.86, green: 0.39, blue: 0.70)
     static let warning = Color(red: 1.0, green: 0.71, blue: 0.16)
     static let textPrimary = Color.white
     static let textSecondary = Color.white.opacity(0.78)
 
     static let heroGradient = LinearGradient(
-        colors: [Color(red: 0.10, green: 0.14, blue: 0.23), Color(red: 0.08, green: 0.06, blue: 0.14), Color(red: 0.03, green: 0.16, blue: 0.19)],
+        colors: [Color(red: 0.12, green: 0.15, blue: 0.21), Color(red: 0.08, green: 0.09, blue: 0.14)],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
 
     static let cardGradient = LinearGradient(
-        colors: [surfaceAlt, surface],
+        colors: [surface, surface],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
@@ -33,13 +33,13 @@ struct PsyCard<Content: View>: View {
 
     var body: some View {
         content
-            .padding(18)
+            .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(PsyTheme.cardGradient)
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(Color.white.opacity(0.06), lineWidth: 1)
             )
     }
 }
@@ -85,13 +85,13 @@ struct PsyHeroCard<Content: View>: View {
 
     var body: some View {
         content
-            .padding(20)
+            .padding(18)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(PsyTheme.heroGradient)
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .stroke(PsyTheme.primary.opacity(0.25), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(PsyTheme.primary.opacity(0.18), lineWidth: 1)
             )
     }
 }

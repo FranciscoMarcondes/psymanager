@@ -19,6 +19,8 @@ struct CreationStudioView: View {
     @State private var showingPlannerForm = false
     @State private var selectedItemForStatusUpdate: SocialContentPlanItem?
     @State private var showingStatusUpdateSheet = false
+    @State private var aiStrategyResult = ""
+    @State private var isGeneratingStrategy = false
 
     private let cards = [
         ("Legenda magnética", "text.bubble.fill"),
@@ -72,6 +74,7 @@ struct CreationStudioView: View {
                     }
 
                     socialMediaSpecialist
+                    aiStrategySection
                     performanceAnalyticsSection
                     editorialCalendarSection
                     contentDraftLab
@@ -125,6 +128,62 @@ struct CreationStudioView: View {
                 if let item = selectedItemForStatusUpdate {
                     ContentStatusUpdateView(item: item, modelContext: modelContext, isPresented: $showingStatusUpdateSheet)
                 }
+            }
+        }
+    }
+
+    private var aiStrategySection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PsySectionHeader(eyebrow: "IA Estratégica", title: "Estratégia semanal de conteúdo")
+
+            PsyCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Image(systemName: "wand.and.sparkles")
+                            .foregroundStyle(PsyTheme.accent)
+                        Text("Gerar plano de conteúdo para essa semana com base no seu perfil e posicionamento.")
+                            .font(.subheadline)
+                            .foregroundStyle(PsyTheme.textSecondary)
+                    }
+                    Button(action: generateAIStrategy) {
+                        HStack {
+                            if isGeneratingStrategy {
+                                ProgressView().tint(.white).controlSize(.small)
+                            }
+                            Text(isGeneratingStrategy ? "Gerando..." : "Gerar estratégia IA")
+                                .fontWeight(.semibold)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(PsyTheme.accent)
+                    .disabled(isGeneratingStrategy)
+
+                    if !aiStrategyResult.isEmpty {
+                        Text(aiStrategyResult)
+                            .font(.caption)
+                            .foregroundStyle(PsyTheme.textSecondary)
+                            .padding(.top, 4)
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 20)
+    }
+
+    private func generateAIStrategy() {
+        isGeneratingStrategy = true
+        aiStrategyResult = ""
+        Task {
+            let prompt = "Crie um plano de conteúdo estratégico para essa semana. Artista: \(profile.stageName), gênero: \(profile.genre), fase: \(profile.artistStage), objetivo: \(profile.mainGoal), tom: \(profile.toneOfVoice). Liste 5 ideias de conteúdo com formato, pilar e objetivo."
+            let result = await WebAIService.shared.ask(
+                artistName: profile.stageName,
+                prompt: prompt,
+                mode: "estrategico"
+            )
+            await MainActor.run {
+                aiStrategyResult = result
+                isGeneratingStrategy = false
             }
         }
     }

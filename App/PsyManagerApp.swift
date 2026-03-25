@@ -20,6 +20,23 @@ struct PsyManagerApp: App {
     var body: some Scene {
         WindowGroup {
             AppRootView()
+                .onOpenURL { url in
+                    // Handle deep links from other sources if needed
+                    if WebAuthService.shared.canHandleMobileAuthCallback(url) {
+                        Task {
+                            do {
+                                let user = try await WebAuthService.shared.completeMobileAuthCallback(url)
+                                await MainActor.run {
+                                    UserDefaults.standard.set(true, forKey: "psy.auth.isLoggedIn")
+                                    UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: "psy.auth.sessionNonce")
+                                }
+                                print("[DeepLink] OAuth completed: \(user.email)")
+                            } catch {
+                                print("[DeepLink] OAuth failed: \(error.localizedDescription)")
+                            }
+                        }
+                    }
+                }
         }
         .modelContainer(for: [
             ArtistProfile.self,

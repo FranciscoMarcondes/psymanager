@@ -286,6 +286,14 @@ enum PlatformAPISecrets {
     static var webSyncAuthHeader: String? {
         KeychainSecretStore.read(KeychainSecretStore.webSyncAuthHeaderKey)
     }
+
+    static var authUserEmail: String? {
+        KeychainSecretStore.read(KeychainSecretStore.authUserEmailKey)
+    }
+
+    static var authUserName: String? {
+        KeychainSecretStore.read(KeychainSecretStore.authUserNameKey)
+    }
 }
 
 enum KeychainSecretStore {
@@ -298,6 +306,8 @@ enum KeychainSecretStore {
     static let skyscannerAPIKey = "psy.logistics.skyscannerApiKey"
     static let kiwiTequilaAPIKey = "psy.logistics.kiwiTequilaApiKey"
     static let webSyncAuthHeaderKey = "psy.web.authHeader"
+    static let authUserEmailKey = "psy.auth.userEmail"
+    static let authUserNameKey = "psy.auth.userName"
 
     static func read(_ account: String) -> String? {
         let query: [String: Any] = [

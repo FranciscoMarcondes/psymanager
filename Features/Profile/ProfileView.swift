@@ -9,6 +9,13 @@ struct ProfileView: View {
     let profile: ArtistProfile
 
     @Query(sort: \SocialInsightSnapshot.periodEnd, order: .reverse) private var snapshots: [SocialInsightSnapshot]
+    @Query(sort: \Gig.date, order: .reverse) private var gigs: [Gig]
+    @Query(sort: \EventLead.eventDate, order: .reverse) private var leads: [EventLead]
+    @Query(sort: \PromoterContact.name) private var promoters: [PromoterContact]
+    @Query(sort: \MessageTemplate.createdAt, order: .reverse) private var messageTemplates: [MessageTemplate]
+    @Query(sort: \TripPlan.dateISO, order: .reverse) private var tripPlans: [TripPlan]
+    @Query(sort: \SocialContentPlanItem.scheduledDate, order: .reverse) private var contentPlan: [SocialContentPlanItem]
+    @Query(sort: \Expense.dateISO, order: .reverse) private var expenses: [Expense]
     @AppStorage("instagramConnectedMock") private var instagramConnectedMock = false
     @AppStorage("instagramOAuthStatus") private var instagramOAuthStatus = "idle"
     @AppStorage("instagramOAuthErrorMessage") private var instagramOAuthErrorMessage = ""
@@ -25,14 +32,19 @@ struct ProfileView: View {
     @State private var skyscannerApiKey = ""
     @State private var kiwiTequilaApiKey = ""
     @AppStorage("psy.web.baseURL") private var webSyncBaseURL = "https://web-app-eight-hazel.vercel.app"
+    @AppStorage("psy.auth.isLoggedIn") private var isLoggedIn = false
+    @AppStorage("psy.auth.sessionNonce") private var authSessionNonce = 0.0
     @State private var webSyncAuthHeader = ""
     @AppStorage("psy.logistics.rapidApiHost") private var rapidApiHost = "skyscanner44.p.rapidapi.com"
     @State private var showingInsightForm = false
     @State private var syncingInsights = false
     @State private var syncFeedback = ""
+    @State private var isSyncingWorkspace = false
+    @State private var workspaceSyncFeedback = ""
     @State private var testingPlatformConnections = false
     @State private var testingLogisticsConnections = false
     @State private var testingTemplateSyncConnection = false
+    @State private var showAdvancedIntegrations = false
     @AppStorage("psy.spotify.connectionStatus") private var spotifyConnectionStatus = "Não testado"
     @AppStorage("psy.youtube.connectionStatus") private var youtubeConnectionStatus = "Não testado"
     @AppStorage("psy.soundcloud.connectionStatus") private var soundCloudConnectionStatus = "Não testado"
@@ -74,6 +86,9 @@ struct ProfileView: View {
                         }
                     }
                     .psyAppear()
+
+                    accountSessionSection
+                        .psyAppear(delay: 0.015)
 
                     webSyncHealthSection
                         .psyAppear(delay: 0.03)
@@ -181,8 +196,8 @@ struct ProfileView: View {
                         color: webSyncBaseURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .orange : .green
                     )
                     PsyStatusPill(
-                        text: webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Auth opcional" : "Auth configurada",
-                        color: webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .gray : .green
+                        text: webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Sessão pendente" : "Sessão ativa",
+                        color: webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .orange : .green
                     )
                     PsyStatusPill(
                         text: "Templates: \(templateSyncConnectionStatus)",
@@ -203,6 +218,60 @@ struct ProfileView: View {
                 Text("Use \"Testar conexão de templates\" abaixo para validar URL/autorização e salvar diagnóstico.")
                     .font(.caption)
                     .foregroundStyle(PsyTheme.textSecondary)
+
+                Divider()
+
+                // Workspace sync button
+                Button(action: syncWorkspace) {
+                    HStack {
+                        if isSyncingWorkspace { ProgressView().tint(.white).controlSize(.small) }
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                        Text(isSyncingWorkspace ? "Sincronizando..." : "Sincronizar tudo (App ↔ Web)")
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(PsyTheme.primary)
+                .disabled(isSyncingWorkspace || webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+                if !workspaceSyncFeedback.isEmpty {
+                    Text(workspaceSyncFeedback)
+                        .font(.caption)
+                        .foregroundStyle(workspaceSyncFeedback.starts(with: "✅") ? .green : .red)
+                }
+
+                if webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    Text("Faça login para habilitar sincronização completa com sua conta web.")
+                        .font(.caption2)
+                        .foregroundStyle(PsyTheme.textSecondary)
+                }
+            }
+        }
+    }
+
+    private var accountSessionSection: some View {
+        PsyCard {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Conta conectada")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                        Text(PlatformAPISecrets.authUserName ?? profile.stageName)
+                            .font(.subheadline)
+                            .foregroundStyle(PsyTheme.textSecondary)
+                        Text(PlatformAPISecrets.authUserEmail ?? "Email não disponível")
+                            .font(.caption)
+                            .foregroundStyle(PsyTheme.textSecondary)
+                    }
+                    Spacer()
+                    Button("Sair") {
+                        logoutFromApp()
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.red)
+                }
             }
         }
     }
@@ -380,8 +449,31 @@ struct ProfileView: View {
                         .font(.caption)
                         .foregroundStyle(PsyTheme.textSecondary)
 
-                    SecureField("Spotify Bearer Token", text: $spotifyToken)
-                        .textFieldStyle(.roundedBorder)
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showAdvancedIntegrations.toggle()
+                        }
+                    } label: {
+                        HStack {
+                            Text(showAdvancedIntegrations ? "Ocultar configurações avançadas" : "Mostrar configurações avançadas")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                            Spacer()
+                            Image(systemName: showAdvancedIntegrations ? "chevron.up" : "chevron.down")
+                        }
+                        .padding(.vertical, 6)
+                    }
+                    .buttonStyle(.plain)
+
+                    if !showAdvancedIntegrations {
+                        Text("Visão limpa ativa: credenciais e testes avançados estão minimizados.")
+                            .font(.caption2)
+                            .foregroundStyle(PsyTheme.textSecondary)
+                    }
+
+                    if showAdvancedIntegrations {
+                        SecureField("Spotify Bearer Token", text: $spotifyToken)
+                            .textFieldStyle(.roundedBorder)
 
                     SecureField("YouTube API Key", text: $youtubeApiKey)
                         .textFieldStyle(.roundedBorder)
@@ -421,8 +513,9 @@ struct ProfileView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
 
-                    SecureField("Authorization header (ex: Bearer ...)", text: $webSyncAuthHeader)
+                    SecureField("Token de sessão (automático via login)", text: $webSyncAuthHeader)
                         .textFieldStyle(.roundedBorder)
+                        .disabled(true)
 
                     HStack(spacing: 8) {
                         PsyStatusPill(
@@ -430,8 +523,8 @@ struct ProfileView: View {
                             color: webSyncBaseURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .orange : .green
                         )
                         PsyStatusPill(
-                            text: webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Auth opcional" : "Auth configurada",
-                            color: webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .gray : .green
+                            text: webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Login pendente" : "Sessão autenticada",
+                            color: webSyncAuthHeader.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .orange : .green
                         )
                     }
 
@@ -588,9 +681,10 @@ struct ProfileView: View {
                     .tint(PsyTheme.secondary)
                     .disabled(testingLogisticsConnections)
 
-                    Text("Rotas usam OSRM grátis por padrão. Voos priorizam Kiwi/Tequila (free tier) e usam RapidAPI como fallback opcional. Credenciais sensíveis ficam no Keychain.")
-                        .font(.caption2)
-                        .foregroundStyle(PsyTheme.textSecondary)
+                        Text("Rotas usam OSRM grátis por padrão. Voos priorizam Kiwi/Tequila (free tier) e usam RapidAPI como fallback opcional. Credenciais sensíveis ficam no Keychain.")
+                            .font(.caption2)
+                            .foregroundStyle(PsyTheme.textSecondary)
+                    }
                 }
             }
         }
@@ -864,6 +958,72 @@ struct ProfileView: View {
             KeychainSecretStore.delete(account)
         } else {
             KeychainSecretStore.write(value, account: account)
+        }
+    }
+
+    private func logoutFromApp() {
+        Task { @MainActor in
+            await WebAuthService.shared.logout()
+            isLoggedIn = false
+            authSessionNonce = Date().timeIntervalSince1970
+        }
+    }
+
+    private func syncWorkspace() {
+        isSyncingWorkspace = true
+        workspaceSyncFeedback = ""
+
+        Task {
+            let syncService = MobileSyncService()
+
+            let learnedFactsRaw = UserDefaults.standard.string(forKey: "manager.learnedFacts.store") ?? ""
+            let learnedFacts = learnedFactsRaw
+                .components(separatedBy: "|||")
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+
+            let pushPayload = await MainActor.run {
+                MobileSyncService.buildPayload(
+                    gigs: gigs,
+                    leads: leads,
+                    promoters: promoters,
+                    templates: messageTemplates,
+                    tripPlans: tripPlans,
+                    contentPlan: contentPlan,
+                    expenses: expenses,
+                    learnedFacts: learnedFacts,
+                    profile: profile
+                )
+            }
+
+            do {
+                try await syncService.pushWorkspace(payload: pushPayload)
+
+                let remote = try await syncService.pullWorkspace()
+                let mergedFacts = await MainActor.run {
+                    MobileSyncService.mergeWorkspace(
+                        remote: remote,
+                        localGigs: gigs,
+                        localLeads: leads,
+                        localPromoters: promoters,
+                        localTemplates: messageTemplates,
+                        localTripPlans: tripPlans,
+                        localContentPlan: contentPlan,
+                        localExpenses: expenses,
+                        context: modelContext
+                    )
+                }
+
+                if !mergedFacts.isEmpty {
+                    UserDefaults.standard.set(mergedFacts.joined(separator: "|||"), forKey: "manager.learnedFacts.store")
+                }
+
+                workspaceSyncFeedback = "✅ Sincronização bidirecional concluída com sucesso."
+            } catch {
+                workspaceSyncFeedback = "❌ \(error.localizedDescription)"
+            }
+
+            isSyncingWorkspace = false
         }
     }
 
