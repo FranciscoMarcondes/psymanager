@@ -8,8 +8,8 @@ extension Menu {
 }
 
 /// Componente genérico com dropdown visível em dark mode
-struct AccessibleMenuButton<Label: View>: View {
-    let label: Label
+struct AccessibleMenuButton<LabelContent: View>: View {
+    let label: LabelContent
     let options: [MenuOption]
     let onSelect: (String) -> Void
     

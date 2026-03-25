@@ -30,6 +30,7 @@ struct DashboardView: View {
     @AppStorage("psy.youtube.lastCheckedAt") private var youtubeLastCheckedAtISO = ""
     @AppStorage("psy.soundcloud.lastCheckedAt") private var soundCloudLastCheckedAtISO = ""
     @State private var dashboardMode: DashboardMode = .focus
+    @State private var dismissedSmartNotificationTitles: Set<String> = []
 
     private let notificationPlanner = NotificationPlanner()
 
@@ -150,6 +151,45 @@ struct DashboardView: View {
         negotiations.filter { $0.nextActionDate < Date() && $0.stage != LeadStatus.closed.rawValue }.count
     }
 
+    private var smartNotifications: [SmartNotificationModel] {
+        var items: [SmartNotificationModel] = []
+
+        if overdueFollowupsCount > 0 {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Follow-up pendente",
+                    description: "\(overdueFollowupsCount) negociação(ões) estão com ação atrasada.",
+                    type: .warning
+                )
+            )
+        }
+
+        if let topOpportunity = topBookingOpportunities.first {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Oportunidade no radar",
+                    description: "\(topOpportunity.lead.name) em \(topOpportunity.lead.city) com alto potencial.",
+                    type: .info
+                )
+            )
+        }
+
+        if !todayTaskItems.isEmpty, todayTaskItems.first != "Sem urgências hoje. Avance em prospecção e conteúdo." {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Prioridade do dia",
+                    description: todayTaskItems[0],
+                    type: .success
+                )
+            )
+        }
+
+        return items.filter { !dismissedSmartNotificationTitles.contains($0.title) }
+    }
+
     private var topBookingOpportunities: [BookingOpportunity] {
         BookingRadarService.topOpportunities(
             profile: profile,
@@ -223,6 +263,29 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                     // 💰 Financial Alerts Widget
                     FinancialAlertsWidget()
                         .psyAppear(delay: 0.11)
+
+                    if !smartNotifications.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            PsySectionHeader(eyebrow: "Avisos", title: "Avisos inteligentes")
+
+                            ForEach(smartNotifications) { notification in
+                                SmartNotificationCard(
+                                    notification: notification,
+                                    onDismiss: {
+                                        dismissedSmartNotificationTitles.insert(notification.title)
+                                    },
+                                    onNavigate: { _ in
+                                        if notification.title.lowercased().contains("follow-up") {
+                                            onQuickAction(.manager)
+                                        } else {
+                                            onQuickAction(.events)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                        .psyAppear(delay: 0.12)
+                    }
                     
                     upcomingGig
                         .psyAppear(delay: 0.14)

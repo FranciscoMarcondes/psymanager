@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 struct DateRangePickerView: View {
@@ -97,22 +98,23 @@ struct DateRangePickerView: View {
 
 // MARK: - Event Search with Date Filter
 struct EventRadarWithDateFilter: View {
+    @Query(sort: \RadarEvent.dateISO) private var radarEvents: [RadarEvent]
+
     @State private var startDate = Date()
     @State private var endDate = Calendar.current.date(byAdding: .month, value: 1, to: Date()) ?? Date()
-    @State private var selectedGenre: String?
     @State private var selectedCity: String?
     @State private var events: [RadarEvent] = []
     @State private var showDatePicker = false
     @State private var isLoading = false
-    
-    struct RadarEvent: Identifiable {
-        let id: UUID
-        let name: String
-        let date: Date
-        let city: String
-        let genre: String
-        let venue: String
-    }
+
+    private let eventDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+
+    init() {}
     
     var body: some View {
         VStack(spacing: 0) {
@@ -131,43 +133,23 @@ struct EventRadarWithDateFilter: View {
                         .cornerRadius(6)
                     }
                     
-                    // Genre filter
-                    Menu {
-                        Button("Todos os Gêneros", action: { selectedGenre = nil })
-                        Button("Rock", action: { selectedGenre = "rock" })
-                        Button("Pop", action: { selectedGenre = "pop" })
-                        Button("Hip-Hop", action: { selectedGenre = "hiphop" })
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "music.note")
-                            Text(selectedGenre ?? "Gênero")
-                                .font(.caption)
-                            Image(systemName: "chevron.down")
-                                .font(.caption2)
-                        }
-                        .padding(8)
-                        .background(Color(.systemGray5))
-                        .cornerRadius(6)
-                    }
-                    
                     // City filter
-                    Menu {
-                        Button("Todas as cidades", action: { selectedCity = nil })
-                        Button("São Paulo", action: { selectedCity = "sp" })
-                        Button("Rio de Janeiro", action: { selectedCity = "rj" })
-                        Button("Belo Horizonte", action: { selectedCity = "bh" })
-                    } label: {
-                        HStack(spacing: 4) {
+                    AccessibleMenuButton(
+                        label: HStack(spacing: 4) {
                             Image(systemName: "location.fill")
                             Text(selectedCity ?? "Cidade")
                                 .font(.caption)
-                            Image(systemName: "chevron.down")
-                                .font(.caption2)
+                        },
+                        options: [
+                            AccessibleMenuButton.MenuOption(label: "Todas as cidades", value: "", icon: nil)
+                        ] + Array(Set(radarEvents.map(\.city))).sorted().map {
+                            AccessibleMenuButton.MenuOption(label: $0, value: $0, icon: nil)
+                        },
+                        onSelect: { value in
+                            selectedCity = value.isEmpty ? nil : value
+                            searchEvents()
                         }
-                        .padding(8)
-                        .background(Color(.systemGray5))
-                        .cornerRadius(6)
-                    }
+                    )
                 }
                 .padding()
             }
@@ -189,19 +171,19 @@ struct EventRadarWithDateFilter: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                List(events) { event in
+                List(events, id: \.persistentModelID) { event in
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
                             VStack(alignment: .leading) {
-                                Text(event.name)
+                                Text(event.eventName)
                                     .fontWeight(.semibold)
-                                Text(event.venue)
+                                Text("@\(event.instagramHandle.isEmpty ? "sem contato" : event.instagramHandle)")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
                             Spacer()
                             VStack(alignment: .trailing) {
-                                Text(event.date.formatted(date: .abbreviated, time: .omitted))
+                                Text(formattedDate(for: event.dateISO))
                                     .font(.caption)
                                     .fontWeight(.semibold)
                                 Text(event.city)
@@ -228,11 +210,26 @@ struct EventRadarWithDateFilter: View {
     private func searchEvents() {
         isLoading = true
         Task {
-            // Simulação - conectar com API real
-            try? await Task.sleep(nanoseconds: 800_000_000)
-            // Aqui conectar: GET /api/radar/events?startDate=X&endDate=Y&genre=X&city=Y
-            isLoading = false
+            try? await Task.sleep(nanoseconds: 200_000_000)
+
+            let filtered = radarEvents.filter { event in
+                guard let eventDate = eventDateFormatter.date(from: event.dateISO) else { return false }
+                let matchesDate = eventDate >= Calendar.current.startOfDay(for: startDate)
+                    && eventDate <= Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: endDate)!
+                let matchesCity = selectedCity == nil || event.city.caseInsensitiveCompare(selectedCity ?? "") == .orderedSame
+                return matchesDate && matchesCity
+            }
+
+            await MainActor.run {
+                events = filtered
+                isLoading = false
+            }
         }
+    }
+
+    private func formattedDate(for isoDate: String) -> String {
+        guard let date = eventDateFormatter.date(from: isoDate) else { return isoDate }
+        return date.formatted(date: .abbreviated, time: .omitted)
     }
 }
 

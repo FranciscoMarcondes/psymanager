@@ -42,13 +42,11 @@ struct RootTabView: View {
                     Label("Studio", systemImage: "camera.filters")
                 }
 
-            /* StrategyModuleView - Temporarily disabled, will be reenabled after build fix
             StrategyModuleView()
                 .tag(RootTab.strategy)
                 .tabItem {
                     Label("Estratégia", systemImage: "wand.and.sparkles")
                 }
-            */
             
             FinancesView()
                 .tag(RootTab.finances)

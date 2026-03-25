@@ -15,8 +15,13 @@ struct ManagerView: View {
     @State private var showLearnedFacts = false
     @AppStorage("manager.useWebAI") private var useWebAI = true
     @State private var showQuickPrompts = false
+    @State private var parsedSuggestions: [String: [QuickActionService.QuickAction]] = [:] // messageId -> suggestions
 
     @Query(sort: \ManagerChatMessage.createdAt) private var messages: [ManagerChatMessage]
+    @Query(sort: \Gig.date) private var gigs: [Gig]
+    @Query(sort: \EventLead.eventDate) private var leads: [EventLead]
+    @Query(sort: \RadarEvent.dateISO) private var radarEvents: [RadarEvent]
+    @Query(sort: \SocialContentPlanItem.createdAt, order: .reverse) private var contentIdeas: [SocialContentPlanItem]
 
     private let engine = CareerManagerEngine()
 
@@ -180,6 +185,33 @@ struct ManagerView: View {
                 // Chat
                 VStack(alignment: .leading, spacing: 14) {
                     PsySectionHeader(eyebrow: "Conversa", title: "Manager em ação")
+
+                    NavigationLink {
+                        ManagerChatWithMemories()
+                            .navigationTitle("Manager com memórias")
+                    } label: {
+                        HStack {
+                            Image(systemName: "brain.head.profile")
+                                .foregroundStyle(PsyTheme.primary)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Abrir modo com memórias")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.white)
+                                Text("Memórias ocultas + confirmação ao memorizar")
+                                    .font(.caption)
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.textSecondary)
+                        }
+                        .padding(12)
+                        .background(PsyTheme.surfaceAlt)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
                     
                     // 🧠 Manager with Memories Integration (NEW)
                     HStack {
@@ -212,17 +244,62 @@ struct ManagerView: View {
                         }
                     } else {
                         ForEach(messages) { message in
-                            PsyChatBubble(role: message.role, text: message.text)
+                            VStack(alignment: .leading, spacing: 10) {
+                                EnhancedMarkdownChatBubble(
+                                    message: message.text,
+                                    isAssistant: message.role == "assistant"
+                                )
+                                
+                                // Show quick actions for assistant messages
+                                if message.role == "assistant" {
+                                    let suggestions = parsedSuggestions[message.id?.uuidString ?? ""] ?? []
+                                    if suggestions.isEmpty && !message.text.isEmpty {
+                                        // Parse suggestions if not already done
+                                        let parsed = QuickActionService.parseActionSuggestions(from: message.text)
+                                        if !parsed.isEmpty {
+                                            parsedSuggestions[message.id?.uuidString ?? ""] = parsed
+                                        }
+                                        QuickActionsButtonRow(
+                                            suggestions: parsed,
+                                            onActionExecuted: { _ in }
+                                        )
+                                    } else if !suggestions.isEmpty {
+                                        QuickActionsButtonRow(
+                                            suggestions: suggestions,
+                                            onActionExecuted: { _ in }
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
 
                     if !streamingAssistantText.isEmpty {
-                        PsyChatBubble(role: "assistant", text: streamingAssistantText)
+                        VStack(alignment: .leading, spacing: 10) {
+                            EnhancedMarkdownChatBubble(
+                                message: streamingAssistantText,
+                                isAssistant: true
+                            )
+                            
+                            // Show quick actions for complete streaming responses
+                            if streamingAssistantText.count > 50 {
+                                let parsed = QuickActionService.parseActionSuggestions(from: streamingAssistantText)
+                                if !parsed.isEmpty {
+                                    QuickActionsButtonRow(
+                                        suggestions: parsed,
+                                        onActionExecuted: { _ in }
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     if isSending && streamingAssistantText.isEmpty {
-                        PsyCard {
-                            VStack(alignment: .leading, spacing: 8) {
+                        VStack(spacing: 12) {
+                            SkeletonChatMessage()
+                            SkeletonChatMessage()
+                            
+                            PsyCard {
                                 HStack(spacing: 8) {
                                     ProgressView()
                                         .tint(PsyTheme.primary)
@@ -230,11 +307,14 @@ struct ManagerView: View {
                                     Text("Manager analisando...")
                                         .font(.caption)
                                         .foregroundStyle(PsyTheme.textSecondary)
+                                    Spacer()
+                                    Text("Instant feedback")
+                                        .font(.caption2)
+                                        .foregroundStyle(PsyTheme.success)
                                 }
-                                PsySkeletonLine()
-                                PsySkeletonLine(width: 220)
                             }
                         }
+                        .transition(.opacity.combined(with: .scale(scale: 0.95)))
                     }
                 }
                 .padding(.horizontal, 20)
@@ -277,6 +357,7 @@ struct ManagerView: View {
                 .accessibilityLabel("Mensagem para o manager")
                 .accessibilityHint("Digite sua pergunta sobre carreira, booking ou conteúdo")
             Button {
+                HapticFeedbackService.tapAction()
                 send(input)
             } label: {
                 Image(systemName: "arrow.up.circle.fill")
@@ -307,15 +388,28 @@ struct ManagerView: View {
 
         sendTask?.cancel()
         sendTask = Task {
+            let enrichedPrompt = ArtistAIContextBuilder.unifiedPrompt(
+                request: cleaned,
+                profile: profile,
+                facts: learnedFacts,
+                snapshot: AIWorkspaceSnapshot(
+                    leads: leads.count,
+                    gigs: gigs.count,
+                    contentIdeas: contentIdeas.count,
+                    radarEvents: radarEvents.count
+                ),
+                guidance: "Responda com plano pratico, prioridades objetivas e, se faltar contexto, termine com 1 pergunta curta para aprender mais sobre o artista."
+            )
+
             let answer: String
             if useWebAI {
                 answer = await WebAIService.shared.ask(
                     artistName: profile.stageName,
-                    prompt: cleaned,
+                    prompt: enrichedPrompt,
                     mode: "conversation"
                 )
             } else {
-                answer = await engine.ask(prompt: cleaned, profile: profile)
+                answer = await engine.ask(prompt: enrichedPrompt, profile: profile)
             }
 
             for character in answer {

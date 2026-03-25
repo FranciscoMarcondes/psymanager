@@ -164,7 +164,7 @@ struct ChatBubble: View {
                 VStack(alignment: .leading) {
                     Text(.init(message.content))
                         .textSelection(.enabled)
-                    Text(message.timestamp.formatted(time: .shortened))
+                    Text(message.timestamp.formatted(date: .omitted, time: .shortened))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -179,7 +179,7 @@ struct ChatBubble: View {
                 VStack(alignment: .trailing) {
                     Text(message.content)
                         .textSelection(.enabled)
-                    Text(message.timestamp.formatted(time: .shortened))
+                    Text(message.timestamp.formatted(date: .omitted, time: .shortened))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

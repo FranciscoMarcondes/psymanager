@@ -80,7 +80,8 @@ actor WebAIService {
         artistName: String,
         prompt: String,
         mode: String = "conversation",
-        context: WebAIContext? = nil
+        context: WebAIContext? = nil,
+        history: [(role: String, text: String)]? = nil
     ) async -> String {
         guard let url = URL(string: "\(Self.baseURL)/api/manager/chat") else {
             return "Serviço indisponível."
@@ -95,7 +96,7 @@ actor WebAIService {
             prompt: prompt,
             mode: mode,
             context: ctxDTO,
-            history: nil
+            history: history?.map { ChatRequest.HistoryMessage(role: $0.role, text: $0.text) }
         )
 
         var request = URLRequest(url: url)

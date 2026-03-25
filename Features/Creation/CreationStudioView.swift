@@ -38,7 +38,14 @@ struct CreationStudioView: View {
     }
 
     private var scheduledContentCount: Int {
-        contentCalendar.count
+        activeEditorialItems.count
+    }
+
+    private var activeEditorialItems: [SocialContentPlanItem] {
+        contentCalendar.filter { item in
+            let normalized = item.status.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            return normalized != "publicado" && normalized != "published" && normalized != "concluído" && normalized != "concluido"
+        }
     }
 
     var body: some View {
@@ -75,6 +82,17 @@ struct CreationStudioView: View {
 
                     socialMediaSpecialist
                     aiStrategySection
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        PsySectionHeader(eyebrow: "Tour", title: "Break-even de turne")
+                        BreakEvenTourCard(tourData: .init(
+                            name: "Mini turne regional",
+                            targetRevenue: 22000,
+                            currentCosts: 14000,
+                            projection: "Break-even em 2 datas"
+                        ))
+                    }
+
                     performanceAnalyticsSection
                     editorialCalendarSection
                     contentDraftLab
@@ -463,11 +481,11 @@ struct CreationStudioView: View {
                         .tint(PsyTheme.secondary)
                     }
 
-                    if contentCalendar.isEmpty {
+                    if activeEditorialItems.isEmpty {
                         Text("Ainda não há peças planejadas. Monte seu calendário editorial e distribua descoberta, prova social e conversão durante a semana.")
                             .foregroundStyle(PsyTheme.textSecondary)
                     } else {
-                        ForEach(contentCalendar.prefix(5), id: \.persistentModelID) { item in
+                        ForEach(activeEditorialItems.prefix(5), id: \.persistentModelID) { item in
                             VStack(alignment: .leading, spacing: 6) {
                                 HStack {
                                     Image(systemName: ContentStatusUpdater.statusIcon(item.status))
@@ -533,6 +551,8 @@ struct CreationStudioView: View {
                         }
                     }
                     .pickerStyle(.menu)
+                    .tint(PsyTheme.primary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                     HStack(spacing: 10) {
                         Button("Gerar draft") {

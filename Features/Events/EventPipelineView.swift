@@ -413,6 +413,10 @@ struct EventPipelineView: View {
                     }
                     } else if selectedTab == 3 {
                         Section("Radar de eventos") {
+                            EventRadarWithDateFilter()
+                                .frame(minHeight: 360)
+                                .listRowInsets(EdgeInsets())
+
                             NavigationLink {
                                 RadarSearchView()
                             } label: {

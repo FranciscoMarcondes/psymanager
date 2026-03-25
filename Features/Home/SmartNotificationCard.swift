@@ -10,7 +10,9 @@ struct SmartNotificationCard: View {
     
     var body: some View {
         if !shouldDismiss {
-            NavigationLink(destination: ActivityDetailView(activityId: notification.activityId)) {
+            Button {
+                onNavigate(notification.activityId)
+            } label: {
                 HStack(spacing: 12) {
                     Image(systemName: notificationIcon)
                         .font(.headline)
@@ -46,7 +48,8 @@ struct SmartNotificationCard: View {
                         .stroke(notificationColor.opacity(0.3), lineWidth: 1)
                 )
             }
-            .onReceive(Timer.publish(every: 30).autoconnect()) { _ in
+            .buttonStyle(.plain)
+            .onReceive(Timer.publish(every: 30, on: .main, in: .common).autoconnect()) { _ in
                 refreshNotification()
             }
         }
@@ -87,54 +90,13 @@ struct SmartNotificationCard: View {
     }
 }
 
-struct SmartNotificationModel: Identifiable {
-    let id: UUID
-    let activityId: UUID
-    let title: String
-    let description: String
-    let type: NotificationType
-    let createdAt: Date
-    
-    enum NotificationType {
-        case alert, info, success, warning
-    }
-}
-
-struct ActivityDetailView: View {
-    let activityId: UUID
-    @Environment(\.dismiss) var dismiss
-    
-    var body: some View {
-        VStack {
-            HStack {
-                Button(action: { dismiss() }) {
-                    HStack {
-                        Image(systemName: "chevron.left")
-                        Text("Voltar")
-                    }
-                }
-                Spacer()
-            }
-            .padding()
-            
-            Text("Atividade #\(activityId)")
-                .font(.headline)
-            
-            Spacer()
-        }
-        .navigationBarBackButtonHidden(true)
-    }
-}
-
 #Preview {
     SmartNotificationCard(
         notification: .init(
-            id: UUID(),
             activityId: UUID(),
             title: "Show confirmado",
             description: "Seu show em São Paulo foi confirmado.",
-            type: .success,
-            createdAt: Date()
+            type: .success
         ),
         onDismiss: {},
         onNavigate: { _ in }
