@@ -38,6 +38,7 @@ struct AppRootView: View {
             }
         }
         .animation(.easeInOut(duration: 0.26), value: profiles.count)
+        .preferredColorScheme(.dark)
         .onAppear {
             let hasToken = !(PlatformAPISecrets.webSyncAuthHeader?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
             let hasUser = !(PlatformAPISecrets.authUserEmail?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
