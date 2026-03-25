@@ -41,6 +41,7 @@ struct FinancesView: View {
     @State private var selectedTab = 0
     @State private var showingExpenseForm = false
     @State private var appeared = false
+    @State private var showBreakEven = false
 
     // Break-even calculator state
     @State private var beGrossFee = ""
@@ -158,13 +159,11 @@ struct FinancesView: View {
                     .psyAppear(delay: 0)
 
                     // Sub-tab picker
-                    Picker("Seção", selection: $selectedTab) {
-                        Text("Geral").tag(0)
-                        Text("Gastos (\(expenses.count))").tag(1)
-                        Text("Receitas").tag(2)
+                    HStack(spacing: 8) {
+                        financeTabButton("Geral", tag: 0)
+                        financeTabButton("Gastos (\(expenses.count))", tag: 1)
+                        financeTabButton("Receitas", tag: 2)
                     }
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal, 2)
                     .psyAppear(delay: 0.06)
 
                     if selectedTab == 0 {
@@ -250,48 +249,62 @@ struct FinancesView: View {
                         Text("Break-even de gig")
                             .font(.headline)
                             .foregroundStyle(.white)
+                        Spacer()
+                        Button(showBreakEven ? "Minimizar" : "Expandir") {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showBreakEven.toggle()
+                            }
+                        }
+                        .font(.caption.bold())
+                        .foregroundStyle(PsyTheme.primary)
                     }
                     Text("Simule o lucro real antes de fechar: comissão, impostos, voo, hotel e custos operacionais.")
                         .font(.caption)
                         .foregroundStyle(PsyTheme.textSecondary)
 
-                    VStack(spacing: 10) {
-                        beField("Cachê bruto (R$)", text: $beGrossFee, placeholder: "Ex: 3500")
-                        HStack(spacing: 10) {
-                            beField("Agência (%)", text: $beAgencyPct)
-                            beField("Impostos (%)", text: $beTaxPct)
+                    if showBreakEven {
+                        VStack(spacing: 10) {
+                            beField("Cachê bruto (R$)", text: $beGrossFee, placeholder: "Ex: 3500")
+                            HStack(spacing: 10) {
+                                beField("Agência (%)", text: $beAgencyPct)
+                                beField("Impostos (%)", text: $beTaxPct)
+                            }
+                            HStack(spacing: 10) {
+                                beField("Voo (R$)", text: $beFlight)
+                                beField("Hotel (R$)", text: $beHotel)
+                            }
+                            HStack(spacing: 10) {
+                                beField("Transfer (R$)", text: $beTransport)
+                                beField("Alimentação (R$)", text: $beFood)
+                            }
+                            beField("Outros custos (R$)", text: $beOther)
                         }
-                        HStack(spacing: 10) {
-                            beField("Voo (R$)", text: $beFlight)
-                            beField("Hotel (R$)", text: $beHotel)
-                        }
-                        HStack(spacing: 10) {
-                            beField("Transfer (R$)", text: $beTransport)
-                            beField("Alimentação (R$)", text: $beFood)
-                        }
-                        beField("Outros custos (R$)", text: $beOther)
-                    }
 
-                    if beGross > 0 {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Divider().overlay(Color.white.opacity(0.1))
-                            Text("Comissão: \(fmtBRL(beAgencyValue))  •  Impostos: \(fmtBRL(beTaxValue))  •  Operacional: \(fmtBRL(beOperational))")
+                        if beGross > 0 {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Divider().overlay(Color.white.opacity(0.1))
+                                Text("Comissão: \(fmtBRL(beAgencyValue))  •  Impostos: \(fmtBRL(beTaxValue))  •  Operacional: \(fmtBRL(beOperational))")
+                                    .font(.caption)
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                                HStack {
+                                    Text("\(beStatus):")
+                                        .font(.headline)
+                                        .foregroundStyle(beNet >= 0 ? Color.green : Color.red)
+                                    Text(fmtBRL(beNet))
+                                        .font(.headline)
+                                        .foregroundStyle(beNet >= 0 ? Color.green : Color.red)
+                                    Text("(\(beMarginPct)%)")
+                                        .font(.subheadline)
+                                        .foregroundStyle(PsyTheme.textSecondary)
+                                }
+                            }
+                        } else {
+                            Text("Informe o cachê bruto para calcular.")
                                 .font(.caption)
                                 .foregroundStyle(PsyTheme.textSecondary)
-                            HStack {
-                                Text("\(beStatus):")
-                                    .font(.headline)
-                                    .foregroundStyle(beNet >= 0 ? Color.green : Color.red)
-                                Text(fmtBRL(beNet))
-                                    .font(.headline)
-                                    .foregroundStyle(beNet >= 0 ? Color.green : Color.red)
-                                Text("(\(beMarginPct)%)")
-                                    .font(.subheadline)
-                                    .foregroundStyle(PsyTheme.textSecondary)
-                            }
                         }
                     } else {
-                        Text("Informe o cachê bruto para calcular.")
+                        Text("Bloco minimizado. Toque em Expandir para simular o lucro da gig.")
                             .font(.caption)
                             .foregroundStyle(PsyTheme.textSecondary)
                     }
@@ -533,9 +546,32 @@ struct FinancesView: View {
                 .foregroundStyle(PsyTheme.textSecondary)
             TextField(placeholder.isEmpty ? label : placeholder, text: text)
                 .keyboardType(.decimalPad)
-                .textFieldStyle(.roundedBorder)
-                .colorScheme(.dark)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .foregroundStyle(.white)
+                .background(PsyTheme.surface)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                )
         }
+    }
+
+    @ViewBuilder
+    private func financeTabButton(_ title: String, tag: Int) -> some View {
+        Button {
+            selectedTab = tag
+        } label: {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(selectedTab == tag ? Color.black : Color.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(selectedTab == tag ? PsyTheme.primary : PsyTheme.surface)
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
     }
 
     private func monthLabel(_ iso: String) -> String {

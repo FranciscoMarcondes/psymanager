@@ -190,6 +190,7 @@ struct RadarSearchView: View {
                         Text("Período")
                             .font(.subheadline)
                             .fontWeight(.semibold)
+                            .foregroundStyle(.white)
                         
                         Picker("", selection: $selectedDateRange) {
                             ForEach(DateRange.allCases) { range in
@@ -197,6 +198,8 @@ struct RadarSearchView: View {
                             }
                         }
                         .pickerStyle(.segmented)
+                        .tint(PsyTheme.primary)
+                        .colorScheme(.dark)
                     }
                     
                     // States Filter
@@ -264,11 +267,13 @@ struct RadarSearchView: View {
                         Text("Orçamento estimado (R$)")
                             .font(.subheadline)
                             .fontWeight(.semibold)
+                            .foregroundStyle(.white)
                         
                         HStack(spacing: 12) {
                             TextField("Mín", text: $minBudget)
                                 .textFieldStyle(.roundedBorder)
                                 .keyboardType(.decimalPad)
+                                .colorScheme(.dark)
                             
                             Text("a")
                                 .foregroundStyle(PsyTheme.textSecondary)
@@ -276,6 +281,7 @@ struct RadarSearchView: View {
                             TextField("Máx", text: $maxBudget)
                                 .textFieldStyle(.roundedBorder)
                                 .keyboardType(.decimalPad)
+                                .colorScheme(.dark)
                         }
                     }
                 }
@@ -385,7 +391,11 @@ struct RadarSearchView: View {
 }
 
 struct RadarEventRow: View {
+    @Environment(\.modelContext) private var modelContext
+
     let event: RadarEvent
+
+    @State private var leadSaved = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -401,18 +411,52 @@ struct RadarEventRow: View {
                 }
                 
                 Spacer()
-                
-                if !event.instagramHandle.isEmpty {
-                    Link(destination: URL(string: "https://instagram.com/\(event.instagramHandle.replacingOccurrences(of: "@", with: ""))")!) {
-                        Image(systemName: "link.circle.fill")
-                            .foregroundStyle(PsyTheme.primary)
+
+                HStack(spacing: 8) {
+                    if !event.instagramHandle.isEmpty,
+                       let instaURL = URL(string: "https://instagram.com/\(event.instagramHandle.replacingOccurrences(of: "@", with: ""))") {
+                        Link(destination: instaURL) {
+                            Image(systemName: "link.circle.fill")
+                                .foregroundStyle(PsyTheme.primary)
+                        }
                     }
+
+                    Button {
+                        createLeadFromSuggestion()
+                    } label: {
+                        Label(leadSaved ? "Lead criado" : "Lead", systemImage: leadSaved ? "checkmark.circle.fill" : "plus.circle.fill")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(leadSaved ? Color.green : PsyTheme.primary)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(leadSaved)
                 }
             }
         }
         .padding(12)
         .background(PsyTheme.surfaceAlt)
         .cornerRadius(10)
+    }
+
+    private func createLeadFromSuggestion() {
+        let cleanInstagram = event.instagramHandle.trimmingCharacters(in: .whitespacesAndNewlines)
+        let fallbackVenue = event.eventName
+        let eventDate = ISO8601DateFormatter().date(from: event.dateISO) ?? Date()
+
+        let lead = EventLead(
+            name: event.eventName,
+            city: event.city,
+            state: event.state,
+            eventDate: eventDate,
+            venue: fallbackVenue,
+            instagramHandle: cleanInstagram,
+            status: LeadStatus.notContacted.rawValue,
+            notes: "Lead criado a partir do Radar IA."
+        )
+
+        modelContext.insert(lead)
+        try? modelContext.save()
+        leadSaved = true
     }
 }
 
