@@ -833,7 +833,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = PsyManager;
-				INFOPLIST_KEY_CFBundleURLTypes = "[[\"CFBundleURLName\": \"com.franciscomarcondes.psymanager\", \"CFBundleURLSchemes\": [\"psymanager\"]]]";
+				INFOPLIST_KEY_CFBundleURLTypes = "[[\"CFBundleURLSchemes\": [\"psymanager\"], \"CFBundleURLName\": \"com.franciscomarcondes.psymanager\"]]";
 				INFOPLIST_KEY_PSYGoogleMapsAPIKey = "";
 				INFOPLIST_KEY_PSYKiwiTequilaAPIKey = "";
 				INFOPLIST_KEY_PSYRapidAPIHost = skyscanner44.p.rapidapi.com;
@@ -940,7 +940,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = PsyManager;
-				INFOPLIST_KEY_CFBundleURLTypes = "[[\"CFBundleURLName\": \"com.franciscomarcondes.psymanager\", \"CFBundleURLSchemes\": [\"psymanager\"]]]";
+				INFOPLIST_KEY_CFBundleURLTypes = "[[\"CFBundleURLSchemes\": [\"psymanager\"], \"CFBundleURLName\": \"com.franciscomarcondes.psymanager\"]]";
 				INFOPLIST_KEY_PSYGoogleMapsAPIKey = "";
 				INFOPLIST_KEY_PSYKiwiTequilaAPIKey = "";
 				INFOPLIST_KEY_PSYRapidAPIHost = skyscanner44.p.rapidapi.com;

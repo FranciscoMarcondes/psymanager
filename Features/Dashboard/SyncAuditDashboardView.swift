@@ -9,7 +9,11 @@ struct SyncAuditDashboardView: View {
     @State private var filterEntityType: String? = nil
     
     @Query(sort: \SyncAuditLog.timestamp, order: .reverse) private var auditLogs: [SyncAuditLog]
-    @Query(predicate: #Predicate<SyncConflict> { $0.status == "pending" }) private var pendingConflicts: [SyncConflict]
+    @Query(sort: \SyncConflict.detectedAt, order: .reverse) private var conflicts: [SyncConflict]
+
+    private var pendingConflicts: [SyncConflict] {
+        conflicts.filter { $0.status == "pending" }
+    }
     
     enum AuditTab {
         case stats

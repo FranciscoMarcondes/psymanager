@@ -92,15 +92,12 @@ struct RollbackService {
         reason: String = "Manual rollback",
         modelContext: ModelContext
     ) -> Bool {
-        // Find the current item
-        let descriptor = FetchDescriptor<SocialContentPlanItem>(
-            predicate: #Predicate { item in
-                item.id?.uuidString == itemId
-            }
-        )
+        // Find the current item by persistent identifier string
+        let descriptor = FetchDescriptor<SocialContentPlanItem>()
         
         do {
-            guard let currentItem = try modelContext.fetch(descriptor).first else {
+            let items = try modelContext.fetch(descriptor)
+            guard let currentItem = items.first(where: { String(describing: $0.persistentModelID) == itemId }) else {
                 print("❌ Item not found for rollback: \(itemId)")
                 return false
             }

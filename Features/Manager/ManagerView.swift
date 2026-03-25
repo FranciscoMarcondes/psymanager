@@ -15,7 +15,6 @@ struct ManagerView: View {
     @State private var showLearnedFacts = false
     @AppStorage("manager.useWebAI") private var useWebAI = true
     @State private var showQuickPrompts = false
-    @State private var parsedSuggestions: [String: [QuickActionService.QuickAction]] = [:] // messageId -> suggestions
 
     @Query(sort: \ManagerChatMessage.createdAt) private var messages: [ManagerChatMessage]
     @Query(sort: \Gig.date) private var gigs: [Gig]
@@ -252,22 +251,14 @@ struct ManagerView: View {
                                 
                                 // Show quick actions for assistant messages
                                 if message.role == "assistant" {
-                                    let suggestions = parsedSuggestions[message.id?.uuidString ?? ""] ?? []
-                                    if suggestions.isEmpty && !message.text.isEmpty {
-                                        // Parse suggestions if not already done
+                                    if !message.text.isEmpty {
                                         let parsed = QuickActionService.parseActionSuggestions(from: message.text)
                                         if !parsed.isEmpty {
-                                            parsedSuggestions[message.id?.uuidString ?? ""] = parsed
+                                            QuickActionsButtonRow(
+                                                suggestions: parsed,
+                                                onActionExecuted: { _ in }
+                                            )
                                         }
-                                        QuickActionsButtonRow(
-                                            suggestions: parsed,
-                                            onActionExecuted: { _ in }
-                                        )
-                                    } else if !suggestions.isEmpty {
-                                        QuickActionsButtonRow(
-                                            suggestions: suggestions,
-                                            onActionExecuted: { _ in }
-                                        )
                                     }
                                 }
                             }
@@ -310,7 +301,7 @@ struct ManagerView: View {
                                     Spacer()
                                     Text("Instant feedback")
                                         .font(.caption2)
-                                        .foregroundStyle(PsyTheme.success)
+                                        .foregroundStyle(.green)
                                 }
                             }
                         }

@@ -48,8 +48,10 @@ struct SyncAuditService {
         changeDescription: String,
         modelContext: ModelContext
     ) {
+        let itemIdentifier = String(describing: item.persistentModelID)
+
         let version = ContentItemVersion(
-            itemId: item.id?.uuidString ?? UUID().uuidString,
+            itemId: itemIdentifier,
             versionNumber: versionNumber,
             createdBy: createdBy,
             changeDescription: changeDescription,

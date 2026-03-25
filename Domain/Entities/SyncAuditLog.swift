@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import UIKit
 
 /// Audit log entry for every sync operation
 /// Enables tracking, debugging, and rollback capabilities

@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 
 /// Haptic feedback service for tactile user feedback
 /// Signals successful actions, errors, and interactions

@@ -159,7 +159,10 @@ struct OptimisticUIService {
         }
         
         func undo() -> (action: String, item: Any)? {
-            return undoStack.popLast()
+            guard let entry = undoStack.popLast() else {
+                return nil
+            }
+            return (action: entry.action, item: entry.item)
         }
         
         func clearHistory() {

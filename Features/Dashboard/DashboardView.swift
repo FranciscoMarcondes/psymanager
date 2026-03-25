@@ -323,7 +323,7 @@ private var weeklySeries: [DashboardWeeklyPoint] {
 
     private var commercialReadinessColor: Color {
         switch commercialReadinessScore {
-        case 85...100: return PsyTheme.success
+        case 85...100: return .green
         case 60..<85: return PsyTheme.warning
         default: return PsyTheme.primary
         }
@@ -873,7 +873,7 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                     ForEach(commercialReadinessChecks) { check in
                         HStack(alignment: .top, spacing: 10) {
                             Image(systemName: check.isDone ? "checkmark.seal.fill" : "circle")
-                                .foregroundStyle(check.isDone ? PsyTheme.success : PsyTheme.textSecondary)
+                                .foregroundStyle(check.isDone ? Color.green : PsyTheme.textSecondary)
                                 .padding(.top, 2)
 
                             VStack(alignment: .leading, spacing: 2) {
