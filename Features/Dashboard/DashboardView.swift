@@ -11,6 +11,8 @@ struct DashboardView: View {
 
     @Query(sort: \Gig.date) private var gigs: [Gig]
     @Query(sort: \CareerTask.dueDate) private var tasks: [CareerTask]
+    @Query(sort: \SocialContentPlanItem.createdAt, order: .reverse) private var contentPlanItems: [SocialContentPlanItem]
+    @Query(sort: \ManagerChatMessage.createdAt, order: .reverse) private var managerMessages: [ManagerChatMessage]
     @Query(sort: \EventLead.eventDate) private var leads: [EventLead]
     @Query(sort: \Negotiation.createdAt) private var negotiations: [Negotiation]
     @Query(sort: \SocialInsightSnapshot.periodEnd, order: .reverse) private var insights: [SocialInsightSnapshot]
@@ -247,6 +249,90 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         return Array(items.prefix(4))
     }
 
+    private struct ReadinessCheck: Identifiable {
+        let id = UUID()
+        let title: String
+        let detail: String
+        let isDone: Bool
+        let target: RootTab
+    }
+
+    private var commercialReadinessChecks: [ReadinessCheck] {
+        let profileComplete = !profile.stageName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !profile.genre.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !profile.city.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !profile.mainGoal.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+
+        let connectedPlatforms = [spotifyConnectionStatus, youtubeConnectionStatus, soundCloudConnectionStatus]
+            .filter { $0 == "Conectado" }
+            .count
+
+        let recentContent = contentPlanItems.filter {
+            Date().timeIntervalSince($0.createdAt) <= 60 * 60 * 24 * 14
+        }.count
+
+        let openPipeline = leads.filter { $0.status != LeadStatus.notContacted.rawValue }.count
+
+        return [
+            ReadinessCheck(
+                title: "Perfil comercial completo",
+                detail: "Palco, gênero, cidade e objetivo definidos.",
+                isDone: profileComplete,
+                target: .profile
+            ),
+            ReadinessCheck(
+                title: "Conexões de distribuição",
+                detail: "Pelo menos 2 plataformas conectadas.",
+                isDone: connectedPlatforms >= 2,
+                target: .profile
+            ),
+            ReadinessCheck(
+                title: "Cadência de conteúdo ativa",
+                detail: "3+ ideias/publicações criadas nos últimos 14 dias.",
+                isDone: recentContent >= 3,
+                target: .creation
+            ),
+            ReadinessCheck(
+                title: "Pipeline de eventos vivo",
+                detail: "5+ leads em andamento sem follow-up travado.",
+                isDone: openPipeline >= 5 && overdueFollowupsCount == 0,
+                target: .events
+            ),
+            ReadinessCheck(
+                title: "Ritual com manager IA",
+                detail: "5+ interações recentes para orientar decisões.",
+                isDone: managerMessages.count >= 5,
+                target: .manager
+            )
+        ]
+    }
+
+    private var commercialReadinessScore: Int {
+        guard !commercialReadinessChecks.isEmpty else { return 0 }
+        let done = commercialReadinessChecks.filter(\.isDone).count
+        return Int((Double(done) / Double(commercialReadinessChecks.count) * 100).rounded())
+    }
+
+    private var commercialReadinessLabel: String {
+        switch commercialReadinessScore {
+        case 85...100: return "Pronto para escalar"
+        case 60..<85: return "Quase pronto"
+        default: return "Ajustes críticos"
+        }
+    }
+
+    private var commercialReadinessColor: Color {
+        switch commercialReadinessScore {
+        case 85...100: return PsyTheme.success
+        case 60..<85: return PsyTheme.warning
+        default: return PsyTheme.primary
+        }
+    }
+
+    private var criticalReadinessGaps: [ReadinessCheck] {
+        commercialReadinessChecks.filter { !$0.isDone }
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -259,10 +345,13 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                         .psyAppear(delay: 0.05)
                     pipelineMetrics
                         .psyAppear(delay: 0.08)
+
+                    commercialReadinessPanel
+                        .psyAppear(delay: 0.1)
                     
                     // 💰 Financial Alerts Widget
                     FinancialAlertsWidget()
-                        .psyAppear(delay: 0.11)
+                        .psyAppear(delay: 0.12)
 
                     if !smartNotifications.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
@@ -284,11 +373,11 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                                 )
                             }
                         }
-                        .psyAppear(delay: 0.12)
+                        .psyAppear(delay: 0.13)
                     }
                     
                     upcomingGig
-                        .psyAppear(delay: 0.14)
+                        .psyAppear(delay: 0.15)
                 }
                 .padding(20)
             }
@@ -748,6 +837,70 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                         }
                         Spacer()
                         Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(PsyTheme.warning)
+                    }
+                }
+            }
+        }
+    }
+
+    private var commercialReadinessPanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PsySectionHeader(eyebrow: "Etapa 5", title: "Prontidão comercial")
+
+            PsyCard {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(alignment: .firstTextBaseline) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Score: \(commercialReadinessScore)%")
+                                .font(.system(size: 28, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
+                            Text(commercialReadinessLabel)
+                                .font(.subheadline)
+                                .foregroundStyle(commercialReadinessColor)
+                        }
+                        Spacer()
+                        Button("Abrir estratégia") {
+                            onQuickAction(.strategy)
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                    }
+
+                    ProgressView(value: Double(commercialReadinessScore), total: 100)
+                        .tint(commercialReadinessColor)
+
+                    ForEach(commercialReadinessChecks) { check in
+                        HStack(alignment: .top, spacing: 10) {
+                            Image(systemName: check.isDone ? "checkmark.seal.fill" : "circle")
+                                .foregroundStyle(check.isDone ? PsyTheme.success : PsyTheme.textSecondary)
+                                .padding(.top, 2)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(check.title)
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.white)
+                                Text(check.detail)
+                                    .font(.caption)
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                            }
+
+                            Spacer()
+
+                            if !check.isDone {
+                                Button("Resolver") {
+                                    onQuickAction(check.target)
+                                }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                            }
+                        }
+                    }
+
+                    if let firstGap = criticalReadinessGaps.first {
+                        Text("Bloqueio principal: \(firstGap.title).")
+                            .font(.caption)
                             .foregroundStyle(PsyTheme.warning)
                     }
                 }
