@@ -21,6 +21,13 @@ struct CreationStudioView: View {
     @State private var showingStatusUpdateSheet = false
     @State private var aiStrategyResult = ""
     @State private var isGeneratingStrategy = false
+    @State private var showFinancesSheet = false
+    @State private var showSocialMediaSection = false
+    @State private var showAIStrategySection = false
+    @State private var showBreakEvenSection = false
+    @State private var showPerformanceSection = false
+    @State private var showEditorialSection = false
+    @State private var showDraftLabSection = false
 
     private let cards = [
         ("Legenda magnética", "text.bubble.fill"),
@@ -80,22 +87,46 @@ struct CreationStudioView: View {
                         }
                     }
 
-                    socialMediaSpecialist
-                    aiStrategySection
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        PsySectionHeader(eyebrow: "Tour", title: "Break-even de turne")
-                        BreakEvenTourCard(tourData: .init(
-                            name: "Mini turne regional",
-                            targetRevenue: 22000,
-                            currentCosts: 14000,
-                            projection: "Break-even em 2 datas"
-                        ))
+                    sectionToggle(title: "Especialista de crescimento", isExpanded: $showSocialMediaSection)
+                    if showSocialMediaSection {
+                        socialMediaSpecialist
                     }
 
-                    performanceAnalyticsSection
-                    editorialCalendarSection
-                    contentDraftLab
+                    sectionToggle(title: "Estratégia semanal com IA", isExpanded: $showAIStrategySection)
+                    if showAIStrategySection {
+                        aiStrategySection
+                    }
+
+                    sectionToggle(title: "Break-even de turnê", isExpanded: $showBreakEvenSection)
+                    if showBreakEvenSection {
+                        VStack(alignment: .leading, spacing: 12) {
+                            PsySectionHeader(eyebrow: "Tour", title: "Break-even de turne")
+                            BreakEvenTourCard(
+                                tourData: .init(
+                                    name: "Mini turne regional",
+                                    targetRevenue: 22000,
+                                    currentCosts: 14000,
+                                    projection: "Break-even em 2 datas"
+                                ),
+                                onOpenDetails: { showFinancesSheet = true }
+                            )
+                        }
+                    }
+
+                    sectionToggle(title: "Performance e recomendações", isExpanded: $showPerformanceSection)
+                    if showPerformanceSection {
+                        performanceAnalyticsSection
+                    }
+
+                    sectionToggle(title: "Calendário editorial", isExpanded: $showEditorialSection)
+                    if showEditorialSection {
+                        editorialCalendarSection
+                    }
+
+                    sectionToggle(title: "Content Draft Lab", isExpanded: $showDraftLabSection)
+                    if showDraftLabSection {
+                        contentDraftLab
+                    }
 
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                         ForEach(cards, id: \.0) { item in
@@ -147,7 +178,35 @@ struct CreationStudioView: View {
                     ContentStatusUpdateView(item: item, modelContext: modelContext, isPresented: $showingStatusUpdateSheet)
                 }
             }
+            .sheet(isPresented: $showFinancesSheet) {
+                NavigationStack {
+                    FinancesView()
+                }
+            }
         }
+    }
+
+    private func sectionToggle(title: String, isExpanded: Binding<Bool>) -> some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isExpanded.wrappedValue.toggle()
+            }
+        } label: {
+            HStack {
+                Text(title)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                Spacer()
+                Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
+                    .font(.caption)
+                    .foregroundStyle(PsyTheme.textSecondary)
+            }
+            .padding(12)
+            .background(PsyTheme.surfaceAlt)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+        .buttonStyle(.plain)
     }
 
     private var aiStrategySection: some View {

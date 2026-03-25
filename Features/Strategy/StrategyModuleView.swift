@@ -10,6 +10,7 @@ struct StrategyModuleView: View {
     @Query(sort: \RadarEvent.dateISO) private var radarEvents: [RadarEvent]
 
     @AppStorage("strategy.chat.history.v1") private var persistedHistory = ""
+    @AppStorage("strategy.chat.lastCleared.v1") private var lastClearedHistory = ""
 
     @State private var chatMessages: [StrategyChatMessage] = []
     @State private var inputText = ""
@@ -56,6 +57,7 @@ struct StrategyModuleView: View {
 
                 Menu {
                     Button("Recuperar conversa") { loadHistory() }
+                    Button("Recuperar última limpa") { restoreLastClearedHistory() }
                     Button("Limpar conversa", role: .destructive) { showClearAlert = true }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -349,9 +351,26 @@ struct StrategyModuleView: View {
               let decoded = try? JSONDecoder().decode([StrategyChatMessage].self, from: data)
         else { return }
         chatMessages = decoded
+        feedback = "Conversa recuperada."
+    }
+
+    private func restoreLastClearedHistory() {
+        guard !lastClearedHistory.isEmpty,
+              let data = lastClearedHistory.data(using: .utf8),
+              let decoded = try? JSONDecoder().decode([StrategyChatMessage].self, from: data)
+        else {
+            feedback = "Nenhuma conversa limpa para recuperar."
+            return
+        }
+        chatMessages = decoded
+        persistedHistory = lastClearedHistory
+        feedback = "Última conversa limpa recuperada."
     }
 
     private func clearHistory() {
+        if !persistedHistory.isEmpty {
+            lastClearedHistory = persistedHistory
+        }
         chatMessages.removeAll()
         persistedHistory = ""
         feedback = "Historico limpo."

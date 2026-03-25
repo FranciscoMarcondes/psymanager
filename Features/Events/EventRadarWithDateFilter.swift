@@ -99,6 +99,8 @@ struct DateRangePickerView: View {
 // MARK: - Event Search with Date Filter
 struct EventRadarWithDateFilter: View {
     @Query(sort: \RadarEvent.dateISO) private var radarEvents: [RadarEvent]
+    @Query(sort: \EventLead.eventDate) private var leads: [EventLead]
+    @Query(sort: \Gig.date) private var gigs: [Gig]
 
     @State private var startDate = Date()
     @State private var endDate = Calendar.current.date(byAdding: .month, value: 1, to: Date()) ?? Date()
@@ -106,6 +108,27 @@ struct EventRadarWithDateFilter: View {
     @State private var events: [RadarEvent] = []
     @State private var showDatePicker = false
     @State private var isLoading = false
+    @State private var selectedRangePreset: DatePreset = .upcoming30
+
+    private enum DatePreset: String, CaseIterable, Identifiable {
+        case all = "Todos"
+        case upcoming30 = "Próximos 30 dias"
+        case thisMonth = "Este mês"
+        case nextMonth = "Próximo mês"
+
+        var id: String { rawValue }
+    }
+
+    private var availableCities: [String] {
+        let fromRadar = radarEvents.map(\.city)
+        let fromLeads = leads.map(\.city)
+        let fromGigs = gigs.map(\.city)
+        let fallback = ["São Paulo", "Rio de Janeiro", "Belo Horizonte", "Curitiba", "Florianópolis", "Brasília"]
+        return Array(Set(fromRadar + fromLeads + fromGigs + fallback))
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .sorted()
+    }
 
     private let eventDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -121,6 +144,13 @@ struct EventRadarWithDateFilter: View {
             // Filter bar
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
+                    Picker("Período", selection: $selectedRangePreset) {
+                        ForEach(DatePreset.allCases) { preset in
+                            Text(preset.rawValue).tag(preset)
+                        }
+                    }
+                    .pickerStyle(.menu)
+
                     // Date filter
                     Button(action: { showDatePicker = true }) {
                         HStack(spacing: 4) {
@@ -142,7 +172,7 @@ struct EventRadarWithDateFilter: View {
                         },
                         options: [
                             AccessibleMenuButton.MenuOption(label: "Todas as cidades", value: "", icon: nil)
-                        ] + Array(Set(radarEvents.map(\.city))).sorted().map {
+                        ] + availableCities.map {
                             AccessibleMenuButton.MenuOption(label: $0, value: $0, icon: nil)
                         },
                         onSelect: { value in
@@ -205,6 +235,10 @@ struct EventRadarWithDateFilter: View {
         .onAppear {
             searchEvents()
         }
+        .onChange(of: selectedRangePreset) {
+            updateDatesForPreset()
+            searchEvents()
+        }
     }
     
     private func searchEvents() {
@@ -224,6 +258,26 @@ struct EventRadarWithDateFilter: View {
                 events = filtered
                 isLoading = false
             }
+        }
+    }
+
+    private func updateDatesForPreset() {
+        let calendar = Calendar.current
+        let now = Date()
+        switch selectedRangePreset {
+        case .all:
+            startDate = calendar.date(byAdding: .year, value: -5, to: now) ?? now
+            endDate = calendar.date(byAdding: .year, value: 5, to: now) ?? now
+        case .upcoming30:
+            startDate = now
+            endDate = calendar.date(byAdding: .day, value: 30, to: now) ?? now
+        case .thisMonth:
+            startDate = calendar.date(from: calendar.dateComponents([.year, .month], from: now)) ?? now
+            endDate = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startDate) ?? now
+        case .nextMonth:
+            let currentMonthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: now)) ?? now
+            startDate = calendar.date(byAdding: .month, value: 1, to: currentMonthStart) ?? now
+            endDate = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startDate) ?? now
         }
     }
 

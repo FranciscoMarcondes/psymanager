@@ -3,6 +3,7 @@ import SwiftUI
 struct BreakEvenTourCard: View {
     @State private var isExpanded = false
     let tourData: TourBreakEvenData
+    var onOpenDetails: (() -> Void)? = nil
     
     struct TourBreakEvenData {
         let name: String
@@ -17,14 +18,14 @@ struct BreakEvenTourCard: View {
                 HStack {
                     Label("Receita Alvo", systemImage: "target")
                     Spacer()
-                    Text("R$ \(formatCurrency(tourData.targetRevenue))")
+                    Text(formatCurrency(tourData.targetRevenue))
                         .fontWeight(.semibold)
                 }
                 
                 HStack {
                     Label("Custos Atuais", systemImage: "dollarsign.circle")
                     Spacer()
-                    Text("R$ \(formatCurrency(tourData.currentCosts))")
+                    Text(formatCurrency(tourData.currentCosts))
                         .fontWeight(.semibold)
                 }
                 
@@ -36,6 +37,14 @@ struct BreakEvenTourCard: View {
                     Text(tourData.projection)
                         .foregroundStyle(.green)
                         .fontWeight(.semibold)
+                }
+
+                if let onOpenDetails {
+                    Button("Abrir detalhamento financeiro") {
+                        onOpenDetails()
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
                 }
             }
             .padding(.vertical, 8)

@@ -33,6 +33,7 @@ struct DashboardView: View {
     @AppStorage("psy.soundcloud.lastCheckedAt") private var soundCloudLastCheckedAtISO = ""
     @State private var dashboardMode: DashboardMode = .focus
     @State private var dismissedSmartNotificationTitles: Set<String> = []
+    @State private var showExpandedDashboard = false
 
     private let notificationPlanner = NotificationPlanner()
 
@@ -343,41 +344,67 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                     // CLEAN VERSION - Focus on today's actions only
                     quickActions
                         .psyAppear(delay: 0.05)
-                    pipelineMetrics
-                        .psyAppear(delay: 0.08)
 
-                    commercialReadinessPanel
-                        .psyAppear(delay: 0.1)
-                    
-                    // 💰 Financial Alerts Widget
-                    FinancialAlertsWidget()
-                        .psyAppear(delay: 0.12)
-
-                    if !smartNotifications.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
-                            PsySectionHeader(eyebrow: "Avisos", title: "Avisos inteligentes")
-
-                            ForEach(smartNotifications) { notification in
-                                SmartNotificationCard(
-                                    notification: notification,
-                                    onDismiss: {
-                                        dismissedSmartNotificationTitles.insert(notification.title)
-                                    },
-                                    onNavigate: { _ in
-                                        if notification.title.lowercased().contains("follow-up") {
-                                            onQuickAction(.manager)
-                                        } else {
-                                            onQuickAction(.events)
-                                        }
-                                    }
-                                )
+                    PsyCard {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Dashboard compacto")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.white)
+                                Text(showExpandedDashboard ? "Modo completo ativo" : "Expanda para ver painéis detalhados")
+                                    .font(.caption)
+                                    .foregroundStyle(PsyTheme.textSecondary)
                             }
+                            Spacer()
+                            Button(showExpandedDashboard ? "Minimizar" : "Expandir") {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showExpandedDashboard.toggle()
+                                }
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
                         }
-                        .psyAppear(delay: 0.13)
                     }
-                    
-                    upcomingGig
-                        .psyAppear(delay: 0.15)
+                    .psyAppear(delay: 0.08)
+
+                    if showExpandedDashboard {
+                        pipelineMetrics
+                            .psyAppear(delay: 0.1)
+
+                        commercialReadinessPanel
+                            .psyAppear(delay: 0.12)
+                        
+                        // 💰 Financial Alerts Widget
+                        FinancialAlertsWidget()
+                            .psyAppear(delay: 0.14)
+
+                        if !smartNotifications.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                PsySectionHeader(eyebrow: "Avisos", title: "Avisos inteligentes")
+
+                                ForEach(smartNotifications) { notification in
+                                    SmartNotificationCard(
+                                        notification: notification,
+                                        onDismiss: {
+                                            dismissedSmartNotificationTitles.insert(notification.title)
+                                        },
+                                        onNavigate: { _ in
+                                            if notification.title.lowercased().contains("follow-up") {
+                                                onQuickAction(.manager)
+                                            } else {
+                                                onQuickAction(.events)
+                                            }
+                                        }
+                                    )
+                                }
+                            }
+                            .psyAppear(delay: 0.15)
+                        }
+                        
+                        upcomingGig
+                            .psyAppear(delay: 0.16)
+                    }
                 }
                 .padding(20)
             }

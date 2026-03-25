@@ -204,17 +204,27 @@ struct RadarSearchView: View {
                         Text("Estados")
                             .font(.subheadline)
                             .fontWeight(.semibold)
+                            .foregroundStyle(.white)
                         
                         FlowLayout(spacing: 8) {
                             ForEach(allStates, id: \.self) { state in
-                                Toggle(isOn: Binding(
-                                    get: { selectedStates.contains(state) },
-                                    set: { if $0 { selectedStates.insert(state) } else { selectedStates.remove(state) } }
-                                )) {
+                                Button {
+                                    if selectedStates.contains(state) {
+                                        selectedStates.remove(state)
+                                    } else {
+                                        selectedStates.insert(state)
+                                    }
+                                } label: {
                                     Text(state)
                                         .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(selectedStates.contains(state) ? Color.black : Color.white)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 6)
+                                        .background(selectedStates.contains(state) ? PsyTheme.primary : PsyTheme.surfaceAlt)
+                                        .clipShape(Capsule())
                                 }
-                                .tint(PsyTheme.primary)
+                                .buttonStyle(.plain)
                             }
                         }
                     }
@@ -224,17 +234,27 @@ struct RadarSearchView: View {
                         Text("Transporte")
                             .font(.subheadline)
                             .fontWeight(.semibold)
+                            .foregroundStyle(.white)
                         
                         HStack(spacing: 8) {
                             ForEach(transportTypes, id: \.self) { type in
-                                Toggle(isOn: Binding(
-                                    get: { selectedTransports.contains(type) },
-                                    set: { if $0 { selectedTransports.insert(type) } else { selectedTransports.remove(type) } }
-                                )) {
+                                Button {
+                                    if selectedTransports.contains(type) {
+                                        selectedTransports.remove(type)
+                                    } else {
+                                        selectedTransports.insert(type)
+                                    }
+                                } label: {
                                     Text(type)
                                         .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(selectedTransports.contains(type) ? Color.black : Color.white)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 6)
+                                        .background(selectedTransports.contains(type) ? PsyTheme.primary : PsyTheme.surfaceAlt)
+                                        .clipShape(Capsule())
                                 }
-                                .tint(PsyTheme.primary)
+                                .buttonStyle(.plain)
                             }
                         }
                     }
