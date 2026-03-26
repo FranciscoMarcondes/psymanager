@@ -301,6 +301,37 @@ struct DashboardView: View {
         return Int((Double(playbookExecutionCompleted) / Double(playbookExecutionTotal) * 100).rounded())
     }
 
+    private struct PlaybookWeeklyPoint: Identifiable {
+        let id = UUID()
+        let label: String
+        let pct: Double
+        let total: Int
+        let completed: Int
+    }
+
+    private var playbookWeeklyTrend: [PlaybookWeeklyPoint] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let weekday = calendar.component(.weekday, from: today)
+        let daysToMonday = (weekday == 1) ? 6 : weekday - 2
+        guard let currentMonday = calendar.date(byAdding: .day, value: -daysToMonday, to: today) else { return [] }
+        return (0..<4).map { offset in
+            guard
+                let weekStart = calendar.date(byAdding: .weekOfYear, value: offset - 3, to: currentMonday),
+                let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart)
+            else { return PlaybookWeeklyPoint(label: "S\(offset+1)", pct: 0, total: 0, completed: 0) }
+            let label = offset == 3 ? "Sem." : "S-\(3 - offset)"
+            let weekTasks = tasks.filter { $0.title.hasPrefix("[Playbook") && $0.dueDate >= weekStart && $0.dueDate < weekEnd }
+            let done = weekTasks.filter(\.completed).count
+            let pct = weekTasks.isEmpty ? 0.0 : Double(done) / Double(weekTasks.count) * 100
+            return PlaybookWeeklyPoint(label: label, pct: pct, total: weekTasks.count, completed: done)
+        }
+    }
+
+    private var hasPlaybookTrendData: Bool {
+        playbookWeeklyTrend.contains { $0.total > 0 }
+    }
+
     private var gigs72hMissingTripCount: Int {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -1492,6 +1523,40 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                                 .font(.caption)
                                 .foregroundStyle(PsyTheme.textSecondary)
                         }
+                    }
+
+                    if hasPlaybookTrendData {
+                        Divider().overlay(Color.white.opacity(0.08))
+
+                        Text("Últimas 4 semanas")
+                            .font(.caption)
+                            .foregroundStyle(PsyTheme.textSecondary)
+
+                        Chart {
+                            ForEach(playbookWeeklyTrend) { point in
+                                BarMark(
+                                    x: .value("Semana", point.label),
+                                    y: .value("%", point.pct)
+                                )
+                                .foregroundStyle(point.pct >= 80 ? Color.green : (point.pct >= 50 ? Color.cyan : (point.total > 0 ? PsyTheme.warning : PsyTheme.textSecondary)))
+                                .cornerRadius(4)
+                            }
+                        }
+                        .chartYScale(domain: 0...100)
+                        .chartYAxis {
+                            AxisMarks(values: [0, 50, 100]) { value in
+                                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5))
+                                    .foregroundStyle(Color.white.opacity(0.1))
+                                AxisValueLabel {
+                                    if let v = value.as(Double.self) {
+                                        Text("\(Int(v))%")
+                                            .font(.caption2)
+                                            .foregroundStyle(PsyTheme.textSecondary)
+                                    }
+                                }
+                            }
+                        }
+                        .frame(height: 110)
                     }
                 }
             }
