@@ -733,6 +733,10 @@ struct EventPipelineView: View {
         Task {
             let activeLeads = leads.filter { $0.status != "Fechado" }.count
             let prompt = "Sou um DJ de \(leads.first?.city ?? "São Paulo"). Tenho \(leads.count) leads ativos, \(gigs.count) gigs confirmadas. Me dê: 1) sugestão de faixa de cache para esse nível, 2) estratégia de follow-up para leads frios, 3) 3 dicas de negociação com promoters."
+            let userMessage = ManagerChatMessage(
+                role: "user",
+                text: "[Assessor IA de Booking] \(prompt)"
+            )
             let result = await WebAIService.shared.ask(
                 artistName: leads.first?.name ?? "DJ",
                 prompt: prompt,
@@ -745,6 +749,14 @@ struct EventPipelineView: View {
                 )
             )
             await MainActor.run {
+                modelContext.insert(userMessage)
+                modelContext.insert(
+                    ManagerChatMessage(
+                        role: "assistant",
+                        text: "[Assessor IA de Booking] \(result)"
+                    )
+                )
+                try? modelContext.save()
                 bookingAdvisorResult = result
                 isRunningAdvisor = false
             }

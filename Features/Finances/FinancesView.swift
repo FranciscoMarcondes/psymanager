@@ -42,6 +42,8 @@ struct FinancesView: View {
     @State private var showingExpenseForm = false
     @State private var appeared = false
     @State private var showBreakEven = false
+    @State private var selectedBreakEvenGigID: PersistentIdentifier?
+    @State private var showTourBreakEven = false
 
     // Break-even calculator state
     @State private var beGrossFee = ""
@@ -113,6 +115,37 @@ struct FinancesView: View {
         if beNet > 0 { return "Lucro" }
         if beNet == 0 { return "Break-even" }
         return "Prejuízo"
+    }
+
+    private var confirmedGigs: [Gig] {
+        gigs.filter { $0.fee > 0 }
+    }
+
+    private var selectedBreakEvenGig: Gig? {
+        guard let selectedBreakEvenGigID else { return nil }
+        return confirmedGigs.first(where: { $0.persistentModelID == selectedBreakEvenGigID })
+    }
+
+    private var tourBreakEvenData: BreakEvenTourCard.TourBreakEvenData {
+        let targetRevenue = confirmedGigs.reduce(0) { $0 + $1.fee }
+        let currentCosts = expenses.reduce(0) { $0 + $1.amount }
+        let confirmedCount = confirmedGigs.count
+        let projection: String
+        if confirmedCount == 0 {
+            projection = "Cadastre gigs com cachê para projetar a turnê"
+        } else if currentCosts <= 0 {
+            projection = "Custos zerados - margem total em \(confirmedCount) show(s)"
+        } else {
+            projection = currentCosts >= targetRevenue
+                ? "Turnê no vermelho - revise custos ou fee"
+                : "Break-even projetado com \(confirmedCount) show(s) confirmados"
+        }
+        return .init(
+            name: confirmedCount > 0 ? "Agenda atual" : "Sem gigs",
+            targetRevenue: targetRevenue,
+            currentCosts: currentCosts,
+            projection: projection
+        )
     }
 
     // Monthly trend (last 6 months)
@@ -264,6 +297,30 @@ struct FinancesView: View {
 
                     if showBreakEven {
                         VStack(spacing: 10) {
+                            if !confirmedGigs.isEmpty {
+                                Picker("Vincular a gig", selection: $selectedBreakEvenGigID) {
+                                    Text("Selecionar gig (opcional)")
+                                        .tag(Optional<PersistentIdentifier>.none)
+                                    ForEach(confirmedGigs, id: \.persistentModelID) { gig in
+                                        Text("\(gig.title) • \(gig.city) • \(fmtBRL(gig.fee))")
+                                            .tag(Optional(gig.persistentModelID))
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .onChange(of: selectedBreakEvenGigID) { _, _ in
+                                    if let gig = selectedBreakEvenGig {
+                                        beGrossFee = String(Int(gig.fee))
+                                    }
+                                }
+
+                                if let gig = selectedBreakEvenGig {
+                                    Text("Gig vinculada: \(gig.title) em \(gig.city)")
+                                        .font(.caption)
+                                        .foregroundStyle(PsyTheme.primary)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                            }
+
                             beField("Cachê bruto (R$)", text: $beGrossFee, placeholder: "Ex: 3500")
                             HStack(spacing: 10) {
                                 beField("Agência (%)", text: $beAgencyPct)
@@ -307,6 +364,19 @@ struct FinancesView: View {
                         Text("Bloco minimizado. Toque em Expandir para simular o lucro da gig.")
                             .font(.caption)
                             .foregroundStyle(PsyTheme.textSecondary)
+                    }
+
+                    if !confirmedGigs.isEmpty || !expenses.isEmpty {
+                        Divider().overlay(Color.white.opacity(0.08))
+                        BreakEvenTourCard(
+                            isExpanded: $showTourBreakEven,
+                            tourData: tourBreakEvenData,
+                            onOpenDetails: {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showBreakEven = true
+                                }
+                            }
+                        )
                     }
                 }
             }
