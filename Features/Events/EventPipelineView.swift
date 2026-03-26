@@ -1888,6 +1888,7 @@ private struct GigFormView: View {
     @State private var checklistSummary = "Pendrive, projeto atualizado, roupa, transporte"
     @State private var fee = "1500"
     @State private var date = Date().addingTimeInterval(60 * 60 * 24 * 10)
+    @State private var status = "Confirmado" // New: status selection
 
     let onSave: (Gig) -> Void
 
@@ -1921,6 +1922,12 @@ private struct GigFormView: View {
                                 .textFieldStyle(.roundedBorder)
                             DatePicker("Data", selection: $date, displayedComponents: [.date, .hourAndMinute])
                                 .tint(PsyTheme.primary)
+                            Picker("Status", selection: $status) {
+                                Text("Confirmado").tag("Confirmado")
+                                Text("Em negociação").tag("Negociacao")
+                                Text("Lead").tag("Lead")
+                            }
+                            .tint(PsyTheme.primary)
                             TextField("Checklist", text: $checklistSummary, axis: .vertical)
                                 .textFieldStyle(.roundedBorder)
                                 .lineLimit(3...6)
@@ -1945,7 +1952,8 @@ private struct GigFormView: View {
                             date: date,
                             fee: Double(fee) ?? 0,
                             contactName: contactName,
-                            checklistSummary: checklistSummary
+                            checklistSummary: checklistSummary,
+                            status: status
                         ))
                         dismiss()
                     }

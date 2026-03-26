@@ -10,6 +10,7 @@ final class Gig {
     var fee: Double
     var contactName: String
     var checklistSummary: String
+    var status: String = "Confirmado" // "Confirmado", "Negociacao", "Lead"
     var addedToCalendar: Bool
     var reminderScheduled: Bool
 
@@ -21,6 +22,7 @@ final class Gig {
         fee: Double,
         contactName: String,
         checklistSummary: String,
+        status: String = "Confirmado",
         addedToCalendar: Bool = false,
         reminderScheduled: Bool = false
     ) {
@@ -31,6 +33,7 @@ final class Gig {
         self.fee = fee
         self.contactName = contactName
         self.checklistSummary = checklistSummary
+        self.status = status
         self.addedToCalendar = addedToCalendar
         self.reminderScheduled = reminderScheduled
     }
