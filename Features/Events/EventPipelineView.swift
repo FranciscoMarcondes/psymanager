@@ -3,6 +3,72 @@ import CoreLocation
 import SwiftData
 import SwiftUI
 
+// MARK: - BreakEvenCalculation Model
+@Model
+final class BreakEvenCalculation {
+    var gigTitle: String
+    var gigCity: String
+    var gigId: String?
+    
+    var grossFee: Double
+    var agencyPercent: Double
+    var taxPercent: Double
+    var flight: Double
+    var hotel: Double
+    var transport: Double
+    var food: Double
+    var other: Double
+    
+    var netProfit: Double
+    var marginPercentage: Int
+    var status: String
+    
+    var date: Date
+    var suggestedMinimumFee: Double?
+    
+    init(
+        gigTitle: String,
+        gigCity: String,
+        gigId: String? = nil,
+        grossFee: Double,
+        agencyPercent: Double,
+        taxPercent: Double,
+        flight: Double,
+        hotel: Double,
+        transport: Double,
+        food: Double,
+        other: Double
+    ) {
+        self.gigTitle = gigTitle
+        self.gigCity = gigCity
+        self.gigId = gigId
+        self.grossFee = grossFee
+        self.agencyPercent = agencyPercent
+        self.taxPercent = taxPercent
+        self.flight = flight
+        self.hotel = hotel
+        self.transport = transport
+        self.food = food
+        self.other = other
+        self.date = Date()
+        
+        let agencyValue = grossFee * (agencyPercent / 100)
+        let taxValue = grossFee * (taxPercent / 100)
+        let operationalCosts = flight + hotel + transport + food + other
+        let net = grossFee - agencyValue - taxValue - operationalCosts
+        
+        self.netProfit = net
+        self.marginPercentage = grossFee > 0 ? Int((net / grossFee) * 100) : 0
+        self.status = grossFee <= 0 ? "" : net > 0 ? "Lucro" : net == 0 ? "Break-even" : "Prejuízo"
+        
+        if net < 0 {
+            let totalCosts = agencyPercent + taxPercent
+            let minFeeForBreakEven = operationalCosts / (1 - (totalCosts / 100))
+            self.suggestedMinimumFee = minFeeForBreakEven * 1.20
+        }
+    }
+}
+
 private enum TemplateSyncConfig {
     static let baseURLKey = "psy.web.baseURL"
     static let authHeaderKey = "psy.web.authHeader"
@@ -2335,6 +2401,7 @@ private struct GigEditFormView: View {
 // MARK: - BreakEvenCalculatorSheetView
 private struct BreakEvenCalculatorSheetView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     
     let gig: Gig
     @Binding var isPresented: Bool
@@ -2347,8 +2414,9 @@ private struct BreakEvenCalculatorSheetView: View {
     @State private var transport: String = ""
     @State private var food: String = ""
     @State private var other: String = ""
+    @State private var showFeeRecommendation = false
     
-    var calculatedBreakEven: (net: Double, margin: Int, status: String) {
+    var calculatedBreakEven: (net: Double, margin: Int, status: String, minFee: Double?) {
         let gross = Double(grossFee.replacingOccurrences(of: ",", with: ".")) ?? 0
         let agency = Double(agencyPercent.replacingOccurrences(of: ",", with: ".")) ?? 0
         let tax = Double(taxPercent.replacingOccurrences(of: ",", with: ".")) ?? 0
@@ -2365,7 +2433,33 @@ private struct BreakEvenCalculatorSheetView: View {
         let margin = gross > 0 ? Int((net / gross) * 100) : 0
         let status = gross <= 0 ? "" : net > 0 ? "Lucro" : net == 0 ? "Break-even" : "Prejuízo"
         
-        return (net, margin, status)
+        // Calcular fee mínimo se houver prejuízo
+        var minFee: Double? = nil
+        if net < 0 {
+            let totalCosts = agency + tax
+            let minFeeForBreakEven = operationalCosts / (1 - (totalCosts / 100))
+            minFee = minFeeForBreakEven * 1.20
+        }
+        
+        return (net, margin, status, minFee)
+    }
+    
+    private func saveCalculation() {
+        let calc = BreakEvenCalculation(
+            gigTitle: gig.title,
+            gigCity: gig.city,
+            gigId: UUID().uuidString,
+            grossFee: Double(grossFee.replacingOccurrences(of: ",", with: ".")) ?? 0,
+            agencyPercent: Double(agencyPercent.replacingOccurrences(of: ",", with: ".")) ?? 0,
+            taxPercent: Double(taxPercent.replacingOccurrences(of: ",", with: ".")) ?? 0,
+            flight: Double(flight.replacingOccurrences(of: ",", with: ".")) ?? 0,
+            hotel: Double(hotel.replacingOccurrences(of: ",", with: ".")) ?? 0,
+            transport: Double(transport.replacingOccurrences(of: ",", with: ".")) ?? 0,
+            food: Double(food.replacingOccurrences(of: ",", with: ".")) ?? 0,
+            other: Double(other.replacingOccurrences(of: ",", with: ".")) ?? 0
+        )
+        modelContext.insert(calc)
+        try? modelContext.save()
     }
     
     var body: some View {
@@ -2525,6 +2619,94 @@ private struct BreakEvenCalculatorSheetView: View {
                                         .cornerRadius(6)
                                 }
                             }
+                        }
+                    }
+                    
+                    // Success/Warning State
+                    if calculatedBreakEven.net > 0 {
+                        VStack(spacing: 8) {
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                                    .font(.title3)
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("✅ Gig viável!")
+                                        .font(.headline)
+                                    Text("Margem positiva - segue para negociação")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
+                                
+                                Spacer()
+                            }
+                            .padding(12)
+                            .background(Color.green.opacity(0.1))
+                            .cornerRadius(8)
+                            
+                            Button {
+                                saveCalculation()
+                            } label: {
+                                HStack {
+                                    Image(systemName: "checkmark.square")
+                                    Text("Salvar este cálculo")
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.green)
+                        }
+                    } else if calculatedBreakEven.net < 0,
+                              let minFee = calculatedBreakEven.minFee {
+                        VStack(spacing: 8) {
+                            HStack {
+                                Image(systemName: "exclamationmark.circle.fill")
+                                    .foregroundStyle(.red)
+                                    .font(.title3)
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("⚠️ Prejuízo!")
+                                        .font(.headline)
+                                    Text("Negocie fee maior ou reduza custos")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
+                                
+                                Spacer()
+                            }
+                            .padding(12)
+                            .background(Color.red.opacity(0.1))
+                            .cornerRadius(8)
+                            
+                            VStack(spacing: 6) {
+                                HStack {
+                                    Text("Fee mínimo recomendado:")
+                                        .font(.caption)
+                                    Spacer()
+                                    Text("R$ \(Int(minFee))")
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(.orange)
+                                }
+                                
+                                Text("Isso garante 20% de margem")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(12)
+                            .background(Color.orange.opacity(0.05))
+                            .cornerRadius(6)
+                            
+                            Button {
+                                saveCalculation()
+                            } label: {
+                                HStack {
+                                    Image(systemName: "checkmark.square")
+                                    Text("Salvar para negociar")
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.orange)
                         }
                     }
                 }
@@ -2774,6 +2956,131 @@ private struct LogisticsCalculatorSheetView: View {
                 estimatedCost = totalCost
                 isCalculating = false
             }
+        }
+    }
+}
+
+// MARK: - BreakEvenHistoryView
+private struct BreakEvenHistoryView: View {
+    @Query(sort: \BreakEvenCalculation.date, order: .reverse) private var calculations: [BreakEvenCalculation]
+    @Environment(\.modelContext) private var modelContext
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                if calculations.isEmpty {
+                    VStack(alignment: .center, spacing: 12) {
+                        Image(systemName: "chart.bar")
+                            .font(.system(size: 40))
+                            .foregroundStyle(.gray)
+                        
+                        Text("Nenhum cálculo salvo")
+                            .font(.headline)
+                        
+                        Text("Use a calculadora de break-even para começar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(40)
+                    .listRowInsets(EdgeInsets())
+                } else {
+                    ForEach(calculations, id: \.self) { calc in
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(calc.gigTitle)
+                                        .font(.headline)
+                                    
+                                    HStack(spacing: 12) {
+                                        Label(calc.gigCity, systemImage: "mappin")
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                        
+                                        Text(calc.date.formatted(date: .abbreviated, time: .shortened))
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                
+                                Spacer()
+                                
+                                VStack(alignment: .trailing, spacing: 4) {
+                                    Text("R$ \(Int(calc.netProfit))")
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(
+                                            calc.status == "Lucro" ? .green :
+                                            calc.status == "Break-even" ? .orange :
+                                            .red
+                                        )
+                                    
+                                    Text("\(calc.marginPercentage)%")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            
+                            HStack(spacing: 8) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: statusIcon(calc.status))
+                                        .font(.caption2)
+                                    Text(calc.status)
+                                        .font(.caption2)
+                                        .fontWeight(.semibold)
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(statusColor(calc.status).opacity(0.2))
+                                .foregroundStyle(statusColor(calc.status))
+                                .cornerRadius(4)
+                                
+                                Spacer()
+                                
+                                Button(role: .destructive) {
+                                    modelContext.delete(calc)
+                                    try? modelContext.save()
+                                } label: {
+                                    Image(systemName: "trash")
+                                        .font(.caption)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .onDelete { offsets in
+                        offsets.forEach { index in
+                            modelContext.delete(calculations[index])
+                        }
+                        try? modelContext.save()
+                    }
+                }
+            }
+            .navigationTitle("Histórico de Break-even")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    EditButton()
+                }
+            }
+        }
+    }
+    
+    private func statusIcon(_ status: String) -> String {
+        switch status {
+        case "Lucro": return "checkmark.circle.fill"
+        case "Break-even": return "minus.circle.fill"
+        case "Prejuízo": return "exclamationmark.circle.fill"
+        default: return "questionmark.circle.fill"
+        }
+    }
+    
+    private func statusColor(_ status: String) -> Color {
+        switch status {
+        case "Lucro": return .green
+        case "Break-even": return .orange
+        case "Prejuízo": return .red
+        default: return .gray
         }
     }
 }
