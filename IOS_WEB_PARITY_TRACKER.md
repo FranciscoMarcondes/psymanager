@@ -17,6 +17,7 @@ Keep a single source of truth for features that must ship in parity between iOS 
 | Next gig playbook (D-3 / D-1 / D0) | Done | Done | Stage detection, checklist card, and one-click task creation. |
 | Post-show playbook (D+1) | Done | Done | New checklist for financial close, promoter follow-up, and recap content. |
 | Auto trigger for post-show playbook (D+1) | Done | Done | Runs once per day per recent gig, no duplicate task insertion. |
+| KPI card for playbook execution | Done | Done | Completion rate by stage (D-3, D-1, D0, D+1) and overall progress. |
 
 ## Current Sprint Log
 
@@ -25,7 +26,7 @@ Keep a single source of truth for features that must ship in parity between iOS 
 - Added post-show D+1 playbook parity in iOS and web dashboards.
 - Included smart alerts and one-click task generation for both playbooks.
 - Added automatic D+1 checklist generation on dashboard load with anti-duplication guards.
+- Added KPI dashboard card for playbook execution with per-stage completion metrics.
 
 ## Next Candidates (Parity Required)
-- KPI card: checklist completion rate by playbook stage.
 - Push/in-app reminder when playbook exists and no task was generated.

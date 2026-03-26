@@ -235,6 +235,44 @@ struct DashboardView: View {
         ]
     }
 
+    private struct PlaybookExecutionMetric: Identifiable {
+        let id = UUID()
+        let stage: String
+        let total: Int
+        let completed: Int
+
+        var percentage: Int {
+            guard total > 0 else { return 0 }
+            return Int((Double(completed) / Double(total) * 100).rounded())
+        }
+    }
+
+    private var playbookExecutionMetrics: [PlaybookExecutionMetric] {
+        ["D-3", "D-1", "D0", "D+1"].map { stage in
+            let prefix = "[Playbook \(stage)]"
+            let stageTasks = tasks.filter { $0.title.hasPrefix(prefix) }
+            let stageCompleted = stageTasks.filter(\.completed).count
+            return PlaybookExecutionMetric(
+                stage: stage,
+                total: stageTasks.count,
+                completed: stageCompleted
+            )
+        }
+    }
+
+    private var playbookExecutionTotal: Int {
+        playbookExecutionMetrics.reduce(0) { $0 + $1.total }
+    }
+
+    private var playbookExecutionCompleted: Int {
+        playbookExecutionMetrics.reduce(0) { $0 + $1.completed }
+    }
+
+    private var playbookExecutionPercentage: Int {
+        guard playbookExecutionTotal > 0 else { return 0 }
+        return Int((Double(playbookExecutionCompleted) / Double(playbookExecutionTotal) * 100).rounded())
+    }
+
     private var gigs72hMissingTripCount: Int {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -576,6 +614,11 @@ private var weeklySeries: [DashboardWeeklyPoint] {
 
                         postShowPlaybookCard
                             .psyAppear(delay: 0.18)
+
+                        if playbookExecutionTotal > 0 {
+                            playbookExecutionKpiCard
+                                .psyAppear(delay: 0.19)
+                        }
                     }
                 }
                 .padding(20)
@@ -1367,6 +1410,41 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                             Text(postShowMessage)
                                 .font(.caption)
                                 .foregroundStyle(PsyTheme.primary)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var playbookExecutionKpiCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PsySectionHeader(eyebrow: "KPI", title: "Execução dos playbooks")
+
+            PsyCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text("\(playbookExecutionCompleted)/\(playbookExecutionTotal) concluídas")
+                            .font(.headline)
+                            .foregroundStyle(.white)
+                        Spacer()
+                        Text("\(playbookExecutionPercentage)%")
+                            .font(.headline)
+                            .foregroundStyle(PsyTheme.primary)
+                    }
+
+                    ProgressView(value: Double(playbookExecutionPercentage), total: 100)
+                        .tint(.cyan)
+
+                    ForEach(playbookExecutionMetrics) { metric in
+                        HStack {
+                            Text("Playbook \(metric.stage)")
+                                .font(.subheadline)
+                                .foregroundStyle(.white)
+                            Spacer()
+                            Text("\(metric.completed)/\(metric.total) · \(metric.percentage)%")
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.textSecondary)
                         }
                     }
                 }
