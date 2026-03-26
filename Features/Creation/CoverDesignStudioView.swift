@@ -330,20 +330,6 @@ struct CoverDesignStudioView: View {
         }
     }
 
-        // MARK: - Helpers
-
-    private func chipButton(_ label: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(label)
-                .font(.caption).fontWeight(.medium)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
-                .background(isSelected ? PsyTheme.primary : Color.white.opacity(0.08))
-                .foregroundStyle(isSelected ? .black : .white)
-                .cornerRadius(6)
-        }
-    }
-
     private func buildPrompt() {
         let genre = profile.genre.isEmpty ? "música eletrônica" : profile.genre
         let artistName = profile.stageName.isEmpty ? "artista" : profile.stageName

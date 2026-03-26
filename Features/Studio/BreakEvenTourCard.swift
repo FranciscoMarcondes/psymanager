@@ -60,7 +60,7 @@ struct BreakEvenTourCard: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                Image(systemName: isExpanded.wrappedValue ? "chevron.up" : "chevron.down")
                     .foregroundStyle(.secondary)
             }
             .contentShape(Rectangle())
@@ -78,7 +78,7 @@ struct BreakEvenTourCard: View {
 }
 
 #Preview {
-    @State var isExpanded = false
+    @Previewable @State var isExpanded = false
     return BreakEvenTourCard(
         isExpanded: $isExpanded,
         tourData: .init(

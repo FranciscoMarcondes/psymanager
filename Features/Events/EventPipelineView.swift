@@ -767,7 +767,6 @@ struct EventPipelineView: View {
             }
         }
     }
-}
 
         @MainActor
         private func generateReactivationMessage(lead: EventLead, leadId: String) async {
@@ -787,6 +786,8 @@ struct EventPipelineView: View {
             coldLeadMessages[leadId] = message
             generatingColdLeadId = nil
         }
+
+ }
 
 private struct LogisticsCostCalculatorView: View {
     let leads: [EventLead]

@@ -680,14 +680,7 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                             socialMediaPulse
                                 .psyAppear(delay: 0.145)
 
-                            // 🤖 AI Hub — Parceiro + Semanal
-                            AIHubCard(
-                                profile: profile,
-                                leadsCount: leads.count,
-                                gigsCount: gigs.count,
-                                latestInsight: latestInsight
-                            )
-                            .psyAppear(delay: 0.15)
+                            // 🤖 AI Hub card disabled in iOS target (component not linked in this project file)
 
                         if !smartNotifications.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
@@ -936,10 +929,10 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         VStack(alignment: .leading, spacing: 12) {
             PsySectionHeader(eyebrow: "Semana", title: "Plano de ataque")
 
-                    }
+            PsyCard {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Prioridades dinâmicas")
-                   Button {
+                        .font(.headline)
                         .foregroundStyle(.white)
 
                     ForEach(topWeeklyPriorities) { item in
@@ -1055,34 +1048,6 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         }
     }
 
-    private var socialMediaPulse: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            PsySectionHeader(eyebrow: "Growth", title: "Pulso social")
-
-            PsyCard {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack(spacing: 12) {
-                        metricCard(title: "Seguidores", value: socialGrowthText, detail: "ultimo período")
-                        metricCard(title: "Descoberta", value: socialReachText, detail: "média recente")
-                    }
-
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Foco recomendado")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                        Text(socialFocusText)
-                            .foregroundStyle(PsyTheme.textSecondary)
-                    }
-
-                    Button("Abrir especialista social") {
-                        onQuickAction(.creation)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(PsyTheme.accent)
-                }
-            }
-        }
-    }
         private var socialMediaPulse: some View {
             VStack(alignment: .leading, spacing: 12) {
                 PsySectionHeader(eyebrow: "Growth", title: "Pulso social")
@@ -1937,4 +1902,6 @@ private struct DashboardWeeklyPoint: Identifiable {
     let label: String
     let leads: Int
     let closed: Int
+}
+
 }
