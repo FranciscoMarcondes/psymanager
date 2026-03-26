@@ -20,6 +20,8 @@ Keep a single source of truth for features that must ship in parity between iOS 
 | KPI card for playbook execution | Done | Done | Completion rate by stage (D-3, D-1, D0, D+1) and overall progress. |
 | Reminder when playbook has no tasks | Done | Done | In-app reminder on both platforms; web also sends browser push when enabled. |
 | Playbook trendline (4-week history) | Done | Done | Bar chart per week (D-3 to D+1 combined) using gig dueDate/dateISO bucketing. |
+| Operational health score | Done | Done | Aggregate of gigs, content, financeiro, booking in % on dashboard. Weekly context injected to manager IA. |
+| Weekly auto-context for Manager IA | Done | Done | Weekly summary text auto-feeds manager knowledge base on both platforms. iOS button to send context. |
 
 ## Current Sprint Log
 
@@ -31,7 +33,8 @@ Keep a single source of truth for features that must ship in parity between iOS 
 - Added KPI dashboard card for playbook execution with per-stage completion metrics.
 - Added reminders when a playbook exists but tasks were not generated yet (web + iOS).
 - Added 4-week playbook execution trendline (CSS bar chart on web, SwiftUI Chart on iOS).
+- **FINAL: Added operational health score (4-pillar aggregate: shows, conteúdo, finanças, booking).**
+- **FINAL: Added weekly auto-context for Manager IA (auto-feeds on web, send button on iOS).**
 
-## Next Candidates (Parity Required)
-- Score de saúde operacional (aggregate de gigs, conteúdo, financeiro, booking em % únicos).
-- Resumo semanal automático em texto para o Manager IA usar como contexto.
+## Next Candidates
+✅ **Tracker Complete** — All original premium workflow items delivered in parity.

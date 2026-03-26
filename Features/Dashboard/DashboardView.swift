@@ -596,6 +596,41 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         commercialReadinessChecks.filter { !$0.isDone }
     }
 
+    // ─── Score de Saúde Operacional ───
+    private var operationalHealthScore: Int {
+        var score = 0
+        let futureGigs = gigs.filter { $0.date > Date() }.count
+        score += futureGigs >= 3 ? 25 : futureGigs >= 2 ? 20 : futureGigs == 1 ? 12 : 0
+        let activeContent = contentPlanItems.filter { $0.status != "Publicado" && $0.status != "Concluído" }.count
+        score += activeContent >= 5 ? 25 : activeContent >= 3 ? 18 : activeContent >= 1 ? 10 : 0
+        if let health = cashHealthPct {
+            score += health >= 60 ? 25 : health >= 30 ? 15 : health > 0 ? 8 : 0
+        } else {
+            score += !gigs.isEmpty ? 5 : 0
+        }
+        let activeLeadsCount = leads.filter { $0.status != LeadStatus.closed.rawValue }.count
+        score += (overdueFollowupsCount == 0 && activeLeadsCount >= 5) ? 25 : (overdueFollowupsCount == 0 && activeLeadsCount >= 2) ? 18 : activeLeadsCount >= 1 ? 8 : 0
+        return min(score, 100)
+    }
+
+    private var operationalHealthLabel: String {
+        operationalHealthScore >= 80 ? "Operação saudável" : operationalHealthScore >= 55 ? "Atenção necessária" : "Operação crítica"
+    }
+
+    private var operationalHealthColor: Color {
+        operationalHealthScore >= 80 ? .green : operationalHealthScore >= 55 ? PsyTheme.warning : PsyTheme.primary
+    }
+
+    private var weeklySummaryText: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        let dateStr = formatter.string(from: Date())
+        let futureGigsCount = gigs.filter { $0.date > Date() }.count
+        let activeLeadsCount = leads.filter { $0.status != LeadStatus.closed.rawValue }.count
+        let activeContent = contentPlanItems.filter { $0.status != "Publicado" && $0.status != "Concluído" }.count
+        return "Semana de \(dateStr). Saúde operacional: \(operationalHealthScore)%. Prontidão comercial: \(commercialReadinessScore)%. Playbooks: \(playbookExecutionPercentage)%. Gigs futuras: \(futureGigsCount). Leads ativos: \(activeLeadsCount). Conteúdo em produção: \(activeContent). Follow-ups pendentes: \(overdueFollowupsCount)."
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -696,6 +731,12 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                             playbookExecutionKpiCard
                                 .psyAppear(delay: 0.19)
                         }
+
+                        operationalHealthCard
+                            .psyAppear(delay: 0.20)
+
+                        weeklySummaryCard
+                            .psyAppear(delay: 0.21)
                     }
                 }
                 .padding(20)
@@ -1563,6 +1604,69 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         }
     }
 
+    private var operationalHealthCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PsySectionHeader(eyebrow: "Score", title: "Saúde operacional")
+            PsyCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text(operationalHealthLabel)
+                            .font(.headline)
+                            .foregroundStyle(operationalHealthColor)
+                        Spacer()
+                        Text("\(operationalHealthScore)%")
+                            .font(.title2.bold())
+                            .foregroundStyle(operationalHealthColor)
+                    }
+                    ProgressView(value: Double(operationalHealthScore), total: 100)
+                        .tint(operationalHealthColor)
+                    HStack(spacing: 8) {
+                        let pillars: [(String, Bool)] = [
+                            ("Shows",    gigs.filter { $0.date > Date() }.count >= 1),
+                            ("Conteúdo", contentPlanItems.filter { $0.status != "Publicado" && $0.status != "Concluído" }.count >= 3),
+                            ("Finanças", (cashHealthPct ?? 0) >= 30 || !gigs.isEmpty),
+                            ("Booking",  leads.filter { $0.status != LeadStatus.closed.rawValue }.count >= 2),
+                        ]
+                        ForEach(pillars, id: \.0) { name, ok in
+                            VStack(spacing: 3) {
+                                Image(systemName: ok ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
+                                    .foregroundStyle(ok ? .green : PsyTheme.warning)
+                                    .font(.footnote)
+                                Text(name)
+                                    .font(.caption2)
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var weeklySummaryCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PsySectionHeader(eyebrow: "Contexto IA", title: "Resumo semanal")
+            PsyCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(weeklySummaryText)
+                        .font(.caption)
+                        .foregroundStyle(PsyTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button {
+                        sendWeeklyContextToManager()
+                    } label: {
+                        Label("Enviar para Manager IA", systemImage: "arrow.up.circle.fill")
+                            .font(.subheadline.bold())
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(PsyTheme.primary)
+                }
+            }
+        }
+    }
+
     private var weeklyChart: some View {
         VStack(alignment: .leading, spacing: 12) {
             PsySectionHeader(eyebrow: "Performance", title: "Evolução semanal")
@@ -1819,6 +1923,13 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         if Date().timeIntervalSince(last) >= staleAfter {
             await refreshCareer360Insights()
         }
+    }
+
+    private func sendWeeklyContextToManager() {
+        let message = ManagerChatMessage(role: "user", text: "[Contexto Semanal] \(weeklySummaryText)")
+        modelContext.insert(message)
+        try? modelContext.save()
+        onQuickAction(.manager)
     }
 
 private struct DashboardWeeklyPoint: Identifiable {
