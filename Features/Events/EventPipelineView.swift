@@ -580,6 +580,11 @@ struct EventPipelineView: View {
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
                                     }
+                                    if !trip.linkedGigLabel.isEmpty {
+                                        Text("Gig: \(trip.linkedGigLabel)")
+                                            .font(.caption)
+                                            .foregroundStyle(PsyTheme.primary)
+                                    }
                                     if !trip.notes.isEmpty {
                                         Text(trip.notes)
                                             .font(.caption)
@@ -670,7 +675,7 @@ struct EventPipelineView: View {
                 }
             }
             .sheet(isPresented: $showingTripForm) {
-                TripPlanFormView { trip in
+                TripPlanFormView(gigs: gigs) { trip in
                     modelContext.insert(trip)
                     try? modelContext.save()
                 }
@@ -2031,6 +2036,7 @@ private struct RadarEventFormView: View {
 
 private struct TripPlanFormView: View {
     @Environment(\.dismiss) private var dismiss
+    let gigs: [Gig]
     let onSave: (TripPlan) -> Void
 
     @State private var fromCity = ""
@@ -2041,6 +2047,7 @@ private struct TripPlanFormView: View {
     @State private var budget = ""
     @State private var notes = ""
     @State private var tripDate = Date().addingTimeInterval(60 * 60 * 24 * 14)
+    @State private var linkedGigLabel = ""
 
     private let transportOptions = ["Carro", "Avião", "Ônibus", "Van", "Moto"]
 
@@ -2065,6 +2072,23 @@ private struct TripPlanFormView: View {
                     }
                     PsyCard {
                         VStack(alignment: .leading, spacing: 12) {
+                            if !gigs.isEmpty {
+                                Picker("Gig vinculada", selection: $linkedGigLabel) {
+                                    Text("Nenhuma gig vinculada").tag("")
+                                    ForEach(gigs, id: \.persistentModelID) { gig in
+                                        Text("\(gig.title) • \(gig.city)").tag("\(gig.title) — \(gig.city)")
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .onChange(of: linkedGigLabel) { _, newValue in
+                                    guard !newValue.isEmpty,
+                                          let gig = gigs.first(where: { "\($0.title) — \($0.city)" == newValue })
+                                    else { return }
+                                    toCity = gig.city
+                                    toState = gig.state
+                                    tripDate = gig.date
+                                }
+                            }
                             HStack(spacing: 10) {
                                 TextField("Origem - cidade *", text: $fromCity)
                                     .textFieldStyle(.roundedBorder)
@@ -2117,7 +2141,8 @@ private struct TripPlanFormView: View {
                             dateISO: dateISO,
                             transport: transport,
                             budget: budget.trimmingCharacters(in: .whitespaces),
-                            notes: notes.trimmingCharacters(in: .whitespaces)
+                            notes: notes.trimmingCharacters(in: .whitespaces),
+                            linkedGigLabel: linkedGigLabel
                         ))
                         dismiss()
                     }

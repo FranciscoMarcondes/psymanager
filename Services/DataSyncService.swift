@@ -282,6 +282,7 @@ struct WorkspaceTripPlanDTO: Codable {
     var dateISO: String
     var transport: String
     var budget: String
+    var gigLabel: String?
 }
 
 struct WorkspaceContentPlanItemDTO: Codable {
@@ -292,6 +293,7 @@ struct WorkspaceContentPlanItemDTO: Codable {
     var pillar: String
     var scheduledDateISO: String
     var status: String
+    var gigLabel: String?
 }
 
 struct WorkspaceManagerKnowledgeDTO: Codable {
@@ -485,7 +487,8 @@ actor MobileSyncService {
                 toCity: tr.toCity,
                 dateISO: tr.dateISO,
                 transport: tr.transport,
-                budget: tr.budget
+                budget: tr.budget,
+                gigLabel: tr.linkedGigLabel.isEmpty ? nil : tr.linkedGigLabel
             )
         }
 
@@ -497,7 +500,8 @@ actor MobileSyncService {
                 objective: c.objective,
                 pillar: c.pillar,
                 scheduledDateISO: isoFormatter.string(from: c.scheduledDate),
-                status: c.status
+                status: c.status,
+                gigLabel: c.linkedGigLabel.isEmpty ? nil : c.linkedGigLabel
             )
         }
 
@@ -642,7 +646,8 @@ actor MobileSyncService {
                     toState: "",
                     dateISO: dto.dateISO,
                     transport: dto.transport,
-                    budget: dto.budget
+                    budget: dto.budget,
+                    linkedGigLabel: dto.gigLabel ?? ""
                 ))
             }
         }
@@ -662,7 +667,8 @@ actor MobileSyncService {
                     hook: "",
                     caption: "",
                     cta: "",
-                    hashtags: ""
+                    hashtags: "",
+                    linkedGigLabel: dto.gigLabel ?? ""
                 ))
             }
         }

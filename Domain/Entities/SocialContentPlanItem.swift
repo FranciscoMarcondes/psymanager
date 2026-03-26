@@ -14,6 +14,7 @@ final class SocialContentPlanItem {
     var cta: String
     var hashtags: String
     var notes: String
+    var linkedGigLabel: String
     var createdAt: Date
     var publishedAt: Date?
     var completedAt: Date?
@@ -30,6 +31,7 @@ final class SocialContentPlanItem {
         cta: String,
         hashtags: String,
         notes: String = "",
+        linkedGigLabel: String = "",
         createdAt: Date = .now,
         publishedAt: Date? = nil,
         completedAt: Date? = nil
@@ -45,6 +47,7 @@ final class SocialContentPlanItem {
         self.cta = cta
         self.hashtags = hashtags
         self.notes = notes
+        self.linkedGigLabel = linkedGigLabel
         self.createdAt = createdAt
         self.publishedAt = publishedAt
         self.completedAt = completedAt

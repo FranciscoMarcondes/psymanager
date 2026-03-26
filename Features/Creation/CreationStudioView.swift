@@ -564,6 +564,11 @@ struct CreationStudioView: View {
                                 Text("\(item.contentType) • \(item.objective) • \(item.pillar)")
                                     .font(.caption)
                                     .foregroundStyle(PsyTheme.primary)
+                                if !item.linkedGigLabel.isEmpty {
+                                    Text("🎛️ \(item.linkedGigLabel)")
+                                        .font(.caption2)
+                                        .foregroundStyle(PsyTheme.secondary)
+                                }
                                 Text(item.caption)
                                     .font(.caption)
                                     .foregroundStyle(PsyTheme.textSecondary)
@@ -732,6 +737,7 @@ struct CreationStudioView: View {
 
 private struct SocialContentPlanFormView: View {
     @Environment(\.dismiss) private var dismiss
+    @Query(sort: \Gig.date) private var gigs: [Gig]
 
     let profile: ArtistProfile
     let defaultPillar: String
@@ -748,6 +754,7 @@ private struct SocialContentPlanFormView: View {
     @State private var cta = ""
     @State private var hashtags = ""
     @State private var notes = ""
+    @State private var linkedGigLabel = ""
 
     var body: some View {
         NavigationStack {
@@ -769,6 +776,14 @@ private struct SocialContentPlanFormView: View {
                 TextField("Pilar", text: $pillar)
                 TextField("Status", text: $status)
                 DatePicker("Data", selection: $scheduledDate)
+                if !gigs.isEmpty {
+                    Picker("Gig vinculada", selection: $linkedGigLabel) {
+                        Text("Nenhuma gig vinculada").tag("")
+                        ForEach(gigs, id: \.persistentModelID) { gig in
+                            Text("\(gig.title) • \(gig.city)").tag("\(gig.title) — \(gig.city)")
+                        }
+                    }
+                }
                 TextField("Hook", text: $hook, axis: .vertical)
                 TextField("Legenda", text: $caption, axis: .vertical)
                 TextField("CTA", text: $cta, axis: .vertical)
@@ -809,7 +824,8 @@ private struct SocialContentPlanFormView: View {
                             caption: caption,
                             cta: cta,
                             hashtags: hashtags,
-                            notes: notes
+                            notes: notes,
+                            linkedGigLabel: linkedGigLabel
                         ))
                         dismiss()
                     }

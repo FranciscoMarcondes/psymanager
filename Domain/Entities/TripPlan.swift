@@ -11,6 +11,7 @@ final class TripPlan {
     var transport: String        // "Carro", "Avião", "Ônibus"
     var budget: String
     var notes: String
+    var linkedGigLabel: String
 
     init(
         fromCity: String,
@@ -20,7 +21,8 @@ final class TripPlan {
         dateISO: String,
         transport: String,
         budget: String = "",
-        notes: String = ""
+        notes: String = "",
+        linkedGigLabel: String = ""
     ) {
         self.fromCity = fromCity
         self.fromState = fromState
@@ -30,5 +32,6 @@ final class TripPlan {
         self.transport = transport
         self.budget = budget
         self.notes = notes
+        self.linkedGigLabel = linkedGigLabel
     }
 }
