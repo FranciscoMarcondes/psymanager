@@ -23,6 +23,7 @@ struct DashboardView: View {
 
     @State private var plannerMessage = ""
     @State private var bookingRadarMessage = ""
+    @State private var playbookMessage = ""
     @State private var isRefreshingCareer360 = false
     @State private var refreshCareerMessage = ""
     @AppStorage("career360LastSourceLabel") private var career360LastSourceLabel = "Mock fallback"
@@ -169,6 +170,52 @@ struct DashboardView: View {
         return gigs.filter { $0.date >= now && $0.date <= cutoff }
     }
 
+    private var nextGigForPlaybook: Gig? {
+        gigs.first { $0.date >= Date() }
+    }
+
+    private var nextGigPlaybookDays: Int? {
+        guard let nextGig = nextGigForPlaybook else { return nil }
+        let today = Calendar.current.startOfDay(for: Date())
+        let gigDay = Calendar.current.startOfDay(for: nextGig.date)
+        let components = Calendar.current.dateComponents([.day], from: today, to: gigDay)
+        guard let day = components.day else { return nil }
+        return max(0, day)
+    }
+
+    private var nextGigPlaybookStage: String? {
+        guard let days = nextGigPlaybookDays else { return nil }
+        if days == 0 { return "D0" }
+        if days == 1 { return "D-1" }
+        if days <= 3 { return "D-3" }
+        return nil
+    }
+
+    private var nextGigPlaybookTasks: [String] {
+        switch nextGigPlaybookStage {
+        case "D-3":
+            return [
+                "Confirmar logística (rota, horários e custos)",
+                "Atualizar break-even da gig com custos reais",
+                "Publicar conteúdo de aquecimento da data"
+            ]
+        case "D-1":
+            return [
+                "Revisar setlist e checklist técnico",
+                "Enviar confirmação final para promoter",
+                "Programar lembrete financeiro pós-show"
+            ]
+        case "D0":
+            return [
+                "Checar deslocamento e horário de passagem de som",
+                "Confirmar materiais de divulgação ao vivo",
+                "Registrar custos reais da operação da gig"
+            ]
+        default:
+            return []
+        }
+    }
+
     private var gigs72hMissingTripCount: Int {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -245,6 +292,17 @@ struct DashboardView: View {
                     title: "Caixa em risco",
                     description: "Saúde financeira em \(cashHealthPct)% com show próximo. Revise break-even hoje.",
                     type: .warning
+                )
+            )
+        }
+
+        if let stage = nextGigPlaybookStage, let gig = nextGigForPlaybook {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Playbook da próxima gig",
+                    description: "Playbook \(stage) pronto para \(gig.title).",
+                    type: .info
                 )
             )
         }
@@ -466,6 +524,8 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                                                 onQuickAction(.manager)
                                             } else if notification.title.lowercased().contains("caixa") {
                                                 onQuickAction(.finances)
+                                            } else if notification.title.lowercased().contains("playbook") {
+                                                onQuickAction(.events)
                                             } else {
                                                 onQuickAction(.events)
                                             }
@@ -478,6 +538,9 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                         
                         upcomingGig
                             .psyAppear(delay: 0.16)
+
+                        nextGigPlaybookCard
+                            .psyAppear(delay: 0.17)
                     }
                 }
                 .padding(20)
@@ -1161,6 +1224,62 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         }
     }
 
+    private var nextGigPlaybookCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PsySectionHeader(eyebrow: "Playbook", title: "Próxima gig")
+
+            if let stage = nextGigPlaybookStage, let gig = nextGigForPlaybook {
+                PsyCard {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("🧭 Playbook da Próxima Gig · \(stage)")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                            Spacer()
+                            Button("Gerar checklist") {
+                                createNextGigPlaybookTasks()
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+
+                        Text("\(gig.title) em \(gig.city)")
+                            .font(.caption)
+                            .foregroundStyle(PsyTheme.textSecondary)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            ForEach(nextGigPlaybookTasks, id: \.self) { task in
+                                Text("• \(task)")
+                                    .font(.subheadline)
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                            }
+                        }
+
+                        HStack(spacing: 10) {
+                            Button("Abrir Eventos") {
+                                onQuickAction(.events)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+
+                            Button("Abrir Finanças") {
+                                onQuickAction(.finances)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+
+                        if !playbookMessage.isEmpty {
+                            Text(playbookMessage)
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.primary)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private var weeklyChart: some View {
         VStack(alignment: .leading, spacing: 12) {
             PsySectionHeader(eyebrow: "Performance", title: "Evolução semanal")
@@ -1217,6 +1336,47 @@ private var weeklySeries: [DashboardWeeklyPoint] {
 
         try? modelContext.save()
         plannerMessage = inserted > 0 ? "\(inserted) tarefa(s) adicionada(s) ao seu plano." : "Nenhuma tarefa nova necessária agora."
+    }
+
+    private func createNextGigPlaybookTasks() {
+        guard let stage = nextGigPlaybookStage,
+              let gig = nextGigForPlaybook,
+              !nextGigPlaybookTasks.isEmpty
+        else {
+            playbookMessage = "Sem playbook de gig para os próximos 3 dias."
+            return
+        }
+
+        let dueDate = Calendar.current.startOfDay(for: gig.date)
+        let labelPrefix = "[Playbook \(stage)] \(gig.title)"
+        var inserted = 0
+
+        for item in nextGigPlaybookTasks {
+            let title = "\(labelPrefix): \(item)"
+            let exists = tasks.contains {
+                $0.title == title && Calendar.current.isDate($0.dueDate, inSameDayAs: dueDate)
+            }
+
+            if !exists {
+                modelContext.insert(
+                    CareerTask(
+                        title: title,
+                        detail: "Checklist operacional da gig \(gig.title) em \(gig.city).",
+                        priority: TaskPriority.high.rawValue,
+                        dueDate: dueDate
+                    )
+                )
+                inserted += 1
+            }
+        }
+
+        if inserted > 0 {
+            try? modelContext.save()
+            playbookMessage = "Checklist \(stage) criado para a próxima gig."
+            onQuickAction(.creation)
+        } else {
+            playbookMessage = "Checklist já estava no plano."
+        }
     }
 
     private func createTaskFromBookingOpportunity(_ opportunity: BookingOpportunity) {
