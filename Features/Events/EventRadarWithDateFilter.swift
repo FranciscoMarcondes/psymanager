@@ -25,11 +25,11 @@ struct DateRangePickerView: View {
                 
                 Divider()
                 
-                // Date pickers inside a constrained scroll view
+                // Date pickers with generous sizing
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 24) {
                         // Start date
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 12) {
                             Label("Data de Início", systemImage: "calendar")
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
@@ -40,13 +40,14 @@ struct DateRangePickerView: View {
                                 displayedComponents: [.date]
                             )
                             .datePickerStyle(.graphical)
-                            .frame(maxHeight: 350)
+                            .frame(minHeight: 400)
                         }
                         
                         Divider()
+                            .padding(.vertical, 8)
                         
                         // End date
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 12) {
                             Label("Data de Término", systemImage: "calendar")
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
@@ -57,12 +58,12 @@ struct DateRangePickerView: View {
                                 displayedComponents: [.date]
                             )
                             .datePickerStyle(.graphical)
-                            .frame(maxHeight: 350)
+                            .frame(minHeight: 400)
                         }
                     }
                     .padding()
                 }
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
                 
                 Divider()

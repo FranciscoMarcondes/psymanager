@@ -2,11 +2,29 @@ import SwiftUI
 
 struct CoverDesignStudioView: View {
     let profile: ArtistProfile
-    @State private var selectedPlatforms: Set<String> = ["Spotify", "YouTube"]
-    @State private var trackName = ""
-    @State private var mood = "energético"
-    
-    private let moods = ["energético", "melancólico", "experimental", "groovy", "dark"]
+    @State private var currentStep = 1
+    @State private var wizardPurpose = ""
+    @State private var wizardTitle = ""
+    @State private var wizardFeeling = ""
+    @State private var wizardStyle = ""
+    @State private var wizardDetails = ""
+    @State private var generatedPrompt = ""
+    @State private var isCopied = false
+        @State private var isGeneratingImage = false
+        @State private var generatedImageURLString = ""
+        @State private var imageGenError = ""
+
+    private let purposes = ["Capa de álbum", "Capa do YouTube", "Capa de playlist", "Post Instagram", "Capa de música", "Flyer de evento"]
+    private let styles = ["Ultra-realista", "Arte digital", "Neon / Futurista", "Quadrinhos", "Abstrato", "Aquarela", "Minimalista", "Cartoon 3D"]
+
+    private var stepLabel: String {
+        switch currentStep {
+        case 1: return "Para que é essa arte?"
+        case 2: return "Título e sentimento"
+        case 3: return "Estilo visual"
+        default: return "Detalhes finais"
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -16,45 +34,56 @@ struct CoverDesignStudioView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Estúdio de capas")
+                                    Text("Criar arte com IA")
                                         .font(.system(size: 30, weight: .bold, design: .rounded))
                                         .foregroundStyle(.white)
-                                    Text("Direção visual multi-plataforma")
+                                    Text("Gera prompt profissional para Bing Image Creator")
                                         .font(.subheadline)
                                         .foregroundStyle(PsyTheme.primary)
                                 }
                                 Spacer()
-                                Image(systemName: "photo.artframe")
+                                Image(systemName: "wand.and.stars")
                                     .font(.title)
                                     .foregroundStyle(PsyTheme.primary.opacity(0.6))
                             }
-                            Text("Recomendações visuais para suas faixas em múltiplas plataformas")
+                            Text("Responda algumas perguntas — montamos um prompt para gerar sua arte gratuitamente.")
+                                .font(.caption)
                                 .foregroundStyle(PsyTheme.textSecondary)
                         }
                     }
-                    
-                    platformSelectionSection
-                    generatorInputSection
-                    
-                    if !selectedPlatforms.isEmpty {
+
+                    // Step indicators
+                    PsyCard {
                         VStack(alignment: .leading, spacing: 12) {
-                            PsySectionHeader(eyebrow: "Designs", title: "Recomendações por plataforma")
-                            
-                            ForEach(Array(selectedPlatforms).sorted(), id: \.self) { platformName in
-                                if let format = CoverDesignFormat(rawValue: platformName) {
-                                    platformRecommendationCard(format: format)
+                            HStack(spacing: 8) {
+                                ForEach(1...4, id: \.self) { step in
+                                    Button {
+                                        if step < currentStep { currentStep = step }
+                                    } label: {
+                                        Text("\(step)")
+                                            .font(.system(size: 13, weight: .bold))
+                                            .frame(width: 28, height: 28)
+                                            .background(currentStep >= step ? PsyTheme.primary : Color.white.opacity(0.15))
+                                            .foregroundStyle(currentStep >= step ? .black : PsyTheme.textSecondary)
+                                            .clipShape(Circle())
+                                    }
+                                    .disabled(step >= currentStep)
                                 }
-                            }
-                        }
-                    } else {
-                        PsyCard {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Selecione ao menos uma plataforma")
-                                    .font(.headline)
-                                    .foregroundStyle(.white)
-                                Text("As recomendações visuais aparecem aqui automaticamente após escolher os destinos de lançamento.")
-                                    .font(.caption)
+                                Text(stepLabel)
+                                    .font(.subheadline)
                                     .foregroundStyle(PsyTheme.textSecondary)
+                                    .padding(.leading, 4)
+                                Spacer()
+                            }
+
+                            Divider().overlay(Color.white.opacity(0.1))
+
+                            // Step content
+                            switch currentStep {
+                            case 1: step1View
+                            case 2: step2View
+                            case 3: step3View
+                            default: step4View
                             }
                         }
                     }
@@ -67,260 +96,316 @@ struct CoverDesignStudioView: View {
         }
     }
     
-    private var platformSelectionSection: some View {
+    // MARK: - Step views
+
+    private var step1View: some View {
         VStack(alignment: .leading, spacing: 12) {
-            PsySectionHeader(eyebrow: "Plataformas", title: "Selecione onde vai lançar")
-            
-            PsyCard {
-                VStack(alignment: .leading, spacing: 12) {
-                    // Streaming de Áudio
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("🎵 Streaming de Áudio")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(PsyTheme.primary)
-                        
-                        HStack(spacing: 10) {
-                            platformToggle("Spotify", isSelected: selectedPlatforms.contains("Spotify"))
-                            platformToggle("Apple Music", isSelected: selectedPlatforms.contains("Apple Music"))
-                        }
-                        HStack(spacing: 10) {
-                            platformToggle("SoundCloud", isSelected: selectedPlatforms.contains("SoundCloud"))
-                            platformToggle("Bandcamp", isSelected: selectedPlatforms.contains("Bandcamp"))
-                        }
-                    }
-                    
-                    Divider()
-                        .overlay(Color.white.opacity(0.1))
-                    
-                    // Social Media
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("📱 Social Media")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(PsyTheme.primary)
-                        
-                        HStack(spacing: 10) {
-                            platformToggle("Reel", isSelected: selectedPlatforms.contains("Reel"))
-                            platformToggle("TikTok", isSelected: selectedPlatforms.contains("TikTok"))
-                        }
-                        HStack(spacing: 10) {
-                            platformToggle("Instagram Story", isSelected: selectedPlatforms.contains("Instagram Story"))
-                            platformToggle("YouTube", isSelected: selectedPlatforms.contains("YouTube"))
-                        }
-                    }
-                    
-                    Divider()
-                        .overlay(Color.white.opacity(0.1))
-                    
-                    // Streaming de Vídeo e Comunidade
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("🎬 Vídeo e Comunidade")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(PsyTheme.primary)
-                        
-                        HStack(spacing: 10) {
-                            platformToggle("Twitch", isSelected: selectedPlatforms.contains("Twitch"))
-                            platformToggle("Discord", isSelected: selectedPlatforms.contains("Discord"))
-                        }
-                        HStack(spacing: 10) {
-                            platformToggle("Beatsport", isSelected: selectedPlatforms.contains("Beatsport"))
-                        }
-                    }
+            Text("1. Para que é essa arte?")
+                .font(.subheadline).fontWeight(.semibold)
+                .foregroundStyle(.white)
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                ForEach(purposes, id: \.self) { opt in
+                    chipButton(opt, isSelected: wizardPurpose == opt) { wizardPurpose = opt }
                 }
             }
+            Button { withAnimation { currentStep = 2 } } label: {
+                Text("Próximo →")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(wizardPurpose.isEmpty ? PsyTheme.primary.opacity(0.3) : PsyTheme.primary)
+                    .foregroundStyle(wizardPurpose.isEmpty ? PsyTheme.textSecondary : .black)
+                    .cornerRadius(8)
+            }
+            .disabled(wizardPurpose.isEmpty)
         }
     }
-    
-    private func platformToggle(_ name: String, isSelected: Bool) -> some View {
-        Button(action: {
-            if isSelected {
-                selectedPlatforms.remove(name)
-            } else {
-                selectedPlatforms.insert(name)
-            }
-        }) {
-            HStack(spacing: 8) {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? PsyTheme.primary : PsyTheme.secondary)
-                Text(name)
-                    .font(.caption)
+
+    private var step2View: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("2. Sua música / arte")
+                .font(.subheadline).fontWeight(.semibold)
+                .foregroundStyle(.white)
+            TextField("Nome da capa / título da música *", text: $wizardTitle)
+                .padding(10)
+                .background(Color.white.opacity(0.08))
+                .cornerRadius(8)
+                .foregroundStyle(.white)
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $wizardFeeling)
+                    .frame(minHeight: 80)
+                    .padding(8)
+                    .background(Color.white.opacity(0.08))
+                    .cornerRadius(8)
+                    .scrollContentBackground(.hidden)
                     .foregroundStyle(.white)
+                if wizardFeeling.isEmpty {
+                    Text("Como essa música te faz sentir? (ex: energia tribal, melancolia noturna…)")
+                        .foregroundStyle(PsyTheme.textSecondary)
+                        .font(.callout)
+                        .padding(16)
+                        .allowsHitTesting(false)
+                }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(8)
-            .background(isSelected ? Color.white.opacity(0.05) : Color.clear)
-            .cornerRadius(6)
+            HStack(spacing: 8) {
+                Button { withAnimation { currentStep = 1 } } label: {
+                    Text("← Voltar").foregroundStyle(PsyTheme.textSecondary)
+                        .padding(.horizontal, 14).padding(.vertical, 10)
+                        .background(Color.white.opacity(0.08)).cornerRadius(8)
+                }
+                Button { withAnimation { currentStep = 3 } } label: {
+                    Text("Próximo →").frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background((wizardTitle.trimmingCharacters(in: .whitespaces).isEmpty || wizardFeeling.trimmingCharacters(in: .whitespaces).isEmpty) ? PsyTheme.primary.opacity(0.3) : PsyTheme.primary)
+                        .foregroundStyle((wizardTitle.trimmingCharacters(in: .whitespaces).isEmpty || wizardFeeling.trimmingCharacters(in: .whitespaces).isEmpty) ? PsyTheme.textSecondary : .black)
+                        .cornerRadius(8)
+                }
+                .disabled(wizardTitle.trimmingCharacters(in: .whitespaces).isEmpty || wizardFeeling.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
         }
     }
-    
-    private var generatorInputSection: some View {
+
+    private var step3View: some View {
         VStack(alignment: .leading, spacing: 12) {
-            PsySectionHeader(eyebrow: "Input", title: "Contexto da faixa")
-            
-            PsyCard {
-                VStack(spacing: 16) {
-                    TextField("Nome da faixa (opcional)", text: $trackName)
-                        .textFieldStyle(.roundedBorder)
-                    
-                    Picker("Mood/Vibe", selection: $mood) {
-                        ForEach(moods, id: \.self) { m in
-                            Text(m.capitalized).tag(m)
-                        }
-                    }
-                    .pickerStyle(.segmented)
+            Text("3. Estilo visual")
+                .font(.subheadline).fontWeight(.semibold)
+                .foregroundStyle(.white)
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                ForEach(styles, id: \.self) { opt in
+                    chipButton(opt, isSelected: wizardStyle == opt) { wizardStyle = opt }
                 }
+            }
+            HStack(spacing: 8) {
+                Button { withAnimation { currentStep = 2 } } label: {
+                    Text("← Voltar").foregroundStyle(PsyTheme.textSecondary)
+                        .padding(.horizontal, 14).padding(.vertical, 10)
+                        .background(Color.white.opacity(0.08)).cornerRadius(8)
+                }
+                Button { withAnimation { currentStep = 4 } } label: {
+                    Text("Próximo →").frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(wizardStyle.isEmpty ? PsyTheme.primary.opacity(0.3) : PsyTheme.primary)
+                        .foregroundStyle(wizardStyle.isEmpty ? PsyTheme.textSecondary : .black)
+                        .cornerRadius(8)
+                }
+                .disabled(wizardStyle.isEmpty)
             }
         }
     }
-    
-    private func platformRecommendationCard(format: CoverDesignFormat) -> some View {
-        let recommendation = CoverDesignGenerator.generateForTrack(
-            trackName: trackName.isEmpty ? "Untitled" : trackName,
-            profile: profile,
-            format: format,
-            mood: mood
-        )
-        
-        return PsyCard {
-            VStack(alignment: .leading, spacing: 12) {
-                // Header com formato
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(recommendation.format)
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                        Text(format.description)
-                            .font(.caption)
-                            .foregroundStyle(PsyTheme.textSecondary)
-                    }
-                    Spacer()
-                    Image(systemName: "sparkles")
-                        .foregroundStyle(PsyTheme.primary)
-                }
-                
-                Divider()
-                    .overlay(Color.white.opacity(0.1))
-                
-                // Dimensões
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Dimensões")
-                        .font(.caption)
-                        .foregroundStyle(PsyTheme.primary)
-                    HStack(spacing: 16) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Tamanho")
-                                .font(.caption2)
-                                .foregroundStyle(PsyTheme.textSecondary)
-                            Text(recommendation.sizingTips)
-                                .font(.caption)
-                                .foregroundStyle(.white)
-                        }
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Resolução")
-                                .font(.caption2)
-                                .foregroundStyle(PsyTheme.textSecondary)
-                            Text(format.dpi)
-                                .font(.caption)
-                                .foregroundStyle(.white)
-                        }
-                    }
-                }
-                
-                Divider()
-                    .overlay(Color.white.opacity(0.1))
-                
-                // Paleta de cores
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Paleta de cores")
-                        .font(.caption)
-                        .foregroundStyle(PsyTheme.primary)
-                    
-                    HStack(spacing: 8) {
-                        colorCircle(recommendation.colorPalette.primary, label: "Primária")
-                        colorCircle(recommendation.colorPalette.secondary, label: "Secundária")
-                        colorCircle(recommendation.colorPalette.accent, label: "Acentuada")
-                        colorCircle(recommendation.colorPalette.background, label: "Fundo")
-                    }
-                    
-                    Text(recommendation.colorPalette.rationale)
-                        .font(.caption2)
+
+    private var step4View: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("4. Detalhes extras (opcional)")
+                .font(.subheadline).fontWeight(.semibold)
+                .foregroundStyle(.white)
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $wizardDetails)
+                    .frame(minHeight: 80)
+                    .padding(8)
+                    .background(Color.white.opacity(0.08))
+                    .cornerRadius(8)
+                    .scrollContentBackground(.hidden)
+                    .foregroundStyle(.white)
+                if wizardDetails.isEmpty {
+                    Text("Cores predominantes, elementos específicos, referências artísticas, texto na imagem…")
                         .foregroundStyle(PsyTheme.textSecondary)
+                        .font(.callout)
+                        .padding(16)
+                        .allowsHitTesting(false)
                 }
-                
-                Divider()
-                    .overlay(Color.white.opacity(0.1))
-                
-                // Composição
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Composição sugerida")
-                        .font(.caption)
-                        .foregroundStyle(PsyTheme.primary)
-                    
-                    VStack(alignment: .leading, spacing: 6) {
-                        bulletPoint("Layout: \(recommendation.composition.layout)")
-                        bulletPoint("Elemento principal: \(recommendation.composition.mainElement)")
-                        bulletPoint("Tipografia: \(recommendation.composition.tipography)")
-                        bulletPoint(recommendation.composition.safeZones)
-                    }
+            }
+            HStack(spacing: 8) {
+                Button { withAnimation { currentStep = 3 } } label: {
+                    Text("← Voltar").foregroundStyle(PsyTheme.textSecondary)
+                        .padding(.horizontal, 14).padding(.vertical, 10)
+                        .background(Color.white.opacity(0.08)).cornerRadius(8)
                 }
-                
-                Divider()
-                    .overlay(Color.white.opacity(0.1))
-                
-                // Motivos visuais
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Elementos visuais")
+                Button { buildPrompt() } label: {
+                    Label("✨ Montar prompt", systemImage: "wand.and.stars")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(PsyTheme.primary)
+                        .foregroundStyle(.black)
+                        .cornerRadius(8)
+                }
+            }
+
+            if !generatedPrompt.isEmpty {
+                Divider().overlay(Color.white.opacity(0.1))
+
+                Text("Prompt gerado — edite se quiser:")
+                    .font(.caption).fontWeight(.semibold)
+                    .foregroundStyle(PsyTheme.primary)
+
+                ZStack(alignment: .topLeading) {
+                    TextEditor(text: $generatedPrompt)
+                        .frame(minHeight: 120)
+                        .padding(8)
+                        .background(Color.white.opacity(0.08))
+                        .cornerRadius(8)
+                        .scrollContentBackground(.hidden)
+                        .foregroundStyle(.white)
                         .font(.caption)
-                        .foregroundStyle(PsyTheme.primary)
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        ForEach(recommendation.visualMotifs, id: \.self) { motif in
-                            bulletPoint(motif)
+                }
+
+                Button {
+                    UIPasteboard.general.string = generatedPrompt
+                    isCopied = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { isCopied = false }
+                } label: {
+                    Label(isCopied ? "Copiado!" : "📋 Copiar prompt", systemImage: isCopied ? "checkmark" : "doc.on.doc")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(isCopied ? Color.green.opacity(0.8) : Color.white.opacity(0.12))
+                        .foregroundStyle(.white)
+                        .cornerRadius(8)
+                }
+
+                Text("Cole esse prompt no Bing Image Creator (bing.com/images/create) para gerar sua arte gratuitamente.")
+                    .font(.caption2)
+                    .foregroundStyle(PsyTheme.textSecondary)
+
+                // Generate image via backend
+                Divider().overlay(Color.white.opacity(0.1))
+
+                Button {
+                    Task { await generateImage() }
+                } label: {
+                    Label(isGeneratingImage ? "Gerando imagem..." : "🖼 Gerar imagem com IA",
+                          systemImage: isGeneratingImage ? "hourglass" : "wand.and.stars")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(isGeneratingImage ? PsyTheme.primary.opacity(0.3) : Color.purple.opacity(0.8))
+                        .foregroundStyle(.white)
+                        .cornerRadius(8)
+                }
+                .disabled(isGeneratingImage)
+
+                if !imageGenError.isEmpty {
+                    Text(imageGenError)
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                }
+
+                if !generatedImageURLString.isEmpty, let url = URL(string: generatedImageURLString) {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .cornerRadius(10)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(PsyTheme.primary.opacity(0.5), lineWidth: 1)
+                                )
+                        case .failure:
+                            Text("Não foi possível carregar a imagem gerada.")
+                                .font(.caption2)
+                                .foregroundStyle(.orange)
+                        default:
+                            ProgressView()
+                                .frame(maxWidth: .infinity, minHeight: 200)
                         }
                     }
                 }
-                
-                Divider()
-                    .overlay(Color.white.opacity(0.1))
-                
-                // Notas de design
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Dicas específicas")
-                        .font(.caption)
-                        .foregroundStyle(PsyTheme.primary)
-                    Text(recommendation.designNotes)
-                        .font(.caption2)
-                        .foregroundStyle(PsyTheme.textSecondary)
-                        .lineLimit(nil)
-                }
+
+                Text("Gerado via DALL-E / Pollinations. Resultado pode variar.")
+                    .font(.caption2)
+                    .foregroundStyle(PsyTheme.textSecondary)
             }
         }
     }
-    
-    private func bulletPoint(_ text: String) -> some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("•")
-                .foregroundStyle(PsyTheme.primary)
-            Text(text)
-                .font(.caption)
-                .foregroundStyle(PsyTheme.textSecondary)
-            Spacer()
-        }
-    }
-    
-    private func colorCircle(_ hexColor: String, label: String) -> some View {
-        VStack(spacing: 4) {
-            Circle()
-                .fill(Color(hex: hexColor) ?? .gray)
-                .frame(width: 40, height: 40)
-                .border(Color.white.opacity(0.2), width: 1)
-            
+
+    // MARK: - Helpers
+
+    private func chipButton(_ label: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             Text(label)
-                .font(.caption2)
-                .foregroundStyle(PsyTheme.textSecondary)
+                .font(.caption).fontWeight(.medium)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(isSelected ? PsyTheme.primary : Color.white.opacity(0.08))
+                .foregroundStyle(isSelected ? .black : .white)
+                .cornerRadius(6)
         }
+    }
+
+        // MARK: - Helpers
+
+    private func chipButton(_ label: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(label)
+                .font(.caption).fontWeight(.medium)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(isSelected ? PsyTheme.primary : Color.white.opacity(0.08))
+                .foregroundStyle(isSelected ? .black : .white)
+                .cornerRadius(6)
+        }
+    }
+
+    private func buildPrompt() {
+        let genre = profile.genre.isEmpty ? "música eletrônica" : profile.genre
+        let artistName = profile.stageName.isEmpty ? "artista" : profile.stageName
+        let details = wizardDetails.trimmingCharacters(in: .whitespaces)
+        let extraLine = details.isEmpty ? "" : " Detalhes adicionais: \(details)."
+
+        generatedPrompt = """
+        Criar arte visual para \(wizardPurpose.lowercased()) de \(artistName).
+        Título: "\(wizardTitle)". Gênero: \(genre).
+        Sentimento / conceito: \(wizardFeeling).
+        Estilo visual: \(wizardStyle).\(extraLine)
+        Imagem de alta qualidade, composição profissional para uso em plataformas digitais.
+        """
+    }
+
+    private func generateImage() async {
+        guard !generatedPrompt.isEmpty else { return }
+        isGeneratingImage = true
+        imageGenError = ""
+        generatedImageURLString = ""
+
+        struct GenerateRequest: Encodable {
+            let prompt: String
+        }
+        struct GenerateResponse: Decodable {
+            let imageUrl: String?
+            let url: String?
+            let error: String?
+        }
+
+        let baseURL = UserDefaults.standard.string(forKey: "psy.web.baseURL")
+            ?? "https://web-app-eight-hazel.vercel.app"
+
+        guard let endpoint = URL(string: "\(baseURL)/api/generate-cover") else {
+            imageGenError = "URL inválida."
+            isGeneratingImage = false
+            return
+        }
+
+        var request = URLRequest(url: endpoint)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 60
+
+        do {
+            request.httpBody = try JSONEncoder().encode(GenerateRequest(prompt: generatedPrompt))
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                imageGenError = "Erro do servidor. Verifique a chave OPENAI_API_KEY no backend."
+                isGeneratingImage = false
+                return
+            }
+            let decoded = try JSONDecoder().decode(GenerateResponse.self, from: data)
+            if let url = decoded.imageUrl ?? decoded.url {
+                generatedImageURLString = url
+            } else {
+                imageGenError = decoded.error ?? "Resposta inesperada do servidor."
+            }
+        } catch {
+            imageGenError = "Falha na conexão: \(error.localizedDescription)"
+        }
+        isGeneratingImage = false
     }
 }
 

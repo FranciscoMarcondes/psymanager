@@ -102,6 +102,7 @@ struct CreationStudioView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             PsySectionHeader(eyebrow: "Tour", title: "Break-even de turne")
                             BreakEvenTourCard(
+                                isExpanded: $showBreakEvenSection,
                                 tourData: .init(
                                     name: "Mini turne regional",
                                     targetRevenue: 22000,

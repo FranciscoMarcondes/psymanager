@@ -14,6 +14,7 @@ enum LeadStatus: String, CaseIterable, Identifiable {
     case messageSent = "Mensagem enviada"
     case waitingReply = "Aguardando resposta"
     case negotiating = "Negociacao"
+    case scheduled = "Agendado"
     case closed = "Fechado"
 
     var id: String { rawValue }

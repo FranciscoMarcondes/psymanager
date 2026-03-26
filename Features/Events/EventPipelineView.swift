@@ -172,6 +172,19 @@ struct EventPipelineView: View {
     private let calendarService = CalendarService()
     private let notificationPlanner = NotificationPlanner()
 
+        // Leads Frios
+        @State private var coldLeadMessages: [String: String] = [:]  // leadId → generated message
+        @State private var generatingColdLeadId: String? = nil
+
+        private var coldLeads: [EventLead] {
+            let cutoff = Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date()
+            return leads.filter {
+                $0.eventDate < cutoff
+                    && $0.status != LeadStatus.closed.rawValue
+                    && $0.status != LeadStatus.scheduled.rawValue
+            }
+        }
+
     private var sectionSummaryTitle: String {
         switch selectedTab {
         case 0: return "Prospecção"
@@ -270,47 +283,151 @@ struct EventPipelineView: View {
 
                     Section("Pipeline") {
                         ForEach(leads, id: \.persistentModelID) { lead in
-                            NavigationLink {
-                                LeadDetailView(lead: lead)
-                            } label: {
-                                VStack(alignment: .leading, spacing: 6) {
-                                    Text(lead.name)
-                                        .font(.headline)
-                                    Text("\(lead.city) • \(lead.venue)")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                    HStack {
-                                        Text(lead.instagramHandle)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                        Spacer()
-                                        Text(lead.status)
-                                            .font(.caption)
-                                            .fontWeight(.semibold)
-                                            .foregroundStyle(.blue)
+                            Group {
+                                if lead.status == LeadStatus.scheduled.rawValue {
+                                    Button {
+                                        selectedTab = 1
+                                    } label: {
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            Text(lead.name)
+                                                .font(.headline)
+                                            Text("\(lead.city) • \(lead.venue)")
+                                                .font(.subheadline)
+                                                .foregroundStyle(.secondary)
+                                            HStack {
+                                                Text(lead.instagramHandle)
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                                Spacer()
+                                                Label(lead.status, systemImage: "calendar")
+                                                    .font(.caption)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundStyle(.green)
+                                            }
+                                            if let promoterName = lead.promoter?.name {
+                                                Text("Promoter: \(promoterName)")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                            Text(lead.notes)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .padding(12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(PsyTheme.surfaceAlt.opacity(0.6))
+                                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                                .stroke(Color.white.opacity(0.06), lineWidth: 1)
+                                        )
+                                        .contentShape(Rectangle())
                                     }
-                                    if let promoterName = lead.promoter?.name {
-                                        Text("Promoter: \(promoterName)")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                    .buttonStyle(.plain)
+                                } else {
+                                    NavigationLink {
+                                        LeadDetailView(lead: lead)
+                                    } label: {
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            Text(lead.name)
+                                                .font(.headline)
+                                            Text("\(lead.city) • \(lead.venue)")
+                                                .font(.subheadline)
+                                                .foregroundStyle(.secondary)
+                                            HStack {
+                                                Text(lead.instagramHandle)
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                                Spacer()
+                                                Text(lead.status)
+                                                    .font(.caption)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundStyle(.blue)
+                                            }
+                                            if let promoterName = lead.promoter?.name {
+                                                Text("Promoter: \(promoterName)")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                            Text(lead.notes)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                        .padding(12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(PsyTheme.surfaceAlt.opacity(0.6))
+                                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                                .stroke(Color.white.opacity(0.06), lineWidth: 1)
+                                        )
+                                        .contentShape(Rectangle())
                                     }
-                                    Text(lead.notes)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
                                 }
-                                .padding(12)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(PsyTheme.surfaceAlt.opacity(0.6))
-                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                        .stroke(Color.white.opacity(0.06), lineWidth: 1)
-                                )
                             }
                         }
                     }
                 } else if selectedTab == 1 {
                     Section("Minhas gigs") {
+                        if !coldLeads.isEmpty {
+                            Section("🧊 Leads Frios (\(coldLeads.count))") {
+                                ForEach(coldLeads, id: \.persistentModelID) { lead in
+                                    let leadId = lead.persistentModelID.hashValue.description
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        HStack {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(lead.name)
+                                                    .font(.headline)
+                                                Text("\(lead.city) • \(lead.venue)")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                                Text("Sem contato há +30 dias")
+                                                    .font(.caption2)
+                                                    .foregroundStyle(.orange)
+                                            }
+                                            Spacer()
+                                            Button {
+                                                Task { await generateReactivationMessage(lead: lead, leadId: leadId) }
+                                            } label: {
+                                                if generatingColdLeadId == leadId {
+                                                    ProgressView().controlSize(.small)
+                                                } else {
+                                                    Label("Gerar msg", systemImage: "sparkles")
+                                                        .font(.caption)
+                                                }
+                                            }
+                                            .buttonStyle(.bordered)
+                                            .tint(.orange)
+                                            .disabled(generatingColdLeadId != nil)
+                                        }
+
+                                        if let msg = coldLeadMessages[leadId], !msg.isEmpty {
+                                            Text(msg)
+                                                .font(.caption)
+                                                .foregroundStyle(.white)
+                                                .padding(8)
+                                                .background(Color.orange.opacity(0.12))
+                                                .cornerRadius(8)
+
+                                            Button {
+                                                UIPasteboard.general.string = msg
+                                            } label: {
+                                                Label("Copiar mensagem", systemImage: "doc.on.doc")
+                                                    .font(.caption2)
+                                            }
+                                            .buttonStyle(.bordered)
+                                        }
+                                    }
+                                    .padding(12)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(PsyTheme.surfaceAlt.opacity(0.5))
+                                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                    .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                                }
+                            }
+                            .listRowBackground(Color.clear)
+                        }
+
                         ForEach(gigs, id: \.persistentModelID) { gig in
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(gig.title)
@@ -345,6 +462,7 @@ struct EventPipelineView: View {
                                     .stroke(Color.white.opacity(0.06), lineWidth: 1)
                             )
                             .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+                            .contentShape(Rectangle())
                         }
                     }
                 } else {
@@ -431,6 +549,7 @@ struct EventPipelineView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(PsyTheme.surfaceAlt.opacity(0.6))
                                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                .contentShape(Rectangle())
                             }
                         }
                     } else if selectedTab == 4 {
@@ -632,6 +751,25 @@ struct EventPipelineView: View {
         }
     }
 }
+
+        @MainActor
+        private func generateReactivationMessage(lead: EventLead, leadId: String) async {
+            generatingColdLeadId = leadId
+            let prompt = """
+            Crie uma mensagem de reaquecimento curta e profissional em português para o promoter "\(lead.name)" \
+            da venue "\(lead.venue)" em \(lead.city)/\(lead.state). \
+            O contato ficou parado por mais de 30 dias. \
+            Objetivo: retomar a conversa sobre uma possível parceria de show. \
+            Máximo 4 linhas. Não inclua saudações formais.
+            """
+            let message = await WebAIService.shared.ask(
+                artistName: lead.name,
+                prompt: prompt,
+                mode: "followup"
+            )
+            coldLeadMessages[leadId] = message
+            generatingColdLeadId = nil
+        }
 
 private struct LogisticsCostCalculatorView: View {
     let leads: [EventLead]
@@ -974,7 +1112,6 @@ private struct PromoterFormView: View {
 private struct LeadDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \PromoterContact.name) private var promoters: [PromoterContact]
-    @Query(sort: \Negotiation.nextActionDate) private var allNegotiations: [Negotiation]
     @Query(sort: \MessageTemplate.createdAt, order: .reverse) private var templates: [MessageTemplate]
     @Query private var profiles: [ArtistProfile]
 
@@ -984,16 +1121,13 @@ private struct LeadDetailView: View {
     @State private var showingNegotiationForm = false
     @State private var aiFollowUp = ""
     @State private var isLoadingAI = false
+    @State private var leadNegotiations: [Negotiation] = []
     private let engine = CareerManagerEngine()
 
     init(lead: EventLead) {
         self.lead = lead
         _selectedStatus = State(initialValue: lead.status)
         _selectedPromoterId = State(initialValue: lead.promoter?.persistentModelID)
-    }
-
-    private var leadNegotiations: [Negotiation] {
-        allNegotiations.filter { $0.lead?.persistentModelID == lead.persistentModelID }
     }
 
     var body: some View {
@@ -1028,9 +1162,11 @@ private struct LeadDetailView: View {
                             }
                         }
                         .pickerStyle(.segmented)
-                        .onChange(of: selectedStatus) {
-                            lead.status = selectedStatus
-                            try? modelContext.save()
+                        .onChange(of: selectedStatus) { oldValue, newValue in
+                            lead.status = newValue
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                try? modelContext.save()
+                            }
                         }
                     }
                 }
@@ -1046,10 +1182,12 @@ private struct LeadDetailView: View {
                                 Text(promoter.name).tag(Optional(promoter.persistentModelID))
                             }
                         }
-                        .onChange(of: selectedPromoterId) {
-                            let selected = promoters.first { $0.persistentModelID == selectedPromoterId }
+                        .onChange(of: selectedPromoterId) { oldValue, newValue in
+                            let selected = promoters.first { $0.persistentModelID == newValue }
                             lead.promoter = selected
-                            try? modelContext.save()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                try? modelContext.save()
+                            }
                         }
                     }
                 }

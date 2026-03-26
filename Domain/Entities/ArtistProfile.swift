@@ -16,6 +16,7 @@ final class ArtistProfile {
     var spotifyHandle: String
     var soundCloudHandle: String
     var youTubeHandle: String
+    var customProfileImageUrl: String
     var createdAt: Date
     var updatedAt: Date
 
@@ -33,6 +34,7 @@ final class ArtistProfile {
         spotifyHandle: String = "",
         soundCloudHandle: String = "",
         youTubeHandle: String = "",
+        customProfileImageUrl: String = "",
         createdAt: Date = .now,
         updatedAt: Date = .now
     ) {
@@ -49,6 +51,7 @@ final class ArtistProfile {
         self.spotifyHandle = spotifyHandle
         self.soundCloudHandle = soundCloudHandle
         self.youTubeHandle = youTubeHandle
+        self.customProfileImageUrl = customProfileImageUrl
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }

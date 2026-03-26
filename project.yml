@@ -30,7 +30,9 @@ targets:
         INFOPLIST_KEY_PSYSkyscannerAPIKey: ""
         INFOPLIST_KEY_PSYKiwiTequilaAPIKey: ""
         INFOPLIST_KEY_CFBundleURLTypes:
-          - CFBundleURLName: com.franciscomarcondes.psymanager
+          INFOPLIST_KEY_NSMicrophoneUsageDescription: "O Manager IA usa o microfone para capturar sua voz e transcrever comandos de texto."
+          INFOPLIST_KEY_NSSpeechRecognitionUsageDescription: "O Manager IA usa reconhecimento de voz para converter sua fala em texto automaticamente."
+           - CFBundleURLName: com.franciscomarcondes.psymanager
             CFBundleURLSchemes:
               - psymanager
         CODE_SIGN_STYLE: Automatic

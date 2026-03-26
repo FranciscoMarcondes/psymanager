@@ -37,6 +37,13 @@ struct DashboardView: View {
 
     private let notificationPlanner = NotificationPlanner()
 
+        // Social sync
+        @AppStorage("instagramInsightsBackendURL") private var instagramBackendURL = ""
+        @AppStorage("instagramHandle.artist") private var instagramArtistHandle = ""
+        @AppStorage("instagramLastInsightsSyncAt") private var instagramLastSyncAt = ""
+        @State private var isSyncingInsights = false
+        @State private var syncInsightsFeedback = ""
+
     private enum DashboardMode: String, CaseIterable, Identifiable {
         case focus = "Foco"
         case complete = "Completo"
@@ -379,6 +386,19 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                         FinancialAlertsWidget()
                             .psyAppear(delay: 0.14)
 
+                            // 📊 Social Pulse com sync
+                            socialMediaPulse
+                                .psyAppear(delay: 0.145)
+
+                            // 🤖 AI Hub — Parceiro + Semanal
+                            AIHubCard(
+                                profile: profile,
+                                leadsCount: leads.count,
+                                gigsCount: gigs.count,
+                                latestInsight: latestInsight
+                            )
+                            .psyAppear(delay: 0.15)
+
                         if !smartNotifications.isEmpty {
                             VStack(alignment: .leading, spacing: 10) {
                                 PsySectionHeader(eyebrow: "Avisos", title: "Avisos inteligentes")
@@ -407,6 +427,9 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                     }
                 }
                 .padding(20)
+                .refreshable {
+                    await refreshSocialInsights()
+                }
             }
             .background(PsyTheme.background.ignoresSafeArea())
             .navigationBarHidden(true)
@@ -597,10 +620,10 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         VStack(alignment: .leading, spacing: 12) {
             PsySectionHeader(eyebrow: "Semana", title: "Plano de ataque")
 
-            PsyCard {
+                    }
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Prioridades dinâmicas")
-                        .font(.headline)
+                   Button {
                         .foregroundStyle(.white)
 
                     ForEach(topWeeklyPriorities) { item in
@@ -742,7 +765,111 @@ private var weeklySeries: [DashboardWeeklyPoint] {
             }
         }
     }
+        private var socialMediaPulse: some View {
+            VStack(alignment: .leading, spacing: 12) {
+                PsySectionHeader(eyebrow: "Growth", title: "Pulso social")
 
+                PsyCard {
+                    VStack(alignment: .leading, spacing: 12) {
+                        // Real data from latest SocialInsightSnapshot
+                        HStack(spacing: 12) {
+                            if let insight = latestInsight {
+                                metricCard(title: "Seguidores", value: "\(insight.followersEnd)", detail: socialGrowthText)
+                                let engRate = insight.postsPublished > 0
+                                    ? String(format: "%.1f%%", Double(insight.reach) / Double(max(insight.followersEnd, 1)) * 100)
+                                    : "—"
+                                metricCard(title: "Engajamento", value: engRate, detail: "reach/seguidores")
+                            } else {
+                                metricCard(title: "Seguidores", value: socialGrowthText, detail: "último período")
+                                metricCard(title: "Descoberta", value: socialReachText, detail: "média recente")
+                            }
+                        }
+
+                        if let insight = latestInsight {
+                            HStack(spacing: 12) {
+                                metricCard(title: "Alcance", value: "\(insight.reach)", detail: "último período")
+                                metricCard(title: "Posts", value: "\(insight.postsPublished)", detail: insight.periodLabel)
+                            }
+                        }
+
+                        // Sync status
+                        HStack(spacing: 6) {
+                            Image(systemName: instagramLastSyncAt.isEmpty ? "wifi.slash" : "checkmark.icloud.fill")
+                                .font(.caption)
+                                .foregroundStyle(instagramLastSyncAt.isEmpty ? PsyTheme.warning : .green)
+                            Text(instagramLastSyncAt.isEmpty
+                                 ? "Instagram não sincronizado — configure em Perfil"
+                                 : "Sync: \(instagramLastSyncAt.prefix(10))")
+                                .font(.caption2)
+                                .foregroundStyle(PsyTheme.textSecondary)
+                        }
+
+                        if !syncInsightsFeedback.isEmpty {
+                            Text(syncInsightsFeedback)
+                                .font(.caption2)
+                                .foregroundStyle(PsyTheme.primary)
+                        }
+
+                        // Action row
+                        HStack(spacing: 8) {
+                            Button {
+                                Task { await refreshSocialInsights() }
+                            } label: {
+                                HStack(spacing: 4) {
+                                    if isSyncingInsights { ProgressView().controlSize(.mini) }
+                                    Text(isSyncingInsights ? "Sincronizando..." : "⚑ Sync agora")
+                                        .font(.caption).fontWeight(.semibold)
+                                }
+                                .padding(.horizontal, 12).padding(.vertical, 6)
+                                .background(PsyTheme.primary.opacity(isSyncingInsights ? 0.3 : 1))
+                                .foregroundStyle(.black)
+                                .cornerRadius(6)
+                            }
+                            .disabled(isSyncingInsights)
+
+                            Button("Ver estratégia") { onQuickAction(.creation) }
+                                .buttonStyle(.bordered)
+                                .controlSize(.small)
+                        }
+                    }
+                }
+            }
+        }
+
+        @MainActor
+        private func refreshSocialInsights() async {
+            let handle = instagramArtistHandle.isEmpty ? profile.spotifyHandle : instagramArtistHandle
+            guard !handle.isEmpty, !instagramBackendURL.isEmpty else { return }
+            isSyncingInsights = true
+            syncInsightsFeedback = ""
+            do {
+                let snapshots = try await InstagramInsightsBridge.sync(baseURL: instagramBackendURL, artistHandle: handle)
+                let formatter = ISO8601DateFormatter()
+                for item in snapshots {
+                    guard let start = formatter.date(from: item.periodStartISO),
+                          let end   = formatter.date(from: item.periodEndISO) else { continue }
+                    modelContext.insert(SocialInsightSnapshot(
+                        periodLabel:   item.periodLabel,
+                        periodStart:   start,
+                        periodEnd:     end,
+                        followersStart: item.followersStart,
+                        followersEnd:   item.followersEnd,
+                        reach:          item.reach,
+                        impressions:    item.impressions,
+                        profileVisits:  item.profileVisits,
+                        reelViews:      item.reelViews,
+                        postsPublished: item.postsPublished,
+                        source:         "instagram-api"
+                    ))
+                }
+                try? modelContext.save()
+                instagramLastSyncAt = ISO8601DateFormatter().string(from: .now)
+                syncInsightsFeedback = "\(snapshots.count) período(s) sincronizado(s)."
+            } catch {
+                syncInsightsFeedback = "Não foi possível sincronizar. Configure o backend em Perfil."
+            }
+            isSyncingInsights = false
+        }
     private func quickAction(title: String, icon: String, color: Color, target: RootTab) -> some View {
         Button {
             onQuickAction(target)
@@ -1129,7 +1256,6 @@ private var weeklySeries: [DashboardWeeklyPoint] {
             await refreshCareer360Insights()
         }
     }
-}
 
 private struct DashboardWeeklyPoint: Identifiable {
     let id = UUID()

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct BreakEvenTourCard: View {
-    @State private var isExpanded = false
+    var isExpanded: Binding<Bool>
     let tourData: TourBreakEvenData
     var onOpenDetails: (() -> Void)? = nil
     
@@ -13,7 +13,7 @@ struct BreakEvenTourCard: View {
     }
     
     var body: some View {
-        DisclosureGroup(isExpanded: $isExpanded) {
+        DisclosureGroup(isExpanded: isExpanded) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Label("Receita Alvo", systemImage: "target")
@@ -78,11 +78,15 @@ struct BreakEvenTourCard: View {
 }
 
 #Preview {
-    BreakEvenTourCard(tourData: .init(
-        name: "Brasil 2026",
-        targetRevenue: 50000,
-        currentCosts: 30000,
-        projection: "Break-even em 3 shows"
-    ))
+    @State var isExpanded = false
+    return BreakEvenTourCard(
+        isExpanded: $isExpanded,
+        tourData: .init(
+            name: "Brasil 2026",
+            targetRevenue: 50000,
+            currentCosts: 30000,
+            projection: "Break-even em 3 shows"
+        )
+    )
     .padding()
 }
