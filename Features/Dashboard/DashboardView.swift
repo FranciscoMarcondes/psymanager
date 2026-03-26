@@ -35,6 +35,7 @@ struct DashboardView: View {
     @AppStorage("psy.spotify.lastCheckedAt") private var spotifyLastCheckedAtISO = ""
     @AppStorage("psy.youtube.lastCheckedAt") private var youtubeLastCheckedAtISO = ""
     @AppStorage("psy.soundcloud.lastCheckedAt") private var soundCloudLastCheckedAtISO = ""
+    @AppStorage("psy.dashboard.lastAutoPostShowKey") private var lastAutoPostShowKey = ""
     @State private var dashboardMode: DashboardMode = .focus
     @State private var dismissedSmartNotificationTitles: Set<String> = []
     @State private var showExpandedDashboard = false
@@ -592,6 +593,9 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                 if scenePhase == .background {
                     Task { await refreshCareer360IfStaleInBackground() }
                 }
+            }
+            .onAppear {
+                runAutoPostShowPlaybookIfNeeded()
             }
         }
     }
@@ -1470,9 +1474,23 @@ private var weeklySeries: [DashboardWeeklyPoint] {
     }
 
     private func createPostShowPlaybookTasks() {
-        guard let gig = recentGigForPostShow else {
+        let inserted = addPostShowPlaybookTasks()
+        guard inserted >= 0 else {
             postShowMessage = "Sem gig recente para playbook pós-show."
             return
+        }
+
+        if inserted > 0 {
+            postShowMessage = "Checklist D+1 criado para fechamento pós-show."
+            onQuickAction(.creation)
+        } else {
+            postShowMessage = "Checklist já estava no plano."
+        }
+    }
+
+    private func addPostShowPlaybookTasks() -> Int {
+        guard let gig = recentGigForPostShow else {
+            return -1
         }
 
         let dueDate = Calendar.current.startOfDay(for: Date())
@@ -1500,10 +1518,23 @@ private var weeklySeries: [DashboardWeeklyPoint] {
 
         if inserted > 0 {
             try? modelContext.save()
-            postShowMessage = "Checklist D+1 criado para fechamento pós-show."
-            onQuickAction(.creation)
-        } else {
-            postShowMessage = "Checklist já estava no plano."
+        }
+
+        return inserted
+    }
+
+    private func runAutoPostShowPlaybookIfNeeded() {
+        guard let gig = recentGigForPostShow else { return }
+
+        let today = Calendar.current.startOfDay(for: Date())
+        let key = "\(profile.stageName)-\(gig.title)-\(Int(gig.date.timeIntervalSince1970))-\(Int(today.timeIntervalSince1970))"
+        guard lastAutoPostShowKey != key else { return }
+
+        let inserted = addPostShowPlaybookTasks()
+        lastAutoPostShowKey = key
+
+        if inserted > 0 {
+            postShowMessage = "Checklist D+1 automático criado para fechamento pós-show."
         }
     }
 
