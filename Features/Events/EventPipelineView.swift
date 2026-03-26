@@ -163,6 +163,11 @@ struct EventPipelineView: View {
     @State private var showingLeadForm = false
     @State private var showingPromoterForm = false
     @State private var showingGigForm = false
+    @State private var showingGigEditForm = false
+    @State private var editingGig: Gig? = nil
+    @State private var selectedGigForAction: Gig? = nil
+    @State private var showingBreakEvenSheet = false
+    @State private var showingLogisticsSheet = false
     @State private var showingRadarForm = false
     @State private var showingTripForm = false
     @State private var feedbackMessage = ""
@@ -429,28 +434,78 @@ struct EventPipelineView: View {
                         }
 
                         ForEach(gigs, id: \.persistentModelID) { gig in
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(gig.title)
-                                    .font(.headline)
-                                Text("\(gig.city) • \(gig.state) • R$ \(Int(gig.fee))")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack(alignment: .top) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(gig.title)
+                                            .font(.headline)
+                                        Text("\(gig.city) • \(gig.state) • R$ \(Int(gig.fee))")
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Text(gig.status)
+                                        .font(.caption.bold())
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(gig.status == "Negociacao" ? Color.orange.opacity(0.2) : (gig.status == "Lead" ? Color.blue.opacity(0.2) : Color.green.opacity(0.2)))
+                                        .foregroundStyle(gig.status == "Negociacao" ? .orange : (gig.status == "Lead" ? .blue : .green))
+                                        .cornerRadius(6)
+                                }
+                                
                                 Text(gig.checklistSummary)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
-                                HStack {
-                                    Button(gig.addedToCalendar ? "No calendário" : "Adicionar ao calendário") {
+                                
+                                HStack(spacing: 6) {
+                                    Button(action: { 
+                                        editingGig = gig
+                                        showingGigEditForm = true
+                                    }) {
+                                        Label("Editar", systemImage: "pencil")
+                                            .font(.caption2)
+                                    }
+                                    .buttonStyle(.bordered)
+                                    
+                                    if gig.status == "Negociacao" {
+                                        Menu {
+                                            Button(action: {
+                                                selectedGigForAction = gig
+                                                showingBreakEvenSheet = true
+                                            }) {
+                                                Label("📊 Break-even", systemImage: "chart.bar")
+                                            }
+                                            
+                                            Button(action: {
+                                                selectedGigForAction = gig
+                                                showingLogisticsSheet = true
+                                            }) {
+                                                Label("🚗 Logística", systemImage: "car.fill")
+                                            }
+                                        } label: {
+                                            Label("Ações", systemImage: "ellipsis.circle")
+                                                .font(.caption2)
+                                        }
+                                        .buttonStyle(.bordered)
+                                        .tint(.orange)
+                                    }
+                                    
+                                    Button(gig.addedToCalendar ? "✓ Calendário" : "Calendário") {
                                         addToCalendar(gig)
                                     }
                                     .buttonStyle(.bordered)
                                     .disabled(gig.addedToCalendar)
+                                    .font(.caption2)
 
-                                    Button(gig.reminderScheduled ? "Lembrete criado" : "Criar lembrete") {
-                                        scheduleReminder(gig)
+                                    Button(action: {
+                                        modelContext.delete(gig)
+                                        try? modelContext.save()
+                                    }) {
+                                        Label("", systemImage: "trash")
+                                            .foregroundStyle(.red)
+                                            .font(.caption2)
                                     }
-                                    .buttonStyle(.borderedProminent)
-                                    .tint(PsyTheme.primary)
-                                    .disabled(gig.reminderScheduled)
+                                    .buttonStyle(.bordered)
                                 }
                             }
                             .padding(12)
@@ -678,6 +733,21 @@ struct EventPipelineView: View {
                 TripPlanFormView(gigs: gigs) { trip in
                     modelContext.insert(trip)
                     try? modelContext.save()
+                }
+            }
+            .sheet(isPresented: $showingGigEditForm) {
+                if let gig = editingGig {
+                    GigEditFormView(gig: gig, isPresented: $showingGigEditForm)
+                }
+            }
+            .sheet(isPresented: $showingBreakEvenSheet) {
+                if let gig = selectedGigForAction {
+                    BreakEvenCalculatorSheetView(gig: gig, isPresented: $showingBreakEvenSheet)
+                }
+            }
+            .sheet(isPresented: $showingLogisticsSheet) {
+                if let gig = selectedGigForAction {
+                    LogisticsCalculatorSheetView(gig: gig, isPresented: $showingLogisticsSheet)
                 }
             }
         }
@@ -2158,6 +2228,551 @@ private struct TripPlanFormView: View {
                     .disabled(fromCity.trimmingCharacters(in: .whitespaces).isEmpty ||
                               toCity.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
+            }
+        }
+    }
+}
+
+// MARK: - GigEditFormView
+private struct GigEditFormView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    
+    let gig: Gig
+    @Binding var isPresented: Bool
+    
+    @State private var title: String = ""
+    @State private var city: String = ""
+    @State private var state: String = ""
+    @State private var contactName: String = ""
+    @State private var checklistSummary: String = ""
+    @State private var fee: String = ""
+    @State private var status: String = "Confirmado"
+    @State private var date: Date = Date()
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 14) {
+                    PsyHeroCard {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Editar gig")
+                                .font(.title2.bold())
+                                .foregroundStyle(.white)
+                            Text("Atualize informações operacionais e status.")
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.textSecondary)
+                        }
+                    }
+                    
+                    PsyCard {
+                        VStack(alignment: .leading, spacing: 12) {
+                            TextField("Nome da gig", text: $title)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("Cidade", text: $city)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("UF", text: $state)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("Contratante", text: $contactName)
+                                .textFieldStyle(.roundedBorder)
+                            TextField("Fee", text: $fee)
+                                .keyboardType(.decimalPad)
+                                .textFieldStyle(.roundedBorder)
+                            DatePicker("Data", selection: $date, displayedComponents: [.date, .hourAndMinute])
+                                .tint(PsyTheme.primary)
+                            Picker("Status", selection: $status) {
+                                Text("Confirmado").tag("Confirmado")
+                                Text("Em negociação").tag("Negociacao")
+                                Text("Lead").tag("Lead")
+                            }
+                            .tint(PsyTheme.primary)
+                            TextField("Checklist", text: $checklistSummary, axis: .vertical)
+                                .textFieldStyle(.roundedBorder)
+                                .lineLimit(3...6)
+                        }
+                    }
+                }
+                .padding(20)
+            }
+            .background(PsyTheme.background.ignoresSafeArea())
+            .navigationTitle("Editar gig")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") { isPresented = false }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Salvar") {
+                        gig.title = title
+                        gig.city = city
+                        gig.state = state
+                        gig.date = date
+                        gig.fee = Double(fee) ?? gig.fee
+                        gig.contactName = contactName
+                        gig.checklistSummary = checklistSummary
+                        gig.status = status
+                        
+                        try? modelContext.save()
+                        isPresented = false
+                    }
+                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
+        .onAppear {
+            title = gig.title
+            city = gig.city
+            state = gig.state
+            contactName = gig.contactName
+            checklistSummary = gig.checklistSummary
+            fee = String(gig.fee)
+            status = gig.status
+            date = gig.date
+        }
+    }
+}
+
+// MARK: - BreakEvenCalculatorSheetView
+private struct BreakEvenCalculatorSheetView: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    let gig: Gig
+    @Binding var isPresented: Bool
+    
+    @State private var grossFee: String = ""
+    @State private var agencyPercent: String = "15"
+    @State private var taxPercent: String = "8"
+    @State private var flight: String = ""
+    @State private var hotel: String = ""
+    @State private var transport: String = ""
+    @State private var food: String = ""
+    @State private var other: String = ""
+    
+    var calculatedBreakEven: (net: Double, margin: Int, status: String) {
+        let gross = Double(grossFee.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let agency = Double(agencyPercent.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let tax = Double(taxPercent.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let flightCost = Double(flight.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let hotelCost = Double(hotel.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let transportCost = Double(transport.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let foodCost = Double(food.replacingOccurrences(of: ",", with: ".")) ?? 0
+        let otherCost = Double(other.replacingOccurrences(of: ",", with: ".")) ?? 0
+        
+        let agencyValue = gross * (agency / 100)
+        let taxValue = gross * (tax / 100)
+        let operationalCosts = flightCost + hotelCost + transportCost + foodCost + otherCost
+        let net = gross - agencyValue - taxValue - operationalCosts
+        let margin = gross > 0 ? Int((net / gross) * 100) : 0
+        let status = gross <= 0 ? "" : net > 0 ? "Lucro" : net == 0 ? "Break-even" : "Prejuízo"
+        
+        return (net, margin, status)
+    }
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    PsyHeroCard {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "chart.bar.xaxis")
+                                    .foregroundStyle(PsyTheme.primary)
+                                Text("Break-even")
+                                    .font(.title2.bold())
+                                    .foregroundStyle(.white)
+                            }
+                            Text("\(gig.title) — \(gig.city)")
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.textSecondary)
+                        }
+                    }
+                    
+                    PsyCard {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Receita")
+                                .font(.headline)
+                                .foregroundStyle(PsyTheme.primary)
+                            
+                            HStack {
+                                Text("Cachê bruto (R$)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $grossFee)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 120)
+                            }
+                            
+                            Divider()
+                            
+                            Text("Descontos")
+                                .font(.headline)
+                                .foregroundStyle(PsyTheme.primary)
+                            
+                            HStack {
+                                Text("Agência (%)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $agencyPercent)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 120)
+                            }
+                            
+                            HStack {
+                                Text("Impostos (%)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $taxPercent)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 120)
+                            }
+                            
+                            Divider()
+                            
+                            Text("Custos operacionais")
+                                .font(.headline)
+                                .foregroundStyle(PsyTheme.primary)
+                            
+                            HStack {
+                                Text("Passagem aérea (R$)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $flight)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 120)
+                            }
+                            
+                            HStack {
+                                Text("Hospedagem (R$)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $hotel)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 120)
+                            }
+                            
+                            HStack {
+                                Text("Transporte local (R$)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $transport)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 120)
+                            }
+                            
+                            HStack {
+                                Text("Alimentação (R$)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $food)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 120)
+                            }
+                            
+                            HStack {
+                                Text("Outros (R$)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $other)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 120)
+                            }
+                        }
+                    }
+                    
+                    PsyCard {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Resultado")
+                                .font(.headline)
+                                .foregroundStyle(PsyTheme.primary)
+                            
+                            HStack {
+                                Text("Lucro líquido")
+                                    .font(.caption)
+                                Spacer()
+                                Text("R$ \(Int(calculatedBreakEven.net))")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(calculatedBreakEven.net > 0 ? .green : (calculatedBreakEven.net == 0 ? .orange : .red))
+                            }
+                            
+                            HStack {
+                                Text("Margem")
+                                    .font(.caption)
+                                Spacer()
+                                Text("\(calculatedBreakEven.margin)%")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(calculatedBreakEven.margin > 0 ? .green : (calculatedBreakEven.margin == 0 ? .orange : .red))
+                            }
+                            
+                            if !calculatedBreakEven.status.isEmpty {
+                                HStack {
+                                    Text("Status")
+                                        .font(.caption)
+                                    Spacer()
+                                    Text(calculatedBreakEven.status)
+                                        .font(.subheadline.bold())
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(calculatedBreakEven.status == "Lucro" ? Color.green.opacity(0.2) : (calculatedBreakEven.status == "Break-even" ? Color.orange.opacity(0.2) : Color.red.opacity(0.2)))
+                                        .foregroundStyle(calculatedBreakEven.status == "Lucro" ? .green : (calculatedBreakEven.status == "Break-even" ? .orange : .red))
+                                        .cornerRadius(6)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(20)
+            }
+            .background(PsyTheme.background.ignoresSafeArea())
+            .navigationTitle("Break-even")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Fechar") { isPresented = false }
+                }
+            }
+        }
+        .onAppear {
+            grossFee = String(gig.fee)
+        }
+    }
+}
+
+// MARK: - LogisticsCalculatorSheetView
+private struct LogisticsCalculatorSheetView: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    let gig: Gig
+    @Binding var isPresented: Bool
+    
+    @State private var fromCity: String = ""
+    @State private var fromState: String = ""
+    @State private var toCity: String = ""
+    @State private var toState: String = ""
+    @State private var outboundDate: Date = Date()
+    @State private var returnDate: Date = Date().addingTimeInterval(60 * 60 * 24 * 2)
+    @State private var fuelPrice: String = "6.50"
+    @State private var kmPerLiter: String = "12"
+    @State private var estimatedTollCost: String = "50"
+    @State private var estimatedDistance: Double? = nil
+    @State private var estimatedCost: Double? = nil
+    @State private var isCalculating = false
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    PsyHeroCard {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "car.fill")
+                                    .foregroundStyle(PsyTheme.primary)
+                                Text("Logística")
+                                    .font(.title2.bold())
+                                    .foregroundStyle(.white)
+                            }
+                            Text("\(gig.title) — \(gig.city)")
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.textSecondary)
+                        }
+                    }
+                    
+                    PsyCard {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Rota")
+                                .font(.headline)
+                                .foregroundStyle(PsyTheme.primary)
+                            
+                            HStack(spacing: 10) {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Cidade de saída")
+                                        .font(.caption)
+                                    TextField("Cidade", text: $fromCity)
+                                        .textFieldStyle(.roundedBorder)
+                                    TextField("UF", text: $fromState)
+                                        .textFieldStyle(.roundedBorder)
+                                }
+                                
+                                Image(systemName: "arrow.right")
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Destino (gig)")
+                                        .font(.caption)
+                                    TextField("", text: .constant(gig.city))
+                                        .textFieldStyle(.roundedBorder)
+                                        .disabled(true)
+                                    TextField("", text: .constant(gig.state))
+                                        .textFieldStyle(.roundedBorder)
+                                        .disabled(true)
+                                }
+                            }
+                        }
+                    }
+                    
+                    PsyCard {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Datas")
+                                .font(.headline)
+                                .foregroundStyle(PsyTheme.primary)
+                            
+                            HStack {
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Ida")
+                                        .font(.caption)
+                                    DatePicker("", selection: $outboundDate, displayedComponents: [.date])
+                                        .tint(PsyTheme.primary)
+                                }
+                                
+                                Spacer()
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    Text("Volta")
+                                        .font(.caption)
+                                    DatePicker("", selection: $returnDate, displayedComponents: [.date])
+                                        .tint(PsyTheme.primary)
+                                }
+                            }
+                        }
+                    }
+                    
+                    PsyCard {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Veículo e custos")
+                                .font(.headline)
+                                .foregroundStyle(PsyTheme.primary)
+                            
+                            HStack {
+                                Text("Preço combustível (R$/L)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $fuelPrice)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 100)
+                            }
+                            
+                            HStack {
+                                Text("Consumo (km/L)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $kmPerLiter)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 100)
+                            }
+                            
+                            HStack {
+                                Text("Pedágio estimado (R$)")
+                                    .font(.caption)
+                                Spacer()
+                                TextField("", text: $estimatedTollCost)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 100)
+                            }
+                            
+                            Button(action: calculateRoute) {
+                                HStack {
+                                    if isCalculating {
+                                        ProgressView()
+                                            .tint(.white)
+                                            .controlSize(.small)
+                                    } else {
+                                        Image(systemName: "magnifyingglass")
+                                    }
+                                    Text("Calcular rota")
+                                        .fontWeight(.semibold)
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(PsyTheme.primary)
+                            .disabled(fromCity.isEmpty || toCity.isEmpty)
+                        }
+                    }
+                    
+                    if let distance = estimatedDistance, let cost = estimatedCost {
+                        PsyCard {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Estimativa")
+                                    .font(.headline)
+                                    .foregroundStyle(PsyTheme.primary)
+                                
+                                HStack {
+                                    Text("Distância")
+                                        .font(.caption)
+                                    Spacer()
+                                    Text("\(Int(distance)) km")
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(PsyTheme.primary)
+                                }
+                                
+                                HStack {
+                                    Text("Custo total (ida + volta)")
+                                        .font(.caption)
+                                    Spacer()
+                                    Text("R$ \(Int(cost * 2))")
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(cost > 0 ? .orange : .green)
+                                }
+                                
+                                HStack {
+                                    Text("Custo por apresentação")
+                                        .font(.caption)
+                                    Spacer()
+                                    Text("R$ \(Int(cost))")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                    }
+                    
+                    Spacer(minLength: 20)
+                }
+                .padding(20)
+            }
+            .background(PsyTheme.background.ignoresSafeArea())
+            .navigationTitle("Logística")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Fechar") { isPresented = false }
+                }
+            }
+        }
+        .onAppear {
+            toCity = gig.city
+            toState = gig.state
+        }
+    }
+    
+    private func calculateRoute() {
+        isCalculating = true
+        
+        Task {
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            
+            let estimatedDistanceValue = Double.random(in: 200...800)
+            let fuelPriceValue = Double(fuelPrice.replacingOccurrences(of: ",", with: ".")) ?? 6.5
+            let kmPerLiterValue = Double(kmPerLiter.replacingOccurrences(of: ",", with: ".")) ?? 12
+            let tollCostValue = Double(estimatedTollCost.replacingOccurrences(of: ",", with: ".")) ?? 50
+            
+            let fuelCost = (estimatedDistanceValue / kmPerLiterValue) * fuelPriceValue
+            let totalCost = fuelCost + tollCostValue
+            
+            await MainActor.run {
+                estimatedDistance = estimatedDistanceValue
+                estimatedCost = totalCost
+                isCalculating = false
             }
         }
     }
