@@ -24,6 +24,7 @@ struct DashboardView: View {
     @State private var plannerMessage = ""
     @State private var bookingRadarMessage = ""
     @State private var playbookMessage = ""
+    @State private var postShowMessage = ""
     @State private var isRefreshingCareer360 = false
     @State private var refreshCareerMessage = ""
     @AppStorage("career360LastSourceLabel") private var career360LastSourceLabel = "Mock fallback"
@@ -216,6 +217,23 @@ struct DashboardView: View {
         }
     }
 
+    private var recentGigForPostShow: Gig? {
+        let today = Calendar.current.startOfDay(for: Date())
+        guard let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today) else { return nil }
+        return gigs
+            .filter { $0.date >= yesterday && $0.date < today }
+            .sorted { $0.date > $1.date }
+            .first
+    }
+
+    private var postShowPlaybookTasks: [String] {
+        [
+            "Registrar fechamento financeiro real da gig",
+            "Enviar follow-up e agradecimento ao promoter",
+            "Publicar recap com melhores momentos"
+        ]
+    }
+
     private var gigs72hMissingTripCount: Int {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -303,6 +321,17 @@ struct DashboardView: View {
                     title: "Playbook da próxima gig",
                     description: "Playbook \(stage) pronto para \(gig.title).",
                     type: .info
+                )
+            )
+        }
+
+        if let recentGig = recentGigForPostShow {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Playbook pós-show",
+                    description: "Checklist D+1 disponível para \(recentGig.title).",
+                    type: .warning
                 )
             )
         }
@@ -526,6 +555,8 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                                                 onQuickAction(.finances)
                                             } else if notification.title.lowercased().contains("playbook") {
                                                 onQuickAction(.events)
+                                            } else if notification.title.lowercased().contains("pós-show") {
+                                                onQuickAction(.finances)
                                             } else {
                                                 onQuickAction(.events)
                                             }
@@ -541,6 +572,9 @@ private var weeklySeries: [DashboardWeeklyPoint] {
 
                         nextGigPlaybookCard
                             .psyAppear(delay: 0.17)
+
+                        postShowPlaybookCard
+                            .psyAppear(delay: 0.18)
                     }
                 }
                 .padding(20)
@@ -1280,6 +1314,62 @@ private var weeklySeries: [DashboardWeeklyPoint] {
         }
     }
 
+    private var postShowPlaybookCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            PsySectionHeader(eyebrow: "Playbook", title: "Pós-show D+1")
+
+            if let gig = recentGigForPostShow {
+                PsyCard {
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("🧾 Playbook Pós-Show · D+1")
+                                .font(.headline)
+                                .foregroundStyle(.white)
+                            Spacer()
+                            Button("Gerar checklist") {
+                                createPostShowPlaybookTasks()
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+
+                        Text("\(gig.title) em \(gig.city)")
+                            .font(.caption)
+                            .foregroundStyle(PsyTheme.textSecondary)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            ForEach(postShowPlaybookTasks, id: \.self) { task in
+                                Text("• \(task)")
+                                    .font(.subheadline)
+                                    .foregroundStyle(PsyTheme.textSecondary)
+                            }
+                        }
+
+                        HStack(spacing: 10) {
+                            Button("Fechar Finanças") {
+                                onQuickAction(.finances)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+
+                            Button("Follow-up no Manager") {
+                                onQuickAction(.manager)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+
+                        if !postShowMessage.isEmpty {
+                            Text(postShowMessage)
+                                .font(.caption)
+                                .foregroundStyle(PsyTheme.primary)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private var weeklyChart: some View {
         VStack(alignment: .leading, spacing: 12) {
             PsySectionHeader(eyebrow: "Performance", title: "Evolução semanal")
@@ -1376,6 +1466,44 @@ private var weeklySeries: [DashboardWeeklyPoint] {
             onQuickAction(.creation)
         } else {
             playbookMessage = "Checklist já estava no plano."
+        }
+    }
+
+    private func createPostShowPlaybookTasks() {
+        guard let gig = recentGigForPostShow else {
+            postShowMessage = "Sem gig recente para playbook pós-show."
+            return
+        }
+
+        let dueDate = Calendar.current.startOfDay(for: Date())
+        var inserted = 0
+        let labelPrefix = "[Playbook D+1] \(gig.title)"
+
+        for item in postShowPlaybookTasks {
+            let title = "\(labelPrefix): \(item)"
+            let exists = tasks.contains {
+                $0.title == title && Calendar.current.isDate($0.dueDate, inSameDayAs: dueDate)
+            }
+
+            if !exists {
+                modelContext.insert(
+                    CareerTask(
+                        title: title,
+                        detail: "Fechamento pós-show da gig \(gig.title) em \(gig.city).",
+                        priority: TaskPriority.high.rawValue,
+                        dueDate: dueDate
+                    )
+                )
+                inserted += 1
+            }
+        }
+
+        if inserted > 0 {
+            try? modelContext.save()
+            postShowMessage = "Checklist D+1 criado para fechamento pós-show."
+            onQuickAction(.creation)
+        } else {
+            postShowMessage = "Checklist já estava no plano."
         }
     }
 
