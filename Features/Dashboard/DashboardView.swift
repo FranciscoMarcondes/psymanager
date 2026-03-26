@@ -218,6 +218,20 @@ struct DashboardView: View {
         }
     }
 
+    private var nextGigPlaybookTaskPrefix: String? {
+        guard let stage = nextGigPlaybookStage, let gig = nextGigForPlaybook else { return nil }
+        return "[Playbook \(stage)] \(gig.title)"
+    }
+
+    private var nextGigPlaybookGeneratedCount: Int {
+        guard let prefix = nextGigPlaybookTaskPrefix else { return 0 }
+        return tasks.filter { $0.title.hasPrefix(prefix) }.count
+    }
+
+    private var nextGigPlaybookMissingTasks: Bool {
+        nextGigPlaybookTaskPrefix != nil && nextGigPlaybookGeneratedCount == 0
+    }
+
     private var recentGigForPostShow: Gig? {
         let today = Calendar.current.startOfDay(for: Date())
         guard let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today) else { return nil }
@@ -233,6 +247,20 @@ struct DashboardView: View {
             "Enviar follow-up e agradecimento ao promoter",
             "Publicar recap com melhores momentos"
         ]
+    }
+
+    private var postShowPlaybookTaskPrefix: String? {
+        guard let gig = recentGigForPostShow else { return nil }
+        return "[Playbook D+1] \(gig.title)"
+    }
+
+    private var postShowPlaybookGeneratedCount: Int {
+        guard let prefix = postShowPlaybookTaskPrefix else { return 0 }
+        return tasks.filter { $0.title.hasPrefix(prefix) }.count
+    }
+
+    private var postShowPlaybookMissingTasks: Bool {
+        postShowPlaybookTaskPrefix != nil && postShowPlaybookGeneratedCount == 0
     }
 
     private struct PlaybookExecutionMetric: Identifiable {
@@ -353,7 +381,16 @@ struct DashboardView: View {
             )
         }
 
-        if let stage = nextGigPlaybookStage, let gig = nextGigForPlaybook {
+        if let stage = nextGigPlaybookStage, let gig = nextGigForPlaybook, nextGigPlaybookMissingTasks {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Playbook da próxima gig sem tarefas",
+                    description: "Playbook \(stage) de \(gig.title) ainda não foi gerado.",
+                    type: .warning
+                )
+            )
+        } else if let stage = nextGigPlaybookStage, let gig = nextGigForPlaybook {
             items.append(
                 SmartNotificationModel(
                     activityId: UUID(),
@@ -364,7 +401,16 @@ struct DashboardView: View {
             )
         }
 
-        if let recentGig = recentGigForPostShow {
+        if let recentGig = recentGigForPostShow, postShowPlaybookMissingTasks {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Playbook pós-show sem tarefas",
+                    description: "Checklist D+1 de \(recentGig.title) ainda não foi gerado.",
+                    type: .warning
+                )
+            )
+        } else if let recentGig = recentGigForPostShow {
             items.append(
                 SmartNotificationModel(
                     activityId: UUID(),
@@ -592,10 +638,10 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                                                 onQuickAction(.manager)
                                             } else if notification.title.lowercased().contains("caixa") {
                                                 onQuickAction(.finances)
-                                            } else if notification.title.lowercased().contains("playbook") {
-                                                onQuickAction(.events)
                                             } else if notification.title.lowercased().contains("pós-show") {
                                                 onQuickAction(.finances)
+                                            } else if notification.title.lowercased().contains("playbook") {
+                                                onQuickAction(.events)
                                             } else {
                                                 onQuickAction(.events)
                                             }
