@@ -236,6 +236,7 @@ struct EventPipelineView: View {
     @State private var showingLogisticsSheet = false
     @State private var showingRadarForm = false
     @State private var showingTripForm = false
+    @AppStorage("hasSeenGigNegotiationTip") private var hasSeenGigNegotiationTip = false
     @State private var feedbackMessage = ""
     @State private var bookingAdvisorResult = ""
     @State private var isRunningAdvisor = false
@@ -534,26 +535,49 @@ struct EventPipelineView: View {
                                     .buttonStyle(.bordered)
                                     
                                     if gig.status == "Negociacao" {
-                                        Menu {
-                                            Button(action: {
-                                                selectedGigForAction = gig
-                                                showingBreakEvenSheet = true
-                                            }) {
-                                                Label("📊 Break-even", systemImage: "chart.bar")
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            Menu {
+                                                Button(action: {
+                                                    selectedGigForAction = gig
+                                                    showingBreakEvenSheet = true
+                                                    hasSeenGigNegotiationTip = true
+                                                }) {
+                                                    Label("📊 Break-even", systemImage: "chart.bar")
+                                                }
+
+                                                Button(action: {
+                                                    selectedGigForAction = gig
+                                                    showingLogisticsSheet = true
+                                                    hasSeenGigNegotiationTip = true
+                                                }) {
+                                                    Label("🚗 Logística", systemImage: "car.fill")
+                                                }
+                                            } label: {
+                                                Label("Ações", systemImage: "ellipsis.circle")
+                                                    .font(.caption2)
                                             }
-                                            
-                                            Button(action: {
-                                                selectedGigForAction = gig
-                                                showingLogisticsSheet = true
-                                            }) {
-                                                Label("🚗 Logística", systemImage: "car.fill")
+                                            .buttonStyle(.bordered)
+                                            .tint(.orange)
+
+                                            if !hasSeenGigNegotiationTip {
+                                                HStack(spacing: 6) {
+                                                    Image(systemName: "lightbulb.fill")
+                                                        .font(.caption2)
+                                                        .foregroundStyle(.yellow)
+                                                    Text("Use Ações para break-even e logística")
+                                                        .font(.caption2)
+                                                        .foregroundStyle(.secondary)
+                                                    Button("OK") {
+                                                        hasSeenGigNegotiationTip = true
+                                                    }
+                                                    .font(.caption2)
+                                                }
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 6)
+                                                .background(Color.orange.opacity(0.12))
+                                                .cornerRadius(8)
                                             }
-                                        } label: {
-                                            Label("Ações", systemImage: "ellipsis.circle")
-                                                .font(.caption2)
                                         }
-                                        .buttonStyle(.bordered)
-                                        .tint(.orange)
                                     }
                                     
                                     Button(gig.addedToCalendar ? "✓ Calendário" : "Calendário") {
@@ -2716,6 +2740,13 @@ private struct BreakEvenCalculatorSheetView: View {
             .navigationTitle("Break-even")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        BreakEvenHistoryView()
+                    } label: {
+                        Label("Histórico", systemImage: "clock.arrow.circlepath")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Fechar") { isPresented = false }
                 }
