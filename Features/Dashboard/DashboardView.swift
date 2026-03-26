@@ -18,6 +18,8 @@ struct DashboardView: View {
     @Query(sort: \SocialInsightSnapshot.periodEnd, order: .reverse) private var insights: [SocialInsightSnapshot]
     @Query(sort: \ArtistCareerSnapshot.capturedAt, order: .reverse) private var careerSnapshots: [ArtistCareerSnapshot]
     @Query(sort: \PromoterContact.name) private var promoters: [PromoterContact]
+    @Query(sort: \TripPlan.dateISO) private var tripPlans: [TripPlan]
+    @Query(sort: \Expense.dateISO, order: .reverse) private var expenses: [Expense]
 
     @State private var plannerMessage = ""
     @State private var bookingRadarMessage = ""
@@ -161,6 +163,34 @@ struct DashboardView: View {
         negotiations.filter { $0.nextActionDate < Date() && $0.stage != LeadStatus.closed.rawValue }.count
     }
 
+    private var upcomingGigs72h: [Gig] {
+        let now = Date()
+        let cutoff = Calendar.current.date(byAdding: .hour, value: 72, to: now) ?? now
+        return gigs.filter { $0.date >= now && $0.date <= cutoff }
+    }
+
+    private var gigs72hMissingTripCount: Int {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        return upcomingGigs72h.filter { gig in
+            let gigDateISO = dateFormatter.string(from: gig.date)
+            let gigTitle = gig.title.lowercased()
+            return !tripPlans.contains { trip in
+                let byDateCity = trip.dateISO == gigDateISO && trip.toCity.lowercased() == gig.city.lowercased()
+                let byLabel = !trip.linkedGigLabel.isEmpty && trip.linkedGigLabel.lowercased().contains(gigTitle)
+                return byDateCity || byLabel
+            }
+        }.count
+    }
+
+    private var cashHealthPct: Int? {
+        let revenue = gigs.reduce(0) { $0 + $1.fee }
+        guard revenue > 0 else { return nil }
+        let costs = expenses.reduce(0) { $0 + $1.amount }
+        return Int(((revenue - costs) / revenue) * 100)
+    }
+
     private var smartNotifications: [SmartNotificationModel] {
         var items: [SmartNotificationModel] = []
 
@@ -193,6 +223,28 @@ struct DashboardView: View {
                     title: "Prioridade do dia",
                     description: todayTaskItems[0],
                     type: .success
+                )
+            )
+        }
+
+        if gigs72hMissingTripCount > 0 {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Logística 72h",
+                    description: "\(gigs72hMissingTripCount) show(s) em até 72h sem viagem planejada.",
+                    type: .warning
+                )
+            )
+        }
+
+        if let cashHealthPct, cashHealthPct < 20, !upcomingGigs72h.isEmpty {
+            items.append(
+                SmartNotificationModel(
+                    activityId: UUID(),
+                    title: "Caixa em risco",
+                    description: "Saúde financeira em \(cashHealthPct)% com show próximo. Revise break-even hoje.",
+                    type: .warning
                 )
             )
         }
@@ -412,6 +464,8 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                                         onNavigate: { _ in
                                             if notification.title.lowercased().contains("follow-up") {
                                                 onQuickAction(.manager)
+                                            } else if notification.title.lowercased().contains("caixa") {
+                                                onQuickAction(.finances)
                                             } else {
                                                 onQuickAction(.events)
                                             }
@@ -733,6 +787,8 @@ private var weeklySeries: [DashboardWeeklyPoint] {
                 quickAction(title: "Planejar reels", icon: "play.rectangle.fill", color: PsyTheme.accent, target: .creation)
                 quickAction(title: "Gerar flyer", icon: "wand.and.stars", color: PsyTheme.secondary, target: .creation)
                 quickAction(title: "Nova prospecção", icon: "location.magnifyingglass", color: PsyTheme.warning, target: .events)
+                quickAction(title: "Planejar logística", icon: "car.fill", color: PsyTheme.primary, target: .events)
+                quickAction(title: "Revisar caixa", icon: "chart.line.uptrend.xyaxis", color: PsyTheme.warning, target: .finances)
             }
         }
     }
