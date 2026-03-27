@@ -530,53 +530,53 @@ struct EventPipelineView: View {
                                         showingGigEditForm = true
                                     }) {
                                         Label("Editar", systemImage: "pencil")
-                                            .font(.caption2)
+                                            .font(.body)
                                     }
                                     .buttonStyle(.bordered)
                                     
-                                    if gig.status == "Negociacao" {
-                                        VStack(alignment: .leading, spacing: 6) {
-                                            Menu {
-                                                Button(action: {
-                                                    selectedGigForAction = gig
-                                                    showingBreakEvenSheet = true
-                                                    hasSeenGigNegotiationTip = true
-                                                }) {
-                                                    Label("📊 Break-even", systemImage: "chart.bar")
-                                                }
-
-                                                Button(action: {
-                                                    selectedGigForAction = gig
-                                                    showingLogisticsSheet = true
-                                                    hasSeenGigNegotiationTip = true
-                                                }) {
-                                                    Label("🚗 Logística", systemImage: "car.fill")
-                                                }
-                                            } label: {
-                                                Label("Ações", systemImage: "ellipsis.circle")
-                                                    .font(.caption2)
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Menu {
+                                            Button(action: {
+                                                selectedGigForAction = gig
+                                                showingBreakEvenSheet = true
+                                                hasSeenGigNegotiationTip = true
+                                            }) {
+                                                Label("📊 Break-even", systemImage: "chart.bar")
                                             }
-                                            .buttonStyle(.bordered)
-                                            .tint(.orange)
 
-                                            if !hasSeenGigNegotiationTip {
-                                                HStack(spacing: 6) {
-                                                    Image(systemName: "lightbulb.fill")
-                                                        .font(.caption2)
-                                                        .foregroundStyle(.yellow)
-                                                    Text("Use Ações para break-even e logística")
-                                                        .font(.caption2)
-                                                        .foregroundStyle(.secondary)
-                                                    Button("OK") {
-                                                        hasSeenGigNegotiationTip = true
-                                                    }
-                                                    .font(.caption2)
-                                                }
-                                                .padding(.horizontal, 8)
-                                                .padding(.vertical, 6)
-                                                .background(Color.orange.opacity(0.12))
-                                                .cornerRadius(8)
+                                            Button(action: {
+                                                selectedGigForAction = gig
+                                                showingLogisticsSheet = true
+                                                hasSeenGigNegotiationTip = true
+                                            }) {
+                                                Label("🚗 Logística", systemImage: "car.fill")
                                             }
+                                        } label: {
+                                            Label("Ações", systemImage: "ellipsis.circle")
+                                                .font(.body)
+                                        }
+                                        .buttonStyle(.bordered)
+                                        .tint(.orange)
+
+                                        if !hasSeenGigNegotiationTip {
+                                            VStack(alignment: .leading, spacing: 6) {
+                                                Text("💡 Calcule viabilidade")
+                                                    .font(.caption.bold())
+                                                    .foregroundStyle(.white)
+                                                Text("Clique em Ações para:\n• Calcular break-even\n• Estimar logística até aeroporto")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                                Button("Entendi") {
+                                                    hasSeenGigNegotiationTip = true
+                                                }
+                                                .font(.caption.bold())
+                                                .buttonStyle(.bordered)
+                                                .tint(.orange)
+                                            }
+                                            .padding(10)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(Color.orange.opacity(0.15))
+                                            .cornerRadius(10)
                                         }
                                     }
                                     
@@ -585,15 +585,15 @@ struct EventPipelineView: View {
                                     }
                                     .buttonStyle(.bordered)
                                     .disabled(gig.addedToCalendar)
-                                    .font(.caption2)
+                                    .font(.body)
 
                                     Button(action: {
                                         modelContext.delete(gig)
                                         try? modelContext.save()
                                     }) {
-                                        Label("", systemImage: "trash")
+                                        Label("Deletar", systemImage: "trash")
                                             .foregroundStyle(.red)
-                                            .font(.caption2)
+                                            .font(.body)
                                     }
                                     .buttonStyle(.bordered)
                                 }

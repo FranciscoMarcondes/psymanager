@@ -299,12 +299,35 @@ struct CoverDesignStudioView: View {
                                         .stroke(PsyTheme.primary.opacity(0.5), lineWidth: 1)
                                 )
                         case .failure:
-                            Text("Não foi possível carregar a imagem gerada.")
-                                .font(.caption2)
-                                .foregroundStyle(.orange)
+                            VStack(spacing: 12) {
+                                Image(systemName: "photo.badge.exclamationmark")
+                                    .font(.system(size: 40))
+                                    .foregroundStyle(.orange)
+                                Text("Não foi possível carregar a imagem")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(.white)
+                                Text("Verifique a conexão e tente novamente")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 200)
+                            .background(Color.white.opacity(0.05))
+                            .cornerRadius(10)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                            )
                         default:
-                            ProgressView()
-                                .frame(maxWidth: .infinity, minHeight: 200)
+                            VStack(spacing: 8) {
+                                ProgressView()
+                                    .tint(PsyTheme.primary)
+                                Text("Gerando arte...")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 200)
+                            .background(Color.white.opacity(0.05))
+                            .cornerRadius(10)
                         }
                     }
                 }

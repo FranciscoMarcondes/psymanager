@@ -18,6 +18,9 @@ struct LogisticsCalculatorSheetView: View {
     @State private var estimatedDistance: Double? = nil
     @State private var estimatedCost: Double? = nil
     @State private var isCalculating = false
+    @State private var airportTransportMode: String = "uber"
+    @State private var airportTransportCost: String = "80"
+    @State private var needsAirportTransport: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -157,6 +160,70 @@ struct LogisticsCalculatorSheetView: View {
                         }
                     }
                     
+                    // Airport Transport (if coming from another state)
+                    if fromState != toState {
+                        PsyCard {
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack(alignment: .top) {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "airplane")
+                                                .foregroundStyle(PsyTheme.primary)
+                                            Text("Transporte ao aeroporto")
+                                                .font(.headline)
+                                                .foregroundStyle(PsyTheme.primary)
+                                        }
+                                        Text("DJ precisa se deslocar até o aeroporto?")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    Toggle("", isOn: $needsAirportTransport)
+                                        .tint(PsyTheme.primary)
+                                }
+                                
+                                if needsAirportTransport {
+                                    Divider()
+                                    
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text("Modal")
+                                            .font(.caption.bold())
+                                            .foregroundStyle(.white)
+                                        Picker("", selection: $airportTransportMode) {
+                                            Text("🚗 Carro próprio").tag("carro")
+                                            Text("🚙 Uber/Taxi").tag("uber")
+                                            Text("🚌 Ônibus").tag("bus")
+                                        }
+                                        .pickerStyle(.segmented)
+                                        .tint(PsyTheme.primary)
+                                        
+                                        HStack {
+                                            Image(systemName: airportTransportMode == "carro" ? "fuelpump" : (airportTransportMode == "uber" ? "car.2" : "bus.fill"))
+                                                .foregroundStyle(PsyTheme.primary)
+                                                .font(.caption)
+                                            Text(airportTransportMode == "carro" ? "Custo combustível estimado" : "Custo da corrida")
+                                                .font(.caption)
+                                            Spacer()
+                                            TextField("", text: $airportTransportCost)
+                                                .keyboardType(.decimalPad)
+                                                .textFieldStyle(.roundedBorder)
+                                                .frame(width: 100)
+                                        }
+                                        
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "info.circle.fill")
+                                                .font(.caption)
+                                                .foregroundStyle(.orange)
+                                            Text("Este valor será somado ao break-even")
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                     // Results
                     if let distance = estimatedDistance, let cost = estimatedCost {
                         PsyCard {
@@ -175,21 +242,47 @@ struct LogisticsCalculatorSheetView: View {
                                 }
                                 
                                 HStack {
-                                    Text("Custo total (ida + volta)")
+                                    Text("Custo rodoviário (ida + volta)")
                                         .font(.caption)
                                     Spacer()
                                     Text("R$ \(Int(cost * 2))")
                                         .font(.subheadline.bold())
-                                        .foregroundStyle(cost > 0 ? .orange : .green)
+                                        .foregroundStyle(.orange)
                                 }
                                 
-                                HStack {
-                                    Text("Custo por apresentação")
-                                        .font(.caption)
-                                    Spacer()
-                                    Text("R$ \(Int(cost))")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                if needsAirportTransport && !airportTransportCost.isEmpty {
+                                    Divider()
+                                    HStack {
+                                        Image(systemName: "airplane")
+                                            .foregroundStyle(PsyTheme.primary)
+                                            .font(.caption)
+                                        Text("Transporte ao aeroporto")
+                                            .font(.caption)
+                                        Spacer()
+                                        Text("R$ \(Int(Double(airportTransportCost.replacingOccurrences(of: ",", with: ".")) ?? 0))")
+                                            .font(.subheadline.bold())
+                                            .foregroundStyle(PsyTheme.primary)
+                                    }
+                                    
+                                    Divider()
+                                    HStack {
+                                        Text("TOTAL (deslocamento completo)")
+                                            .font(.caption.bold())
+                                            .foregroundStyle(.white)
+                                        Spacer()
+                                        Text("R$ \(Int((cost * 2) + (Double(airportTransportCost.replacingOccurrences(of: ",", with: ".")) ?? 0)))")
+                                            .font(.headline.bold())
+                                            .foregroundStyle(.green)
+                                    }
+                                } else {
+                                    HStack {
+                                        Text("Custo por apresentação")
+                                            .font(.caption)
+                                        Spacer()
+                                        Text("R$ \(Int(cost))")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
                             }
                         }

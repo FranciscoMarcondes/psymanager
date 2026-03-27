@@ -36,26 +36,48 @@ struct GigEditFormView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             TextField("Nome da gig", text: $title)
                                 .textFieldStyle(.roundedBorder)
-                            TextField("Cidade", text: $city)
-                                .textFieldStyle(.roundedBorder)
-                            TextField("UF", text: $state)
-                                .textFieldStyle(.roundedBorder)
+                            
+                            HStack(spacing: 10) {
+                                TextField("Cidade", text: $city)
+                                    .textFieldStyle(.roundedBorder)
+                                TextField("UF", text: $state)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(maxWidth: 70)
+                            }
+                            
                             TextField("Contratante", text: $contactName)
                                 .textFieldStyle(.roundedBorder)
-                            TextField("Fee", text: $fee)
-                                .keyboardType(.decimalPad)
+                            
+                            HStack(spacing: 10) {
+                                TextField("Fee (R$)", text: $fee)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(maxWidth: 100)
+                                
+                                Picker("Status", selection: $status) {
+                                    Text("Confirmado").tag("Confirmado")
+                                    Text("Em negociação").tag("Negociacao")
+                                    Text("Lead").tag("Lead")
+                                }
                                 .textFieldStyle(.roundedBorder)
-                            DatePicker("Data", selection: $date, displayedComponents: [.date, .hourAndMinute])
-                                .tint(PsyTheme.primary)
-                            Picker("Status", selection: $status) {
-                                Text("Confirmado").tag("Confirmado")
-                                Text("Em negociação").tag("Negociacao")
-                                Text("Lead").tag("Lead")
+                                .frame(maxWidth: .infinity)
                             }
-                            .tint(PsyTheme.primary)
+                            
+                            // Seção de Data compacta
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Data e hora")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(.white)
+                                DatePicker("", selection: $date, displayedComponents: [.date, .hourAndMinute])
+                                    .datePickerStyle(.compact)
+                                    .tint(PsyTheme.primary)
+                                    .labelsHidden()
+                            }
+                            
                             TextField("Checklist", text: $checklistSummary, axis: .vertical)
                                 .textFieldStyle(.roundedBorder)
-                                .lineLimit(3...6)
+                                .lineLimit(2...4)
+                                .frame(minHeight: 60)
                         }
                     }
                 }

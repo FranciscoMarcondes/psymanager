@@ -157,9 +157,9 @@ struct EventRadarWithDateFilter: View {
                         HStack(spacing: 4) {
                             Image(systemName: "calendar")
                             Text("\(startDate.formatted(date: .abbreviated, time: .omitted)) - \(endDate.formatted(date: .abbreviated, time: .omitted))")
-                                .font(.caption)
+                                .font(.body)
                         }
-                        .padding(8)
+                        .padding(10)
                         .background(Color(.systemGray5))
                         .cornerRadius(6)
                     }
