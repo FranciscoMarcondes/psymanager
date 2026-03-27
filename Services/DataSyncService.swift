@@ -237,12 +237,18 @@ struct WorkspaceGigDTO: Codable {
     let id: String
     var title: String?
     var city: String
+    var state: String?
     var venue: String
     var dateISO: String
     var fee: Double?
     var contactName: String?
     var notes: String?
     var status: String
+    var logisticsRequired: Bool?
+    var totalLogisticsCost: Double?
+    var logisticsUpdatedAtISO: String?
+    var localTransportMode: String?
+    var localTransportEstimatedCost: Double?
 }
 
 struct WorkspaceLeadDTO: Codable {
@@ -435,12 +441,18 @@ actor MobileSyncService {
                 id: UUID().uuidString,
                 title: g.title,
                 city: g.city,
-                venue: g.state,
+                state: g.state,
+                venue: g.title,
                 dateISO: isoFormatter.string(from: g.date),
                 fee: g.fee,
                 contactName: g.contactName,
                 notes: g.checklistSummary.isEmpty ? nil : g.checklistSummary,
-                status: "Confirmado"
+                status: g.status,
+                logisticsRequired: g.logisticsRequired,
+                totalLogisticsCost: g.totalLogisticsCost,
+                logisticsUpdatedAtISO: g.logisticsUpdatedAt.map { isoFormatter.string(from: $0) },
+                localTransportMode: g.localTransportMode?.rawValue,
+                localTransportEstimatedCost: g.localTransportEstimatedCost
             )
         }
 
@@ -574,16 +586,41 @@ actor MobileSyncService {
             let date = parseDate(dto.dateISO)
             let title = dto.title ?? dto.venue
             let key = "\(title)|\(dto.city)|\(date.timeIntervalSince1970)"
-            if !existingGigKeys.contains(key) {
-                context.insert(Gig(
+            if let existingGig = localGigs.first(where: {
+                $0.title == title
+                && $0.city == dto.city
+                && $0.date.timeIntervalSince1970 == date.timeIntervalSince1970
+            }) {
+                existingGig.title = title
+                existingGig.city = dto.city
+                existingGig.state = dto.state ?? dto.venue
+                existingGig.date = date
+                existingGig.fee = dto.fee ?? existingGig.fee
+                existingGig.contactName = dto.contactName ?? existingGig.contactName
+                existingGig.checklistSummary = dto.notes ?? existingGig.checklistSummary
+                existingGig.status = dto.status
+                existingGig.logisticsRequired = dto.logisticsRequired ?? existingGig.logisticsRequired
+                existingGig.totalLogisticsCost = dto.totalLogisticsCost ?? existingGig.totalLogisticsCost
+                existingGig.logisticsUpdatedAt = dto.logisticsUpdatedAtISO.map(parseDate) ?? existingGig.logisticsUpdatedAt
+                existingGig.localTransportMode = dto.localTransportMode.flatMap(TransportMode.init(rawValue:)) ?? existingGig.localTransportMode
+                existingGig.localTransportEstimatedCost = dto.localTransportEstimatedCost ?? existingGig.localTransportEstimatedCost
+            } else if !existingGigKeys.contains(key) {
+                let newGig = Gig(
                     title: title,
                     city: dto.city,
-                    state: dto.venue,
+                    state: dto.state ?? dto.venue,
                     date: date,
                     fee: dto.fee ?? 0,
                     contactName: dto.contactName ?? "",
                     checklistSummary: dto.notes ?? ""
-                ))
+                )
+                newGig.status = dto.status
+                newGig.logisticsRequired = dto.logisticsRequired ?? false
+                newGig.totalLogisticsCost = dto.totalLogisticsCost
+                newGig.logisticsUpdatedAt = dto.logisticsUpdatedAtISO.map(parseDate)
+                newGig.localTransportMode = dto.localTransportMode.flatMap(TransportMode.init(rawValue:))
+                newGig.localTransportEstimatedCost = dto.localTransportEstimatedCost
+                context.insert(newGig)
             }
         }
 

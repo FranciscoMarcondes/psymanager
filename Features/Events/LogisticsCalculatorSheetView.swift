@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct LogisticsCalculatorSheetView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     let gig: Gig
@@ -21,6 +22,35 @@ struct LogisticsCalculatorSheetView: View {
     @State private var airportTransportMode: String = "uber"
     @State private var airportTransportCost: String = "80"
     @State private var needsAirportTransport: Bool = false
+    @State private var localTransportMode: TransportMode = .uber
+    @State private var localTransportCost: String = "0"
+    @State private var showSaveAlert = false
+
+    private let localManualTransportMaxDistanceKm: Double = 120
+
+    private var isSameStateTrip: Bool {
+        !fromState.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        && fromState.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() == toState.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+    }
+
+    private var isManualLocalScenario: Bool {
+        isSameStateTrip && (estimatedDistance ?? .greatestFiniteMagnitude) <= localManualTransportMaxDistanceKm
+    }
+
+    private var localTransportCostValue: Double {
+        Double(localTransportCost.replacingOccurrences(of: ",", with: ".")) ?? 0
+    }
+
+    private var airportTransportCostValue: Double {
+        needsAirportTransport ? (Double(airportTransportCost.replacingOccurrences(of: ",", with: ".")) ?? 0) : 0
+    }
+
+    private var finalLogisticsCost: Double {
+        if isManualLocalScenario {
+            return localTransportCostValue
+        }
+        return (estimatedCost ?? 0) * 2 + airportTransportCostValue
+    }
     
     var body: some View {
         NavigationStack {
@@ -156,7 +186,7 @@ struct LogisticsCalculatorSheetView: View {
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(PsyTheme.primary)
-                            .disabled(fromCity.isEmpty || toCity.isEmpty)
+                            .disabled(fromCity.isEmpty || toState.isEmpty)
                         }
                     }
                     
@@ -231,6 +261,38 @@ struct LogisticsCalculatorSheetView: View {
                                 Text("Estimativa")
                                     .font(.headline)
                                     .foregroundStyle(PsyTheme.primary)
+
+                                if isManualLocalScenario {
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        Text("Deslocamento curto no mesmo estado")
+                                            .font(.subheadline.bold())
+                                            .foregroundStyle(.white)
+                                        Text("Nessa situação o app não tenta adivinhar o trajeto. Escolha como prefere ir e informe um valor estimado com base na sua pesquisa.")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+
+                                        Picker("Modal local", selection: $localTransportMode) {
+                                            Text("🚙 Uber").tag(TransportMode.uber)
+                                            Text("🚇 Metrô").tag(TransportMode.metro)
+                                            Text("🚌 Ônibus").tag(TransportMode.bus)
+                                            Text("🚆 Trem").tag(TransportMode.train)
+                                        }
+                                        .pickerStyle(.menu)
+                                        .tint(PsyTheme.primary)
+
+                                        HStack {
+                                            Text("Custo estimado")
+                                                .font(.caption)
+                                            Spacer()
+                                            TextField("", text: $localTransportCost)
+                                                .keyboardType(.decimalPad)
+                                                .textFieldStyle(.roundedBorder)
+                                                .frame(width: 110)
+                                        }
+                                    }
+
+                                    Divider()
+                                }
                                 
                                 HStack {
                                     Text("Distância")
@@ -259,7 +321,7 @@ struct LogisticsCalculatorSheetView: View {
                                         Text("Transporte ao aeroporto")
                                             .font(.caption)
                                         Spacer()
-                                        Text("R$ \(Int(Double(airportTransportCost.replacingOccurrences(of: ",", with: ".")) ?? 0))")
+                                        Text("R$ \(Int(airportTransportCostValue))")
                                             .font(.subheadline.bold())
                                             .foregroundStyle(PsyTheme.primary)
                                     }
@@ -270,7 +332,7 @@ struct LogisticsCalculatorSheetView: View {
                                             .font(.caption.bold())
                                             .foregroundStyle(.white)
                                         Spacer()
-                                        Text("R$ \(Int((cost * 2) + (Double(airportTransportCost.replacingOccurrences(of: ",", with: ".")) ?? 0)))")
+                                        Text("R$ \(Int(finalLogisticsCost))")
                                             .font(.headline.bold())
                                             .foregroundStyle(.green)
                                     }
@@ -284,6 +346,45 @@ struct LogisticsCalculatorSheetView: View {
                                             .foregroundStyle(.secondary)
                                     }
                                 }
+
+                                if isManualLocalScenario {
+                                    HStack {
+                                        Text("Total com \(localTransportMode.displayName)")
+                                            .font(.caption.bold())
+                                            .foregroundStyle(.white)
+                                        Spacer()
+                                        Text("R$ \(Int(finalLogisticsCost))")
+                                            .font(.headline.bold())
+                                            .foregroundStyle(.green)
+                                    }
+                                }
+
+                                Button {
+                                    gig.logisticsRequired = true
+                                    gig.totalLogisticsCost = finalLogisticsCost
+                                    if isManualLocalScenario {
+                                        gig.localTransportMode = localTransportMode
+                                        gig.localTransportEstimatedCost = localTransportCostValue
+                                        gig.transportToAirportMode = nil
+                                    } else {
+                                        gig.localTransportMode = nil
+                                        gig.localTransportEstimatedCost = nil
+                                        gig.transportToAirportMode = airportTransportMode == "carro"
+                                            ? .car
+                                            : airportTransportMode == "bus"
+                                                ? .bus
+                                                : .uber
+                                    }
+                                    gig.logisticsUpdatedAt = Date()
+                                    try? modelContext.save()
+                                    showSaveAlert = true
+                                } label: {
+                                    Text("Salvar logística na gig")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(PsyTheme.primary)
+                                .disabled(isManualLocalScenario && localTransportCostValue <= 0)
                             }
                         }
                     }
@@ -305,6 +406,9 @@ struct LogisticsCalculatorSheetView: View {
             toCity = gig.city
             toState = gig.state
         }
+        .alert("dados atualizado com sucesso.", isPresented: $showSaveAlert) {
+            Button("OK", role: .cancel) { }
+        }
     }
     
     private func calculateRoute() {
@@ -316,7 +420,16 @@ struct LogisticsCalculatorSheetView: View {
             try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
             
             // Simple distance estimation (in production, use real API)
-            let estimatedDistanceValue = Double.random(in: 200...800)
+            let estimatedDistanceValue: Double
+            if fromState.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() == toState.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() {
+                if fromCity.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == toCity.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+                    estimatedDistanceValue = Double.random(in: 8...35)
+                } else {
+                    estimatedDistanceValue = Double.random(in: 30...120)
+                }
+            } else {
+                estimatedDistanceValue = Double.random(in: 200...800)
+            }
             let fuelPriceValue = Double(fuelPrice.replacingOccurrences(of: ",", with: ".")) ?? 6.5
             let kmPerLiterValue = Double(kmPerLiter.replacingOccurrences(of: ",", with: ".")) ?? 12
             let tollCostValue = Double(estimatedTollCost.replacingOccurrences(of: ",", with: ".")) ?? 50

@@ -58,6 +58,8 @@ struct GigEditFormView: View {
                                     Text("Confirmado").tag("Confirmado")
                                     Text("Em negociação").tag("Negociacao")
                                     Text("Lead").tag("Lead")
+                                    Text("Completo").tag("Completo")
+                                    Text("Cancelado").tag("Cancelado")
                                 }
                                 .textFieldStyle(.roundedBorder)
                                 .frame(maxWidth: .infinity)

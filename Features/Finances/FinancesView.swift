@@ -60,7 +60,9 @@ struct FinancesView: View {
     @State private var filterMonth = ""
 
     private var gigRevenue: Double {
-        gigs.reduce(0) { $0 + $1.fee }
+        gigs
+            .filter { $0.status != "Cancelado" }
+            .reduce(0) { $0 + $1.fee }
     }
 
     private var totalExpenses: Double {
@@ -118,7 +120,7 @@ struct FinancesView: View {
     }
 
     private var confirmedGigs: [Gig] {
-        gigs.filter { $0.fee > 0 }
+        gigs.filter { $0.fee > 0 && $0.status != "Cancelado" }
     }
 
     private var selectedBreakEvenGig: Gig? {
@@ -549,7 +551,7 @@ struct FinancesView: View {
             }
             .psyAppear(delay: 0.06)
 
-            let gigsWithFee = gigs.filter { $0.fee > 0 }
+            let gigsWithFee = gigs.filter { $0.fee > 0 && $0.status != "Cancelado" }
             if gigsWithFee.isEmpty {
                 PsyEmptyStateCard(title: "Sem gigs com fee", subtitle: "Adicione gigs no módulo de Eventos.")
                     .psyAppear(delay: 0.10)

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct BreakEvenCalculatorSheetView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     let gig: Gig
@@ -14,6 +15,7 @@ struct BreakEvenCalculatorSheetView: View {
     @State private var transport: String = ""
     @State private var food: String = ""
     @State private var other: String = ""
+    @State private var showSaveSuccess = false
     
     var calculatedBreakEven: (net: Double, margin: Int, status: String) {
         let gross = Double(grossFee.replacingOccurrences(of: ",", with: ".")) ?? 0
@@ -52,6 +54,11 @@ struct BreakEvenCalculatorSheetView: View {
                             Text("\(gig.title) — \(gig.city)")
                                 .font(.caption)
                                 .foregroundStyle(PsyTheme.textSecondary)
+                            if let logistics = gig.totalLogisticsCost, logistics > 0 {
+                                Text("Logística vinculada: R$ \(Int(logistics))")
+                                    .font(.caption2)
+                                    .foregroundStyle(PsyTheme.primary)
+                            }
                         }
                     }
                     
@@ -204,13 +211,65 @@ struct BreakEvenCalculatorSheetView: View {
             .navigationTitle("Break-even")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Salvar") {
+                        let gross = Double(grossFee.replacingOccurrences(of: ",", with: ".")) ?? 0
+                        let agency = Double(agencyPercent.replacingOccurrences(of: ",", with: ".")) ?? 0
+                        let tax = Double(taxPercent.replacingOccurrences(of: ",", with: ".")) ?? 0
+                        let flightCost = Double(flight.replacingOccurrences(of: ",", with: ".")) ?? 0
+                        let hotelCost = Double(hotel.replacingOccurrences(of: ",", with: ".")) ?? 0
+                        let transportCost = Double(transport.replacingOccurrences(of: ",", with: ".")) ?? 0
+                        let foodCost = Double(food.replacingOccurrences(of: ",", with: ".")) ?? 0
+                        let otherCost = Double(other.replacingOccurrences(of: ",", with: ".")) ?? 0
+
+                        let snapshot = BreakEvenCalculation(
+                            gigTitle: gig.title,
+                            gigCity: gig.city,
+                            gigId: String(describing: gig.persistentModelID),
+                            grossFee: gross,
+                            agencyPercent: agency,
+                            taxPercent: tax,
+                            flight: flightCost,
+                            hotel: hotelCost,
+                            transport: transportCost,
+                            food: foodCost,
+                            other: otherCost
+                        )
+                        modelContext.insert(snapshot)
+
+                        gig.breakEvenNet = calculatedBreakEven.net
+                        gig.breakEvenMarginPct = calculatedBreakEven.margin
+                        gig.breakEvenStatus = calculatedBreakEven.status
+                        gig.breakEvenUpdatedAt = Date()
+                        gig.fee = gross
+                        if transportCost > 0 {
+                            gig.totalLogisticsCost = transportCost
+                        }
+
+                        do {
+                            try modelContext.save()
+                            showSaveSuccess = true
+                        } catch {
+                            // Keep sheet open if save fails.
+                        }
+                    }
+                    .disabled((Double(grossFee.replacingOccurrences(of: ",", with: ".")) ?? 0) <= 0)
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Fechar") { isPresented = false }
                 }
             }
         }
+        .alert("dados atualizado com sucesso.", isPresented: $showSaveSuccess) {
+            Button("OK") {
+                isPresented = false
+            }
+        }
         .onAppear {
             grossFee = String(gig.fee)
+            if let logistics = gig.totalLogisticsCost, logistics > 0 {
+                transport = String(Int(logistics))
+            }
         }
     }
 }

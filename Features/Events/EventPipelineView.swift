@@ -236,6 +236,7 @@ struct EventPipelineView: View {
     @State private var showingLogisticsSheet = false
     @State private var showingRadarForm = false
     @State private var showingTripForm = false
+    @State private var gigListMode: String = "active"
     @AppStorage("hasSeenGigNegotiationTip") private var hasSeenGigNegotiationTip = false
     @State private var feedbackMessage = ""
     @State private var bookingAdvisorResult = ""
@@ -268,6 +269,147 @@ struct EventPipelineView: View {
         }
     }
 
+    @ViewBuilder
+    private func gigStatusBadge(for gig: Gig) -> some View {
+        let bg: Color = gig.status == "Negociacao" ? Color.orange.opacity(0.2)
+            : gig.status == "Lead" ? Color.blue.opacity(0.2)
+            : gig.status == "Cancelado" ? Color.red.opacity(0.2)
+            : Color.green.opacity(0.2)
+        let fg: Color = gig.status == "Negociacao" ? .orange
+            : gig.status == "Lead" ? .blue
+            : gig.status == "Cancelado" ? .red : .green
+        Text(gig.status)
+            .font(.caption.bold())
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(bg)
+            .foregroundStyle(fg)
+            .cornerRadius(6)
+    }
+
+    @ViewBuilder
+    private func gigLifecycleButtons(for gig: Gig) -> some View {
+        if gig.status != "Completo" && gig.status != "Cancelado" {
+            Button("Finalizar") {
+                gig.status = "Completo"
+                gig.completedAt = Date()
+                try? modelContext.save()
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.green)
+
+            Button("Cancelar") {
+                gig.status = "Cancelado"
+                gig.cancelledAt = Date()
+                try? modelContext.save()
+            }
+            .buttonStyle(.bordered)
+            .tint(.red)
+        } else {
+            Button("Restaurar") {
+                gig.status = "Negociacao"
+                try? modelContext.save()
+            }
+            .buttonStyle(.bordered)
+            .tint(.orange)
+        }
+    }
+
+    private func gigViability(for gig: Gig) -> (label: String, color: Color, background: Color) {
+        if gig.logisticsRequired && gig.totalLogisticsCost == nil {
+            return ("Viabilidade: pendente", .secondary, Color.gray.opacity(0.18))
+        }
+
+        let fee = gig.fee
+        guard fee > 0 else {
+            return ("Viabilidade: pendente", .secondary, Color.gray.opacity(0.18))
+        }
+
+        let logistics = gig.totalLogisticsCost ?? 0
+        if logistics > fee || logistics / fee >= 0.7 {
+            return ("Viabilidade: atenção", .orange, Color.orange.opacity(0.18))
+        }
+
+        return ("Viabilidade: ok", .green, Color.green.opacity(0.18))
+    }
+
+    private func formattedLogisticsUpdatedAt(for gig: Gig) -> String? {
+        guard let date = gig.logisticsUpdatedAt else { return nil }
+        return "Atualizada em \(date.formatted(date: .numeric, time: .omitted))"
+    }
+
+    private func gigLogisticsSummary(for gig: Gig) -> String? {
+        if gig.logisticsRequired && gig.totalLogisticsCost == nil {
+            return "Logística pendente: definir custo estimado"
+        }
+
+        if let mode = gig.localTransportMode,
+           let cost = gig.localTransportEstimatedCost {
+            return "Logística local: \(mode.displayName) • R$ \(Int(cost))"
+        }
+
+        if let total = gig.totalLogisticsCost {
+            return "Logística total: R$ \(Int(total))"
+        }
+
+        return nil
+    }
+
+    private func gigPendingItems(for gig: Gig) -> [String] {
+        var items: [String] = []
+
+        if gig.logisticsRequired && gig.totalLogisticsCost == nil {
+            items.append("Definir logística da gig")
+        }
+
+        if gig.breakEvenStatus == nil || gig.breakEvenUpdatedAt == nil {
+            items.append("Atualizar cálculo de break-even")
+        }
+
+        if !gig.addedToCalendar {
+            items.append("Adicionar ao calendário")
+        }
+
+        if !gig.reminderScheduled {
+            items.append("Configurar lembrete do evento")
+        }
+
+        return items
+    }
+
+    private func gigBreakEvenImpact(for gig: Gig) -> (label: String, color: Color, background: Color) {
+        if gig.breakEvenStatus != nil || gig.breakEvenNet != nil || gig.breakEvenMarginPct != nil {
+            let status = gig.breakEvenStatus
+                ?? ((gig.breakEvenNet ?? 0) < 0 ? "Prejuízo" : "Lucro")
+            var parts: [String] = ["Break-even: \(status)"]
+
+            if let margin = gig.breakEvenMarginPct {
+                parts.append("Margem \(margin)%")
+            }
+
+            if let net = gig.breakEvenNet {
+                parts.append("Líquido R$ \(Int(net))")
+            }
+
+            if status == "Prejuízo" {
+                return (parts.joined(separator: " • "), .orange, Color.orange.opacity(0.16))
+            }
+
+            return (parts.joined(separator: " • "), .green, Color.green.opacity(0.16))
+        }
+
+        if let logistics = gig.totalLogisticsCost {
+            let preImpact = gig.fee - logistics
+            let label = "Pré-impacto (cachê - logística): R$ \(Int(preImpact))"
+            if preImpact < 0 {
+                return (label, .orange, Color.orange.opacity(0.16))
+            }
+            return (label, .green, Color.green.opacity(0.16))
+        }
+
+        return ("Impacto no break-even pendente", .secondary, Color.gray.opacity(0.18))
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -298,8 +440,8 @@ struct EventPipelineView: View {
                         tabButton(title: "Gigs", index: 1)
                         tabButton(title: "CRM", index: 2)
                         tabButton(title: "Radar", index: 3)
-                        tabButton(title: "Trips", index: 4)
-                        tabButton(title: "Calc", index: 5)
+                        tabButton(title: "Logística", index: 4)
+                        tabButton(title: "Avulsa", index: 5)
                     }
                     .padding(.vertical, 2)
                 }
@@ -441,6 +583,34 @@ struct EventPipelineView: View {
                     }
                 } else if selectedTab == 1 {
                     Section("Minhas gigs") {
+                        HStack(spacing: 8) {
+                            Button {
+                                gigListMode = "active"
+                            } label: {
+                                Text("Ativas")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(gigListMode == "active" ? Color.black : PsyTheme.textSecondary)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(gigListMode == "active" ? PsyTheme.primary : PsyTheme.surfaceAlt)
+                                    .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
+
+                            Button {
+                                gigListMode = "history"
+                            } label: {
+                                Text("Histórico")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(gigListMode == "history" ? Color.black : PsyTheme.textSecondary)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(gigListMode == "history" ? PsyTheme.primary : PsyTheme.surfaceAlt)
+                                    .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
+                        }
+
                         if !coldLeads.isEmpty {
                             Section("🧊 Leads Frios (\(coldLeads.count))") {
                                 ForEach(coldLeads, id: \.persistentModelID) { lead in
@@ -500,7 +670,26 @@ struct EventPipelineView: View {
                             .listRowBackground(Color.clear)
                         }
 
-                        ForEach(gigs, id: \.persistentModelID) { gig in
+                        let visibleGigs = gigs.filter { gig in
+                            if gigListMode == "history" {
+                                return gig.status == "Completo" || gig.status == "Cancelado"
+                            }
+                            return gig.status != "Completo" && gig.status != "Cancelado"
+                        }
+
+                        if visibleGigs.isEmpty {
+                            Text(gigListMode == "history" ? "Sem gigs no histórico." : "Sem gigs ativas.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        ForEach(visibleGigs, id: \.persistentModelID) { gig in
+                            let viability = gigViability(for: gig)
+                            let pendingItems = gigPendingItems(for: gig)
+                            let breakEvenImpact = gigBreakEvenImpact(for: gig)
+                            let logisticsActionTitle = (gig.logisticsRequired && gig.totalLogisticsCost == nil)
+                                ? "Definir logística"
+                                : "Recalcular logística"
                             VStack(alignment: .leading, spacing: 12) {
                                 HStack(alignment: .top) {
                                     VStack(alignment: .leading, spacing: 4) {
@@ -511,18 +700,59 @@ struct EventPipelineView: View {
                                             .foregroundStyle(.secondary)
                                     }
                                     Spacer()
-                                    Text(gig.status)
-                                        .font(.caption.bold())
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(gig.status == "Negociacao" ? Color.orange.opacity(0.2) : (gig.status == "Lead" ? Color.blue.opacity(0.2) : Color.green.opacity(0.2)))
-                                        .foregroundStyle(gig.status == "Negociacao" ? .orange : (gig.status == "Lead" ? .blue : .green))
-                                        .cornerRadius(6)
+                                    gigStatusBadge(for: gig)
                                 }
                                 
                                 Text(gig.checklistSummary)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
+
+                                if let logisticsSummary = gigLogisticsSummary(for: gig) {
+                                    Text(logisticsSummary)
+                                        .font(.caption.bold())
+                                        .foregroundStyle(PsyTheme.primary)
+                                }
+
+                                Text(breakEvenImpact.label)
+                                    .font(.caption.bold())
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 5)
+                                    .background(breakEvenImpact.background)
+                                    .foregroundStyle(breakEvenImpact.color)
+                                    .cornerRadius(6)
+
+                                HStack(spacing: 8) {
+                                    Text(viability.label)
+                                        .font(.caption.bold())
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(viability.background)
+                                        .foregroundStyle(viability.color)
+                                        .cornerRadius(6)
+
+                                    if let updatedLabel = formattedLogisticsUpdatedAt(for: gig) {
+                                        Text(updatedLabel)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+
+                                if !pendingItems.isEmpty {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text("Pendências da gig (\(pendingItems.count))")
+                                            .font(.caption.bold())
+                                            .foregroundStyle(.orange)
+                                        ForEach(pendingItems, id: \.self) { item in
+                                            Text("• \(item)")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    .padding(10)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .background(Color.orange.opacity(0.12))
+                                    .cornerRadius(10)
+                                }
                                 
                                 HStack(spacing: 6) {
                                     Button(action: { 
@@ -549,7 +779,7 @@ struct EventPipelineView: View {
                                                 showingLogisticsSheet = true
                                                 hasSeenGigNegotiationTip = true
                                             }) {
-                                                Label("🚗 Logística", systemImage: "car.fill")
+                                                Label(logisticsActionTitle, systemImage: "car.fill")
                                             }
                                         } label: {
                                             Label("Ações", systemImage: "ellipsis.circle")
@@ -563,7 +793,7 @@ struct EventPipelineView: View {
                                                 Text("💡 Calcule viabilidade")
                                                     .font(.caption.bold())
                                                     .foregroundStyle(.white)
-                                                Text("Clique em Ações para:\n• Calcular break-even\n• Estimar logística até aeroporto")
+                                                Text("Clique em Ações para:\n• Calcular break-even\n• Estimar logística da gig")
                                                     .font(.caption)
                                                     .foregroundStyle(.secondary)
                                                 Button("Entendi") {
@@ -596,6 +826,8 @@ struct EventPipelineView: View {
                                             .font(.body)
                                     }
                                     .buttonStyle(.bordered)
+
+                                    gigLifecycleButtons(for: gig)
                                 }
                             }
                             .padding(12)
@@ -755,14 +987,14 @@ struct EventPipelineView: View {
                             }
                         }
                     } else if selectedTab == 5 {
-                        Section("Calculadora avulsa") {
+                        Section("Simulação avulsa") {
                             NavigationLink {
                                 QuickLogisticsCalculatorView()
                             } label: {
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("Abrir Calculadora completa")
+                                    Text("Abrir simulação avulsa")
                                         .font(.headline)
-                                    Text("Estimativa por rota local e endereço (web) em tela dedicada.")
+                                    Text("Use quando quiser estimar rota fora de uma gig específica.")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
